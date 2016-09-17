@@ -1,0 +1,21 @@
+{% extends "radio/site_base.html" %}
+{% block main-nav %}
+{% include "radio/site_nav.html" %}
+{% endblock %}
+{% block main-body %}
+<div class="container">
+        <div class="row">
+<div class="col-xs-12">
+<h1>Create an account</h1>
+    <form method="post" action=".">{% csrf_token %}
+        <table border="0">
+            {{ form.as_table }}
+        </table>
+        <input type="submit" value="Register" />
+    </form>
+    <a href="/">Login</a>
+</div>
+</div>
+</div>
+{% endblock %}
+

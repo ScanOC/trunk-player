@@ -1,0 +1,125 @@
+{% extends "radio/site_base.html" %}
+{% block main-nav %}
+{% include "radio/site_nav.html" %}
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.js"></script>
+<style type="text/css">
+#tg-multi{
+    width: 600px !important;
+
+}
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+  $(".tg-multi-select").select2({
+placeholder: "Enter Talk Groups to Scan"
+});
+});
+</script>
+{% endblock %}
+{% block main-body %}
+<div class="container">
+	<div class="row">
+		<div id="start_bar" class="col-xs-12">
+			<!-- <button type="button" id="button_start_scanner" class="btn play-btn btn-success btn-lg" onclick="play_clip('//s3.amazonaws.com/scanoc-audio-001/MotoTalkPermit', 0, 0)"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Start Scanner </button> -->
+			<button type="button" id="button_start_scanner" class="btn play-btn btn-success btn-lg" onclick="play_clip('//s3.amazonaws.com/scanoc-audio-001/point1sec', 0, 0)"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Start Scanner </button>
+	</div>
+	<div class="row">
+		<div id="muti-select" class="col-xs-12">
+			<select id="tg-multi" class="tg-multi-select" multiple="multiple">
+				<option value="2a-bre-tac">2A BRE-TAC</option>
+				<option value="2b-bre-tac">2B BRE-TAC</option>
+				<option value="2c-met-tac">2C MET-TAC</option>
+				<option value="2d-met-tac">2D MET-TAC</option>
+				<option value="2e-nor-dsp">2E NOR-DSP</option>
+				<option value="2f-ana-tac">2F ANA-TAC</option>
+				<option value="2g-ful-tac">2G FUL-TAC</option>
+				<option value="2h-ggv-tac">2H GGV-TAC</option>
+				<option value="2i-org-tac">2I ORG-TAC</option>
+				<option value="2j-j-tac">2J J-TAC</option>
+				<option value="2k-k-tac">2K K-TAC</option>
+				<option value="2l-l-tac">2L L-TAC</option>
+				<option value="2m-m-tac">2M M-TAC</option>
+				<option value="2n-n-tac">2N N-TAC</option>
+				<option value="2o-o-tac">2O O-TAC</option>
+				<option value="3a-cos-dsp">3A COS-DSP</option>
+				<option value="3b-cos-tac">3B COS-TAC</option>
+				<option value="3c-sta-dsp">3C STA-DSP</option>
+				<option value="3d-sta-tac">3D STA-TAC</option>
+				<option value="3e-sta-tac">3E STA-TAC</option>
+				<option value="3f-cen-dsp">3F CEN-DSP</option>
+				<option value="3g-fvy-tac">3G FVY-TAC</option>
+				<option value="3h-htb-tac">3H HTB-TAC</option>
+				<option value="3i-npb-tac">3I NPB-TAC</option>
+				<option value="3j-j-tac">3J J-TAC</option>
+				<option value="3k-k-tac">3K K-TAC</option>
+				<option value="3l-l-tac">3L L-TAC</option>
+				<option value="3m-m-tac">3M M-TAC</option>
+				<option value="3n-n-tac">3N N-TAC</option>
+				<option value="3o-o-tac">3O O-TAC</option>
+				<option value="4a-jwa">4A JWA</option>
+				<option value="4c-cmd-1-4">4C CMD 1-4</option>
+				<option value="4d-div-1">4D DIV-1</option>
+				<option value="4e-div-4">4E DIV-4</option>
+				<option value="4f-sea-1-4">4F SEA 1-4</option>
+				<option value="4h-div-6">4H DIV-6</option>
+				<option value="4i-i-tac">4I I-TAC</option>
+				<option value="4j-j-tac">4J J-TAC</option>
+				<option value="4k-k-tac">4K K-TAC</option>
+				<option value="4l-l-tac">4L L-TAC</option>
+				<option value="4m-m-tac">4M M-TAC</option>
+				<option value="4n-n-tac">4N N-TAC</option>
+				<option value="4o-o-tac">4O O-TAC</option>
+				<option value="5a-air-spt">5A AIR-SPT</option>
+				<option value="5b-orc-dsp">5B ORC-DSP</option>
+				<option value="5c-cmd-2-3">5C CMD 2-3</option>
+				<option value="5d-div-2">5D DIV-2</option>
+				<option value="5e-div-3">5E DIV-3</option>
+				<option value="5f-sea-2-3">5F SEA 2-3</option>
+				<option value="5g-lab-tac">5G LAB-TAC</option>
+				<option value="5h-lab-dsp">5H LAB-DSP</option>
+				<option value="5i-i-tac">5I I-TAC</option>
+				<option value="5j-j-tac">5J J-TAC</option>
+				<option value="5l-l-tac">5L L-TAC</option>
+				<option value="5m-m-tac">5M M-TAC</option>
+				<option value="5n-n-tac">5N N-TAC</option>
+				<option value="5o-o-tac">5O O-TAC</option>
+			</select>
+			<button type="button" onclick="update_scan_list()">Update Scan List</button> 
+		</div>
+	</div>
+	<div class="row">
+		<div id="main-data-table" class="col-xs-10">
+		</div>
+		<div class="col-xs-2">
+			<!--
+			<div class="alert alert-danger fade in">
+				<a href="#" class="close" data-dismiss="alert">&times;</a>
+				<strong>Error!</strong><p>South Site Offline.</p>
+			</div>
+			-->
+			<!--
+			<p>Filter on TalkGroups</p>
+			<p>Build Scan Lists</p>
+			-->
+		</div>
+	</div>
+        {% if not user.is_authenticated %}
+        <div class="row">
+                <div id="main-data-table" class="col-xs-12 alert alert-danger" role="alert">
+                        You are not currently logged into the system. You will only see the last 15 minutes of history. <a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a> to see more history.
+                </div>
+        </div>
+        {% endif %}
+	<hr>
+	<div class="row">
+		<div class="col-xs-12">
+			<footer>
+				<p>&copy; Copyright 2016 ScanOC.com</p>
+			</footer>
+		</div>
+	</div>
+</div>
+{% endblock %}

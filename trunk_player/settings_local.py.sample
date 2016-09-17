@@ -1,0 +1,11 @@
+# Local devel Settings
+LOCAL_SETTINGS = True
+
+DEBUG = True
+
+ALLOWED_HOSTS = []
+
+# Make this unique, and don't share it with anybody.
+# You can use http://www.miniwebtool.com/django-secret-key-generator/
+# to create one.
+SECRET_KEY = 'gv*f9ntgqmj8fqp+=ycx)v%6*o*#k1v25*a_gmrla3y*yy@*!0'

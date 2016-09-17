@@ -1,0 +1,74 @@
+<nav id="myNavbar" class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
+	<!-- Brand and toggle get grouped for better mobile display -->
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbarCollapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">ScanOC</a>
+		</div>
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="navbarCollapse">
+			<ul class="nav navbar-nav">
+				<li><a href="#">Home</a></li>
+				<li class="dropdown">
+				  <a data-toggle="dropdown" class="dropdown-toggle" href="#">Scan Lists<b class="caret"></b></a>
+				  <ul role="menu" class="dropdown-menu">
+					<li><a href="/scan/default/" onclick="return url_change('/scan/default/');">Default</a></li>
+					<li><a href="/scan/ocfa/" onclick="return url_change('/scan/ocfa/');">OCFA</a></li>
+					<li><a href="/scan/oc_dispatch/" onclick="return url_change('/scan/oc_dispatch/');">All Dispatch</a></li>
+					<li><a href="/scan/ocfa_south/" onclick="return url_change('/scan/ocfa_south/');">OCFA South</a></li>
+					<li class="divider"></li>
+					<li><a href="/userscan/">Custom Scan List</a></li>
+				  </ul>
+				</li>
+				<li class="dropdown">
+                                  <a data-toggle="dropdown" class="dropdown-toggle" href="#">TalkGroup<b class="caret"></b></a>
+                                  <ul role="menu" class="dropdown-menu">
+                                        <li><a onclick="return url_change('/tg/5b-orc-dsp/');" href="/tg/5b-orc-dsp/">5B ORC-DISP</a></li>
+					<li><a onclick="return url_change('/tg/3d-sta-tac/');" href="/tg/3d-sta-tac/">3D STA-TAC</a></li>
+					<li><a onclick="return url_change('/tg/3e-sta-tac/');" href="/tg/3e-sta-tac/">3E STA-TAC</a></li>
+					<li><a onclick="return url_change('/tg/4c-cmd-1-4/');" href="/tg/4c-cmd-1-4/">4C CMD 1-4</a></li>
+					<li><a onclick="return url_change('/tg/4d-div-1/');" href="/tg/4d-div-1/">4D DIV-1</a></li>
+					<li><a onclick="return url_change('/tg/4e-div-4/');" href="/tg/4e-div-4/">4E DIV-4</a></li>
+					<li><a onclick="return url_change('/tg/4f-sea-1-4/');" href="/tg/4f-sea-1-4/">4F SEA 1-4</a></li>
+					<li><a onclick="return url_change('/tg/4m-m-tac/');" href="/tg/4m-m-tac/">4M M-TAC</a></li>
+					<li><a onclick="return url_change('/tg/4n-n-tac/');" href="/tg/4n-n-tac/">4N N-TAC</a></li>
+					<li><a onclick="return url_change('/tg/4o-o-tac/');" href="/tg/4o-o-tac/">4O O-TAC</a></li>
+					<li><a onclick="return url_change('/tg/5a-air-spt/');" href="/tg/5a-air-spt/">5A AIR-SPT</a></li>
+					<li><a onclick="return url_change('/tg/5c-cmd-2-3/');" href="/tg/5c-cmd-2-3/">5C CMD 2-3</a></li>
+					<li><a onclick="return url_change('/tg/5d-div-2/');" href="/tg/5d-div-2/">5D DIV-2</a></li>
+					<li><a onclick="return url_change('/tg/5e-div-3/');" href="/tg/5e-div-3/">5E DIV-3</a></li>
+					<li><a onclick="return url_change('/tg/5f-sea-2-3/');" href="/tg/5f-sea-2-3/">5F SEA 2-3</a></li>
+					<li><a onclick="return url_change('/tg/5g-lab-tac/');" href="/tg/5g-lab-tac/">5G LAB-TAC</a></li>
+					<li><a onclick="return url_change('/tg/5h-lab-dsp/');" href="/tg/5h-lab-dsp/">5H LAB-DSP</a></li>
+					<li><a onclick="return url_change('/tg/5m-m-tac/');" href="/tg/5m-m-tac/">5M M-TAC</a></li>
+					<li><a onclick="return url_change('/tg/5n-n-tac/');" href="/tg/5n-n-tac/">5N N-TAC</a></li>
+					<li><a onclick="return url_change('/tg/5o-o-tac/');" href="/tg/5o-o-tac/">5O O-TAC</a></li>
+                                        <li><a href="/talkgroups/">List TalkGroups</a></li>
+				</ul>
+				<li><a href="#">About</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<div id="jquery_jplayer_1" ></div>
+				<li><!-- <span id="jp1_c_time" class="jp-current-time"></span> --><span id="jp1_duration" class="jp-duration" role="timer" aria-label="duration" ></span></li>
+				<li><button class="jp-play btn btn-sm" id="jp1_play" title="play"><span class="glyphicon glyphicon-play" aria-hidden="true"></button>&nbsp;</li>
+				<li><button class="jp-stop btn btn-sm" id="jp1_stop" title="stop"><span class="glyphicon glyphicon-stop" aria-hidden="true"></button></li>
+				{% if user.is_authenticated %}<li class="dropdown">
+					<a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ user.username }}<b class="caret"></b></a>
+					<ul role="menu" class="dropdown-menu">
+					  <li><a href="#">Profile</a></li>
+					  <li><a href="#">Settings</a></li>
+					  {% if user.is_staff %}
+					  <li><a href="/admin/">*Admin*</a></li>
+					  {% endif %}
+					  <li><a href="{% url 'logout' %}?next={{ request.path | urlencode }}">LogOut</a></li>
+					</ul>
+				</li>{% else %}<li><a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a></li>{% endif %}
+			</ul>
+		</div>
+	</div>
+</nav>

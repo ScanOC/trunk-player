@@ -1,0 +1,13 @@
+*.pyc
+*.log
+*.sqlite3
+nohup.out
+env/
+/static/
+audio_files/*.mp3
+audio_files/*.json
+audio_files/*.wav
+audio_files/*.m4a
+!MotoTalkPermit.mp3  
+!point1sec.mp3
+settings_local.py

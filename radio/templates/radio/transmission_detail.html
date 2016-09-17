@@ -1,0 +1,81 @@
+{% extends "radio/site_base.html" %}
+{% block main-nav %}
+{% include "radio/no_nav.html" %}
+{% endblock %}
+{% block main-body %}
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12">
+    <h1>
+    ScanOC Audio File
+    </h1>
+                </div>
+	</div>
+	<div class="row"> 
+		<div class="col-xs-1"></div>
+		<div class="col-xs-2"><strong>Start Time</strong></div>
+		<div class="col-xs-6">{{ object.start_datetime }}</div>
+		<div class="col-xs-4"></div>
+	</div>
+	<div class="row">
+		<div class="col-xs-1"></div>
+		<div class="col-xs-2"><strong>Talk Group</strong></div>
+		<div class="col-xs-6">{{ object.talkgroup_info.alpha_tag }}{% if user.is_staff %} <a href="/admin/radio/talkgroup/{{ object.talkgroup_info.pk }}/change/">Edit</a>{% endif %}</div>
+		<div class="col-xs-4"></div>
+	</div>
+	<div class="row">
+		<div class="col-xs-1"></div>
+		<div class="col-xs-2"><strong>Talk Group Description</strong></div>
+		<div class="col-xs-6">{{ object.talkgroup_info.description }}</div>
+		<div class="col-xs-4"></div>
+	</div>
+	<div class="row">
+		<div class="col-xs-1"></div>
+		<div class="col-xs-2"><strong>Frequency</strong></div>
+		<div class="col-xs-6">{{ object.freq_mhz }}MHz</div>
+		<div class="col-xs-4"></div>
+	</div>
+	<div class="row">
+		<div class="col-xs-1"></div>
+		<div class="col-xs-2"><strong>Length</strong></div>
+		<div class="col-xs-6">{{ object.print_play_length }}</div>
+		<div class="col-xs-4"></div>
+	</div>
+	<div class="row">
+		<div class="col-xs-1"></div>
+		<div class="col-xs-2"><strong>Emergency</strong></div>
+		<div class="col-xs-6">{{ object.emergency }}</div>
+		<div class="col-xs-4"></div>
+	</div>
+	{% for u in object.units.all %}
+	<div class="row">
+		<div class="col-xs-1"></div>
+		<div class="col-xs-2"><strong>Unit</strong></div>
+		<div class="col-xs-6">{%if u.description %}{{ u.description }}{% else %}#{{ u.dec_id }}{% endif %}{% if user.is_staff %} <a href="/admin/radio/unit/{{ u.pk }}/change/">Edit</a>{% endif %}</div>
+		<div class="col-xs-4"></div>
+	</div>
+	{% endfor %}
+	{% if user.is_staff %}
+	<div class="row">
+		<div class="col-xs-1"></div>
+		<div class="col-xs-2"><strong>File Name</strong></div>
+		<div class="col-xs-6"><a href="//s3.amazonaws.com/scanoc-audio-001/{{ object.audio_file }}.mp3">{{ object.audio_file }}.mp3</a></div>
+		<div class="col-xs-4"></div>
+	</div>
+	{% endif %}
+	<div class="row">
+		<div class="col-xs-2">
+<button id="button_{{ object.pk }}" type="button" class="btn play-btn btn-sm" onclick="click_play_clip('//s3.amazonaws.com/scanoc-audio-001/{{ object.audio_file }}', '{{ object.pk }}')"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Play </button>
+</div>
+		<div class="col-xs-10"></div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-xs-12">
+			<footer>
+				<p>&copy; Copyright 2016 ScanOC.com</p>
+			</footer>
+		</div>
+	</div>
+</div>
+{% endblock %}
