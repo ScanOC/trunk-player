@@ -1,0 +1,16 @@
+asgi-redis==0.14.0
+asgiref==0.14.0
+autobahn==0.14.1
+channels==0.16.1
+daphne==0.14.2
+Django==1.9.6
+djangorestframework==3.3.3
+msgpack-python==0.4.7
+pkg-resources==0.0.0
+redis==2.10.5
+requests==2.10.0
+six==1.10.0
+tinys3==0.1.11
+Twisted==16.2.0
+txaio==2.5.1
+zope.interface==4.2.0
