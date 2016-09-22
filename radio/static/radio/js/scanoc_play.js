@@ -101,7 +101,7 @@ function buildpage() {
       for (var a in data.results) {
           new_id_list.unshift(data.results[a].pk);
           new_file_list.unshift(data.results[a].audio_file);
-          new_tg_list.unshift(data.results[a].talkgroup_info.alpha_tag.substring(0,2)) 
+          new_tg_list.unshift(data.results[a].tg_name);
           button_type = "btn-default";
           if(currently_playing == data.results[a].pk) {
               console.log("Match on " + currently_playing)

@@ -69,6 +69,16 @@ class Transmission(models.Model):
     def freq_mhz(self):
         return '{0:07.3f}'.format(self.freq / 1000000)
 
+    def tg_name(self):
+        """Returns TalkGroup name used for page title
+           First tries TalkGroup.common_name
+           then TalkGroup.alpha_tag
+        """
+        if self.talkgroup_info.common_name:
+            return self.talkgroup_info.common_name
+        else:
+            return self.talkgroup_info.alpha_tag
+
     class Meta:
         ordering = ["-pk"]
 
