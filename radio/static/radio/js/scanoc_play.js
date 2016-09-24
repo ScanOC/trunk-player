@@ -22,6 +22,8 @@ var base_api_url = "/api_v1/";
 //
 var api_url = null;
 var url_params = null;
+var pagination_older_url = null;
+var pagination_newer_url = null;
 
 var buildpage_running = 0;
 
@@ -30,6 +32,22 @@ function update_scan_list() {
     buildpage();
 }
 
+function update_pagination_links() {
+    pagination_html = "";
+    if(pagination_newer_url) {
+        pg_array = pagination_newer_url.split( '?' );
+        new_url = window.location.pathname + '?' + pg_array[1];
+        home_url = window.location.pathname;
+        pagination_html = '<button onclick="url_change(\'' + home_url + '\')">Current</button>'
+        pagination_html += '<button onclick="url_change(\'' + new_url + '\')">Newer</button>'
+    }
+    if(pagination_older_url) {
+        pg_array = pagination_older_url.split( '?' );
+        new_url = window.location.pathname + '?' + pg_array[1];
+        pagination_html += '<button onclick="url_change(\'' + new_url + '\')">Older</button>'
+    }
+    $('#pagination').html(pagination_html);
+}
 function update_api_url() {
     url_params = document.location.search
     pathArray = window.location.pathname.split( '/' );
@@ -50,6 +68,7 @@ function update_api_url() {
     }
     if(api_url && url_params) {
         api_url = api_url + url_params
+        console.log("URL End " + url_params)
     }
     //start_socket(); // reconnect with new talkgroups
 }
@@ -73,6 +92,7 @@ function clearpage() {
        return false;
     }
     $('#main-data-table').html("");
+    $('#pagination').html("");
 }
 
 var last_ajax;
@@ -135,6 +155,9 @@ function buildpage() {
       curr_tg_list = new_tg_list;
       new_html += '</table>';
       $('#main-data-table').html(new_html);
+      pagination_older_url = data.next;
+      pagination_newer_url = data.previous;
+      update_pagination_links();
       }
       last_call = data.results[0].pk;
       first_load = 0;
