@@ -75,6 +75,8 @@ function clearpage() {
     $('#main-data-table').html("");
 }
 
+var last_ajax;
+
 function buildpage() {
     console.log("In build page running : " + buildpage_running);
     if(buildpage_running == 1) {
@@ -86,7 +88,11 @@ function buildpage() {
         buildpage_running = 0;
         return false;
     }
-    $.getJSON(api_url, function(data) {
+    if(last_ajax) {
+        // Cancel any pending ajax calls
+        last_ajax.abort();
+    }
+    last_ajax = $.getJSON(api_url, function(data) {
       //console.log(data);
       //console.log("Checking for new calls")
       //console.log("Last Call " + last_call + " New last " + data.results[0].pk)
