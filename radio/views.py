@@ -142,16 +142,15 @@ def register(request):
                 return HttpResponseRedirect('/register/success/')
     else:
         form = RegistrationForm()
-    variables = RequestContext(request, {
-    'form': form
-    })
  
-    return render_to_response(
+    return render(
+    request,
     'registration/register.html',
-    variables,
+    { 'form': form },
     )
 
 def register_success(request):
-    return render_to_response(
-    'registration/success.html',
+    return render(
+    request,
+    'registration/success.html', {},
     )
