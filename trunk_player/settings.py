@@ -177,7 +177,8 @@ LOGGING = {
     },
 }
 
-# How far back an anonymous user can see back
+# How far back an anonymous user can see back in minutes
+# 0 will disable the limit
 ANONYMOUS_TIME = 15
 
 
