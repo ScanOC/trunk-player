@@ -91,7 +91,7 @@ function clearpage() {
     if(buildpage_running == 1) {
        return false;
     }
-    $('#main-data-table').html("");
+    $('#main-data-table').html("<p style='text-align: center'><img src='/static/radio/img/loader.gif' />");
     $('#pagination').html("");
 }
 
