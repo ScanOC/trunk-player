@@ -31,6 +31,7 @@ router.register(r'scanlist', views.ScanListViewSet)
 urlpatterns = [
     url('^$', TemplateView.as_view(template_name='radio/index_beta.html')),
     url('^', include('django.contrib.auth.urls')),
+    url(r'^accounts/', include('allauth.urls')),
     url(r'^api_v1/tg/(?P<filter_val>[+\w-]+)/$', views.TalkGroupFilterViewSet.as_view()),
     url(r'^api_v1/scan/(?P<filter_val>[+\w-]+)/$', views.ScanViewSet.as_view()),
     url(r'^api_v1/', include(router.urls)),

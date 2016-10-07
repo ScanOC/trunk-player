@@ -3,6 +3,7 @@
 {% include "radio/site_nav.html" %}
 {% endblock %}
 {% block main-body %}
+{% load socialaccount %}
 <div class="container">
         <div class="row">
 <div class="col-xs-12">
@@ -33,7 +34,7 @@
 </table>
 
 <input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" />
+<input type="hidden" name="next" value="{{ next }}" /> <big> OR <a href="{% provider_login_url "google" %}"><img src="/static/radio/img/btn_google_signin_dark_normal_web.png"></a> </big>
 </form>
 
 {# Assumes you setup the password_reset view in your URLconf #}
