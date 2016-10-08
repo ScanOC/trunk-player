@@ -177,12 +177,21 @@ LOGGING = {
         'console': {
             'class': 'logging.StreamHandler',
         },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
             'propagate': True,
             'level': 'INFO'
+        },
+        'django': {
+            'handlers': ['mail_admins',],
+            'propagate': True,
+            'level': 'ERROR',
         },
         'radio': {
             'handlers': ['console'],
