@@ -122,5 +122,49 @@ class ScanList(models.Model):
     description = models.CharField(max_length=100)
     talkgroups = models.ManyToManyField(TalkGroup)
 
+    class Meta:
+        ordering = ["name"]
+
     def __str__(self):
         return '{}'.format(self.name)
+
+class MenuList(models.Model):
+    order = models.IntegerField(default=1)
+
+    class Meta:
+        abstract = True
+        ordering = ["order", "name"]
+
+    def __str__(self):
+        return '{}'.format(self.name)
+
+    @property
+    def scan_name(self):
+        return self.name
+
+    @property
+    def scan_description(self):
+        return self.name.description
+
+class MenuScanList(MenuList):
+    name = models.ForeignKey(ScanList)
+
+    @property
+    def scan_name(self):
+        return self.name.name
+
+    @property
+    def scan_description(self):
+        return self.name.description
+
+
+class MenuTalkGroupList(MenuList):
+    name = models.ForeignKey(TalkGroup)
+
+    @property
+    def tg_name(self):
+        return self.name.alpha_tag
+
+    @property
+    def tg_slug(self):
+        return self.name.slug

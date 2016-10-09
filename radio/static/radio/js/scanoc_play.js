@@ -95,6 +95,44 @@ function clearpage() {
     $('#pagination').html("");
 }
 
+function update_menu() {
+    // ScanList Header
+    url = '/api_v1/menuscanlist/';
+    new_html_live = '';
+    new_html = '';
+    $.getJSON(url, function(data) {
+        for (var a in data.results) {
+            new_html_live += '<li><a href="/scan/' + data.results[a].scan_name + '/" onclick="return url_change(\'/scan/' + data.results[a].scan_name + '/\');">' + data.results[a].scan_description + '</a></li>';
+            new_html += '<li><a href="/scan/' + data.results[a].scan_name + '/">' + data.results[a].scan_description + '</a></li>';
+        }
+        a  = '<li class="divider"></li>';
+        a += '<li><a href="/userscan/">Custom Scan List</a></li>';
+        new_html_live += a
+        new_html += a
+        $('#menu-scanlist-live').html(new_html_live);
+        $('#menu-scanlist').html(new_html);
+    });
+
+    // TalkGroup Header
+    url2 = '/api_v1/menutalkgrouplist/';
+    new_html2_live = '';
+    new_html2 = '';
+    $.getJSON(url2, function(data) {
+        for (var a in data.results) {
+            new_html2_live += '<li><a href="/tg/' + data.results[a].tg_slug + '/" onclick="return url_change(\'/tg/' + data.results[a].tg_slug + '/\');">' + data.results[a].tg_name + '</a></li>';
+            new_html2 += '<li><a href="/tg/' + data.results[a].tg_slug + '/">' + data.results[a].tg_name + '</a></li>';
+        }
+        a  = '<li class="divider"></li>';
+        a += '<li><a href="/talkgroups/">List All Talkgroups</a></li>';
+        new_html2_live += a
+        new_html2 += a
+        $('#menu-talkgrouplist-live').html(new_html2_live);
+        $('#menu-talkgrouplist').html(new_html2);
+    });
+
+
+}
+
 var last_ajax;
 
 function buildpage() {
@@ -277,6 +315,7 @@ $(document).ready(function(){
     //setInterval(buildpage, 2000);
     play_next();
     setInterval(play_next, 500);
+    update_menu();
 
     //first_load = 0;
 });

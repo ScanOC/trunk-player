@@ -11,9 +11,9 @@ from django.contrib.auth import authenticate, login
 from django.conf import settings
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
-from .models import Transmission, TalkGroup, ScanList
+from .models import *
 from rest_framework import viewsets, generics
-from .serializers import TransmissionSerializer, TalkGroupSerializer, ScanListSerializer
+from .serializers import TransmissionSerializer, TalkGroupSerializer, ScanListSerializer, MenuScanListSerializer, MenuTalkGroupListSerializer
 from datetime import datetime, timedelta
 from .forms import *
 
@@ -154,3 +154,11 @@ def register_success(request):
     request,
     'registration/success.html', {},
     )
+
+class MenuScanListViewSet(viewsets.ModelViewSet):
+    serializer_class = MenuScanListSerializer
+    queryset = MenuScanList.objects.all()
+
+class MenuTalkGroupListViewSet(viewsets.ModelViewSet):
+    serializer_class = MenuTalkGroupListSerializer
+    queryset = MenuTalkGroupList.objects.all()

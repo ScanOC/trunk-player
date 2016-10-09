@@ -26,6 +26,8 @@ router = routers.DefaultRouter()
 router.register(r'transmission', views.TransmissionViewSet)
 router.register(r'talkgroups', views.TalkGroupViewSet)
 router.register(r'scanlist', views.ScanListViewSet)
+router.register(r'menuscanlist', views.MenuScanListViewSet)
+router.register(r'menutalkgrouplist', views.MenuTalkGroupListViewSet)
 
 
 urlpatterns = [

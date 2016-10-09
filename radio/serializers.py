@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import Transmission, TalkGroup, Unit, ScanList
+from .models import Transmission, TalkGroup, Unit, ScanList, MenuScanList, MenuTalkGroupList
 
 
 class TalkGroupSerializer(serializers.HyperlinkedModelSerializer):
@@ -26,3 +26,15 @@ class ScanListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ScanList
         fields = ('pk', 'name', 'description')
+
+class MenuScanListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MenuScanList
+        fields = ('pk', 'name', 'scan_name', 'scan_description')
+
+class MenuTalkGroupListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MenuTalkGroupList
+        fields = ('pk', 'name', 'tg_name', 'tg_slug')
