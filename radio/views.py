@@ -65,7 +65,7 @@ def TalkGroupFilterBase(request, filter_val, template):
         raise Http404
     try:
         query_data = Transmission.objects.filter(talkgroup_info=tg)
-        if not request.user.is_authenticated() and settings.ANONYMOUS_TIME > 0:
+        if not request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
             time_threshold = datetime.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
             query_data = query_data.filter(start_datetime__gt=time_threshold)
 
@@ -89,7 +89,7 @@ class ScanViewSet(generics.ListAPIView):
         else:
             tg = sl.talkgroups.all()
         rc_data = Transmission.objects.filter(talkgroup_info__in=tg)
-        if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME > 0:
+        if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
             time_threshold = datetime.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
             rc_data = rc_data.filter(start_datetime__gt=time_threshold)
         return rc_data
@@ -106,7 +106,7 @@ class TalkGroupFilterViewSet(generics.ListAPIView):
             q |= Q(slug__iexact=stg)
         tg = TalkGroup.objects.filter(q)
         rc_data = Transmission.objects.filter(talkgroup_info__in=tg)
-        if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME > 0:
+        if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
             time_threshold = datetime.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
             rc_data = rc_data.filter(start_datetime__gt=time_threshold)
         return rc_data
