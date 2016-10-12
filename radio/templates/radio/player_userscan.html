@@ -21,7 +21,7 @@ function load_tg() {
         for (var a in data.results) {
             $('.tg-multi-select').append($('<option>', {
                  value: data.results[a].slug,
-                 text: data.results[a].alpha_tag + " - " data.results[a].description
+                 text: data.results[a].alpha_tag + " - " + data.results[a].description
             })).select2();
         }
       if(url3) {
