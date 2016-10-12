@@ -13,10 +13,30 @@
 }
 </style>
 <script type="text/javascript">
+// TalkGroup Data
+url3 = '/api_v1/talkgroups/';
+function load_tg() {
+    $.getJSON(url3, function(data) {
+      url3 = data.next;
+        for (var a in data.results) {
+            $('.tg-multi-select').append($('<option>', {
+                 value: data.results[a].slug,
+                 text: data.results[a].alpha_tag
+            })).select2();
+        }
+      if(url3) {
+         load_tg();
+      }
+    });
+}
+
 $(document).ready(function() {
   $(".tg-multi-select").select2({
 placeholder: "Enter Talk Groups to Scan"
 });
+
+load_tg();
+
 });
 </script>
 {% endblock %}
@@ -30,63 +50,6 @@ placeholder: "Enter Talk Groups to Scan"
 	<div class="row">
 		<div id="muti-select" class="col-xs-12">
 			<select id="tg-multi" class="tg-multi-select" multiple="multiple">
-				<option value="2a-bre-tac">2A BRE-TAC</option>
-				<option value="2b-bre-tac">2B BRE-TAC</option>
-				<option value="2c-met-tac">2C MET-TAC</option>
-				<option value="2d-met-tac">2D MET-TAC</option>
-				<option value="2e-nor-dsp">2E NOR-DSP</option>
-				<option value="2f-ana-tac">2F ANA-TAC</option>
-				<option value="2g-ful-tac">2G FUL-TAC</option>
-				<option value="2h-ggv-tac">2H GGV-TAC</option>
-				<option value="2i-org-tac">2I ORG-TAC</option>
-				<option value="2j-j-tac">2J J-TAC</option>
-				<option value="2k-k-tac">2K K-TAC</option>
-				<option value="2l-l-tac">2L L-TAC</option>
-				<option value="2m-m-tac">2M M-TAC</option>
-				<option value="2n-n-tac">2N N-TAC</option>
-				<option value="2o-o-tac">2O O-TAC</option>
-				<option value="3a-cos-dsp">3A COS-DSP</option>
-				<option value="3b-cos-tac">3B COS-TAC</option>
-				<option value="3c-sta-dsp">3C STA-DSP</option>
-				<option value="3d-sta-tac">3D STA-TAC</option>
-				<option value="3e-sta-tac">3E STA-TAC</option>
-				<option value="3f-cen-dsp">3F CEN-DSP</option>
-				<option value="3g-fvy-tac">3G FVY-TAC</option>
-				<option value="3h-htb-tac">3H HTB-TAC</option>
-				<option value="3i-npb-tac">3I NPB-TAC</option>
-				<option value="3j-j-tac">3J J-TAC</option>
-				<option value="3k-k-tac">3K K-TAC</option>
-				<option value="3l-l-tac">3L L-TAC</option>
-				<option value="3m-m-tac">3M M-TAC</option>
-				<option value="3n-n-tac">3N N-TAC</option>
-				<option value="3o-o-tac">3O O-TAC</option>
-				<option value="4a-jwa">4A JWA</option>
-				<option value="4c-cmd-1-4">4C CMD 1-4</option>
-				<option value="4d-div-1">4D DIV-1</option>
-				<option value="4e-div-4">4E DIV-4</option>
-				<option value="4f-sea-1-4">4F SEA 1-4</option>
-				<option value="4h-div-6">4H DIV-6</option>
-				<option value="4i-i-tac">4I I-TAC</option>
-				<option value="4j-j-tac">4J J-TAC</option>
-				<option value="4k-k-tac">4K K-TAC</option>
-				<option value="4l-l-tac">4L L-TAC</option>
-				<option value="4m-m-tac">4M M-TAC</option>
-				<option value="4n-n-tac">4N N-TAC</option>
-				<option value="4o-o-tac">4O O-TAC</option>
-				<option value="5a-air-spt">5A AIR-SPT</option>
-				<option value="5b-orc-dsp">5B ORC-DSP</option>
-				<option value="5c-cmd-2-3">5C CMD 2-3</option>
-				<option value="5d-div-2">5D DIV-2</option>
-				<option value="5e-div-3">5E DIV-3</option>
-				<option value="5f-sea-2-3">5F SEA 2-3</option>
-				<option value="5g-lab-tac">5G LAB-TAC</option>
-				<option value="5h-lab-dsp">5H LAB-DSP</option>
-				<option value="5i-i-tac">5I I-TAC</option>
-				<option value="5j-j-tac">5J J-TAC</option>
-				<option value="5l-l-tac">5L L-TAC</option>
-				<option value="5m-m-tac">5M M-TAC</option>
-				<option value="5n-n-tac">5N N-TAC</option>
-				<option value="5o-o-tac">5O O-TAC</option>
 			</select>
 			<button type="button" onclick="update_scan_list()">Update Scan List</button> 
 		</div>
@@ -105,6 +68,23 @@ placeholder: "Enter Talk Groups to Scan"
 			<p>Filter on TalkGroups</p>
 			<p>Build Scan Lists</p>
 			-->
+<script type="text/javascript">
+amzn_assoc_placement = "adunit0";
+amzn_assoc_enable_interest_ads = "true";
+amzn_assoc_tracking_id = "scanoc-20";
+amzn_assoc_ad_mode = "auto";
+amzn_assoc_ad_type = "smart";
+amzn_assoc_marketplace = "amazon";
+amzn_assoc_region = "US";
+amzn_assoc_linkid = "366e01afa07db536277fa926bed3cb27";
+amzn_assoc_emphasize_categories = "15684181,13900871,172282,3760901,16310091,229534";
+amzn_assoc_fallback_mode = {"type":"search","value":"first aid fire extinguisher"};
+amzn_assoc_default_category = "All";
+amzn_assoc_rows = "6";
+</script>
+<script src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US"></script>
+
+
 		</div>
 	</div>
         {% settings_anonymous_time as anonymous_time %}

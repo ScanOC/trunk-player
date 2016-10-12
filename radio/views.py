@@ -35,7 +35,7 @@ class TalkGroupViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-    queryset = TalkGroup.objects.all()
+    queryset = TalkGroup.objects.filter(public=True)
     serializer_class = TalkGroupSerializer
 
 class TransmissionView(ListView):
