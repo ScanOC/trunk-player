@@ -24,11 +24,11 @@ class TransmissionViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = Transmission.objects.all()
+    queryset = Transmission.objects.all().prefetch_related('units')
     serializer_class = TransmissionSerializer
 
 class ScanListViewSet(viewsets.ModelViewSet):
-    queryset = ScanList.objects.all()
+    queryset = ScanList.objects.all().prefetch_related('talkgroups')
     serializer_class = ScanListSerializer
 
 class TalkGroupViewSet(viewsets.ModelViewSet):
@@ -64,7 +64,7 @@ def TalkGroupFilterBase(request, filter_val, template):
     except TalkGroup.DoesNotExist:
         raise Http404
     try:
-        query_data = Transmission.objects.filter(talkgroup_info=tg)
+        query_data = Transmission.objects.filter(talkgroup_info=tg).prefetch_related('units')
         if not request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
             time_threshold = datetime.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
             query_data = query_data.filter(start_datetime__gt=time_threshold)
@@ -88,7 +88,7 @@ class ScanViewSet(generics.ListAPIView):
                raise
         else:
             tg = sl.talkgroups.all()
-        rc_data = Transmission.objects.filter(talkgroup_info__in=tg)
+        rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units')
         if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
             time_threshold = datetime.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
             rc_data = rc_data.filter(start_datetime__gt=time_threshold)
