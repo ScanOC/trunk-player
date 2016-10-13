@@ -1,4 +1,5 @@
 {% extends "radio/site_base.html" %}
+{% load radio_extras %}
 {% block main-nav %}
 {% include "radio/no_nav.html" %}
 {% endblock %}
@@ -26,6 +27,8 @@
     
 		</div>
                 <div class="col-xs-2">
+{% settings_amazon_adds as amazon_adds %}
+{% if amazon_adds %}
 <script type="text/javascript">
 amzn_assoc_placement = "adunit0";
 amzn_assoc_enable_interest_ads = "true";
@@ -36,11 +39,12 @@ amzn_assoc_marketplace = "amazon";
 amzn_assoc_region = "US";
 amzn_assoc_linkid = "366e01afa07db536277fa926bed3cb27";
 amzn_assoc_emphasize_categories = "15684181,13900871,172282,3760901,16310091,229534";
-amzn_assoc_fallback_mode = {"type":"search","value":"first aid fire extinguisher"};
+amzn_assoc_fallback_mode = {"type":"search","value":"first aid,fire extinguisher"};
 amzn_assoc_default_category = "All";
 amzn_assoc_rows = "6";
 </script>
 <script src="https://z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US"></script>
+{% endif %}
                   </div>
 
 	</div>

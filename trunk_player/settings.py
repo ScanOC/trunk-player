@@ -216,6 +216,8 @@ ACCOUNT_AUTHENTICATION_METHOD="username_email"
 ACCOUNT_EMAIL_REQUIRED=True
 LOGIN_REDIRECT_URL="/"
 
+AMAZON_ADDS = False
+
 
 # Load our local settings 
 try:

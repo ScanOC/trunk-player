@@ -68,6 +68,8 @@ load_tg();
 			<p>Filter on TalkGroups</p>
 			<p>Build Scan Lists</p>
 			-->
+{% settings_amazon_adds as amazon_adds %}
+{% if amazon_adds %}
 <script type="text/javascript">
 amzn_assoc_placement = "adunit0";
 amzn_assoc_enable_interest_ads = "true";
@@ -83,7 +85,7 @@ amzn_assoc_default_category = "All";
 amzn_assoc_rows = "6";
 </script>
 <script src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US"></script>
-
+{% endif %}
 
 		</div>
 	</div>
