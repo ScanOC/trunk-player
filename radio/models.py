@@ -12,6 +12,14 @@ from django.dispatch import receiver
 
 log = logging.getLogger(__name__)
 
+class Source(models.Model):
+    description = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ["pk"]
+
+    def __str__(self):
+        return self.description
 
 class Unit(models.Model):
     dec_id = models.IntegerField(unique=True)
@@ -51,6 +59,7 @@ class Transmission(models.Model):
     emergency = models.BooleanField(default=False)
     units = models.ManyToManyField(Unit, through='TranmissionUnit')
     play_length = models.FloatField(default=0.0)
+    source = models.ForeignKey(Source, default=0)
 
     def __str__(self):
         return '{} {}'.format(self.talkgroup, self.start_datetime)

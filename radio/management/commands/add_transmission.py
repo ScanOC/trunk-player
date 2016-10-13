@@ -21,18 +21,30 @@ class Command(BaseCommand):
             default=False,
             help='Add a VHF tranmission',
         )
+        parser.add_argument(
+            '--source',
+            type=int,
+            #action='store_true',
+            #dest='source',
+            default=-1,
+            help='Set the source of the transmission',
+        )
 
     def handle(self, *args, **options):
-        print('Just a test')
-        vhf = options['vhf']
-        json_f = options['json_name']
-        print('You passed in {}'.format(json_f))
-        add_new_trans(json_f, vhf)
+        print('You passed in {}'.format(options['json_name']))
+        add_new_trans(options)
 
 
 
-def add_new_trans(file_name,vhf):
+def add_new_trans(options):
 
+    file_name = options['json_name']
+    vhf = options['vhf']
+    source_opt = options['source']
+    source_default = False
+    if source_opt == -1:
+        source_opt = 0
+        source_default = True
     if vhf:
         tg_dec = file_name.split('_', 1)[0]
         # 90002_cnf_20160903_015052.mp3
@@ -62,12 +74,16 @@ def add_new_trans(file_name,vhf):
     dt = datetime.datetime.fromtimestamp(int(epoc_ts))
     #if vhf:
     #  dt.replace(tzinfo=pytz.UTC)
+    
+    source = Source.objects.get(pk=source_opt)
+
     t = Transmission( start_datetime = dt,
                      audio_file = file_name,
                      talkgroup = tg_dec,
                      talkgroup_info = tg,
                      freq = int(float(freq)),
                      emergency = False,
+                     source = source,
                    )
     if not vhf:
         with open('audio_files/{}.json'.format(file_name)) as data_file:    
@@ -77,6 +93,12 @@ def add_new_trans(file_name,vhf):
                 t.emergency = True
             count = 0
             t.play_length = data['play_length']
+            if source_default:
+                json_source = data.get('source', 0)
+                if(json_source > 0):
+                    # No need to re add source if its still 0
+                    source = Source.objects.get(pk=data['source'])
+                    t.source = source
             t.save()
             for trans_unit in data['srcList']:
                 u,created = Unit.objects.get_or_create(dec_id=trans_unit)
