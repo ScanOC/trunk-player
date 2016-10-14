@@ -21,6 +21,13 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+import os
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
+if on_rtd:
+    html_theme = 'default'
+else:
+    html_theme = 'nature'
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
