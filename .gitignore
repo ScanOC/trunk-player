@@ -2,6 +2,7 @@
 *.log
 *.sqlite3
 nohup.out
+_build/
 env/
 /static/
 audio_files/*.mp3
