@@ -69,7 +69,8 @@ def add_new_trans(options):
     try:
         tg = TalkGroup.objects.get(dec_id=tg_dec)
     except TalkGroup.DoesNotExist:
-        tg = TalkGroup.objects.create(dec_id=tg_dec, alpha_tag='UNK')
+        name = '#{}'.format(tg_dec)
+        tg = TalkGroup.objects.create(dec_id=tg_dec, alpha_tag=name, description='TalkGroup {}'.format(name))
 
     dt = datetime.datetime.fromtimestamp(int(epoc_ts))
     #if vhf:
