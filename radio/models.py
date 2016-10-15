@@ -10,7 +10,20 @@ from channels import Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+import radio.choices as choice
+
 log = logging.getLogger(__name__)
+
+class Agency(models.Model):
+    name = models.CharField(max_length=100)
+    short = models.CharField(max_length=5)
+
+    def __str__(self):
+        return self.name
+
+    def get_short(self):
+        return self.short
+
 
 class Source(models.Model):
     description = models.CharField(max_length=100)
@@ -24,6 +37,10 @@ class Source(models.Model):
 class Unit(models.Model):
     dec_id = models.IntegerField(unique=True)
     description = models.CharField(max_length=100, blank=True, null=True)
+    agency = models.ForeignKey(Agency, default=settings.RADIO_DEFAULT_UNIT_AGENCY)
+    #agency = models.ForeignKey(Agency, default=2)
+    type = models.CharField(max_length=1, choices=choice.RADIO_TYPE_CHOICES, default=choice.RADIO_TYPE_MOBILE)
+    number = models.IntegerField(default=1)
 
     def __str__(self):
         if(self.description):
@@ -54,7 +71,7 @@ class Transmission(models.Model):
     start_datetime = models.DateTimeField(db_index=True)
     audio_file = models.FileField()
     talkgroup = models.IntegerField()
-    talkgroup_info = models.ForeignKey('TalkGroup')
+    talkgroup_info = models.ForeignKey(TalkGroup)
     freq = models.IntegerField()
     emergency = models.BooleanField(default=False)
     units = models.ManyToManyField(Unit, through='TranmissionUnit')

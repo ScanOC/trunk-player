@@ -205,6 +205,9 @@ LOGGING = {
 # 0 will disable the limit
 ANONYMOUS_TIME = 15
 
+# This Agency must exist in radio.Agency 
+RADIO_DEFAULT_UNIT_AGENCY = 0
+
 SITE_ID = 1
 
 SOCIALACCOUNT_PROVIDERS = \
