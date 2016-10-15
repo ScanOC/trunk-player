@@ -3,7 +3,7 @@ Installation
 ============
 This document will show you how to get up and running with Trunk Player.
 
-Currently going to be based on a Debian like system Ubuntu
+Currently install is based on a Debian like system, Ubuntu.
 
 System Prerequisites
 ====================
@@ -41,16 +41,11 @@ This will pull down the most current version of Trunk Player.
 Setup Virtual Environment
 =========================
 
-Create the directory to run Trunk Player from
-
-.. code-block:: console
-
-    cd trunk-player
-
 Setup a new Python 3.x virtual environment in the ``env`` direcory. Set the visual prompt to ``(Trunk Player)``.
 
 .. code-block:: console
 
+    $ cd trunk-player
     $ virtualenv -p python3 env --prompt='(Trunk Player)'
 
 Activate Virtual Environment
@@ -74,7 +69,7 @@ Using pip install all required packages from the ``requirements.txt`` file.
 
 .. code-block:: console
 
-  $ pip install -r requirements.txt
+  (Trunk Player)$ pip install -r requirements.txt
 
 Configure for first use
 =======================
@@ -89,7 +84,7 @@ Make a copy of the sample local settings file
 
 .. code-block:: console
 
-  $ cp trunk_player/settings_local.py.sample trunk_player/settings_local.py
+  (Trunk Player)$ cp trunk_player/settings_local.py.sample trunk_player/settings_local.py
 
 **Important** You need to set/change the ``SECRET_KEY`` in the ``trunk_player/settings_local.py``. This value is used to protect sensitive data like passwords. If you keep the one from the project a bad actor may be able to compromise your site or worse your server. See the django project about `SECRET_KEY`_.
 
@@ -105,16 +100,14 @@ Using the `django manage.py`_ command to build the new database.
 
 .. code-block:: console
 
-  $ ./manage.py migrate
+  (Trunk Player)$ ./manage.py migrate
 
 Create admin account
 ~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
-  $ ./manage.py c. code-block:: console
-
-  $ createsuperuser
+  (Trunk Player)$ ./manage.py createsuperuser
   Username: test
   Email address: test@sample.com
   Password: mypassword
@@ -131,7 +124,7 @@ Using the ``manage.py`` command agian
 
 .. code-block:: console
 
-  $ ./manage.py runserver
+  (Trunk Player)$ ./manage.py runserver
 
 This will start the server up listening on the local loopback address on port ``8000``. Start your web browser and go to `http://localhost:8000`_. You should seen the main page
 Visit ``/admin/`` to log into the admin area.
@@ -142,6 +135,6 @@ If you are running this on a remote server you need to have the web server us it
 
 .. code-block:: console
 
-   $ ./manage.py runserver 0.0.0.0:8000
+   (Trunk Player)$ ./manage.py runserver 0.0.0.0:8000
 
 This will run the server also on port 8000 but will be accessible via the servers IP address or dns name on port ``8000`` also.
