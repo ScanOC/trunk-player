@@ -70,6 +70,14 @@ table.table.table-condensed tr.unit_row td{
   color: #f0e27c;
 }
 
+.mute-mute {
+  color: red;
+}
+
+.mute-button {
+  cursor: pointer;
+}
+
 @media (max-width: 767px) {
   .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top {
       margin-left: 0;

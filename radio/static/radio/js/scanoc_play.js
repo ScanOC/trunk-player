@@ -9,6 +9,7 @@ seen = [];
 curr_id_list = [];
 curr_file_list = [];
 curr_tg_list = [];
+curr_tg_slug_list = [];
 var force_page_rebuild = 0;
 var base_api_url = "/api_v1/";
 //var url_params = document.location.search
@@ -24,12 +25,24 @@ var api_url = null;
 var url_params = null;
 var pagination_older_url = null;
 var pagination_newer_url = null;
+var muted_tg = {}
 
 var buildpage_running = 0;
 
 function update_scan_list() {
     start_socket();   
     buildpage();
+}
+
+function mute_click(tg) {
+    console.log("User click on Mute for TG " + tg)
+    if (muted_tg[tg]) {
+        muted_tg[tg] = false;
+        $('.mute-tg-' + tg).removeClass('mute-mute ');
+    } else {
+        muted_tg[tg] = true;
+        $('.mute-tg-' + tg).addClass('mute-mute ');
+    }
 }
 
 function update_pagination_links() {
@@ -162,16 +175,22 @@ function buildpage() {
       new_id_list = []
       new_file_list = []
       new_tg_list = []
+      new_tg_slug_list = []
       for (var a in data.results) {
           new_id_list.unshift(data.results[a].pk);
           new_file_list.unshift(data.results[a].audio_file);
           new_tg_list.unshift(data.results[a].tg_name);
+          new_tg_slug_list.unshift(data.results[a].talkgroup_info.slug);
           button_type = "btn-default";
           if(currently_playing == data.results[a].pk) {
               console.log("Match on " + currently_playing)
               button_type = "btn-success"
           }
-	  new_html += '<tr><td><button id="button_' + data.results[a].pk + '" type="button" class="btn play-btn ' + button_type + ' btn-sm" onclick="click_play_clip(\'//s3.amazonaws.com/scanoc-audio-001/' + data.results[a].audio_file + '\', ' + data.results[a].pk + ')"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Play </button></td> <td><!--<span class="glyphicon glyphicon-volume-off text-muted"></span>--><a onclick="return url_change(\'/tg/' + data.results[a].talkgroup_info.slug + '/\');" href="/tg/' + data.results[a].talkgroup_info.slug + '/"><span class="glyphicon glyphicon-filter btn-sm"></span></a><a href="/audio/' + data.results[a].slug + '/"><span class="glyphicon glyphicon-list-alt btn-sm"></span></a> ' + data.results[a].talkgroup_info.alpha_tag + '</td><td>' + data.results[a].talkgroup_info.description + '</td><td>' + data.results[a].local_start_datetime + '</td></tr>';
+          tg_muted="";
+          if (muted_tg[data.results[a].talkgroup_info.slug]) {
+            tg_muted="mute-mute ";
+          }
+	  new_html += '<tr><td><button id="button_' + data.results[a].pk + '" type="button" class="btn play-btn ' + button_type + ' btn-sm" onclick="click_play_clip(\'//s3.amazonaws.com/scanoc-audio-001/' + data.results[a].audio_file + '\', ' + data.results[a].pk + ')"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Play </button></td> <td><span class="glyphicon glyphicon-volume-off text-muted mute-button ' + tg_muted + 'mute-tg-' + data.results[a].talkgroup_info.slug + '" onclick="return mute_click(\'' + data.results[a].talkgroup_info.slug + '\')") ></span><a onclick="return url_change(\'/tg/' + data.results[a].talkgroup_info.slug + '/\');" href="/tg/' + data.results[a].talkgroup_info.slug + '/"><span class="glyphicon glyphicon-filter btn-sm"></span></a><a href="/audio/' + data.results[a].slug + '/"><span class="glyphicon glyphicon-list-alt btn-sm"></span></a> ' + data.results[a].talkgroup_info.alpha_tag + '</td><td>' + data.results[a].talkgroup_info.description + '</td><td>' + data.results[a].local_start_datetime + '</td></tr>';
           new_html += '<tr class="unit_row"><td>' + data.results[a].print_play_length + '</td><td colspan="3">Units: ';
           for (unit in data.results[a].units) {
               if(data.results[a].units[unit].description) {
@@ -191,6 +210,7 @@ function buildpage() {
       curr_id_list = new_id_list;
       curr_file_list = new_file_list;
       curr_tg_list = new_tg_list;
+      curr_tg_slug_list = new_tg_slug_list;
       new_html += '</table>';
       $('#main-data-table').html(new_html);
       pagination_older_url = data.next;
@@ -249,6 +269,10 @@ function play_next() {
         if ( seen.indexOf( curr_id_list[r_id] ) < 0 ) {
             if ( currently_playing == 0) {
               seen.push(curr_id_list[r_id]);
+              // See if we are muted
+              if(muted_tg[curr_tg_slug_list[r_id]]) {
+                 return;
+              }
               //play_clip(audio_file, audio_id){
               mp3 = "//s3.amazonaws.com/scanoc-audio-001/" + curr_file_list[r_id];
               if(first_load == 0 && first_play == 0) { // Dont play them all on first load
