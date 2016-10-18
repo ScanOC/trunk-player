@@ -24,7 +24,7 @@ System Prerequisites
 Assumptions
 ===========
 
-* Project directory is ``/home/radio/trunk-player``
+* Project directory is ``/home/radio/trunk-player`` - You can replace ``/home/radio`` with your own home directory.
 * Redis is running and listening on default port of ``:6379``
 
 Getting Trunk Player
