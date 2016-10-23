@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
+
 from .models import *
 
 class TalkGroupAdmin(admin.ModelAdmin):
@@ -30,11 +33,45 @@ class SourceAdmin(admin.ModelAdmin):
                 return self.readonly_fields + ('id',)
             return self.readonly_fields
 
+class ScanListAdminForm(forms.ModelForm):
+    talkgroups = forms.ModelMultipleChoiceField(
+        queryset=TalkGroup.objects.all(),
+        required=False,
+        widget=FilteredSelectMultiple(
+            verbose_name = 'talkgroups',
+            is_stacked=False
+        )
+    )
+
+    class Meta:
+        model = ScanList
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(ScanListAdminForm, self).__init__(*args, **kwargs)
+
+        if self.instance and self.instance.pk:
+            self.fields['talkgroups'].initial = self.instance.talkgroups.all()
+    def save(self, commit=True):
+        scanlist = super(ScanListAdminForm, self).save(commit=False)
+
+        if commit:
+            scanlist.save()
+
+        if scanlist.pk:
+            scanlist.talkgroups = self.cleaned_data['talkgroups']
+            self.save_m2m()
+
+        return scanlist
+
+class ScanListAdmin(admin.ModelAdmin):
+  form = ScanListAdminForm
+
 admin.site.register(Transmission, TransmissionAdmin)
 admin.site.register(Unit,UnitAdmin)
 admin.site.register(TranmissionUnit)
 admin.site.register(TalkGroup, TalkGroupAdmin)
-admin.site.register(ScanList)
+admin.site.register(ScanList, ScanListAdmin)
 admin.site.register(MenuScanList)
 admin.site.register(MenuTalkGroupList)
 admin.site.register(Source, SourceAdmin)
