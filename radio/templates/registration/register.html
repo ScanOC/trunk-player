@@ -5,7 +5,7 @@
 {% block main-body %}
 <div class="container">
         <div class="row">
-<div class="col-xs-12">
+<div class="col-xs-5">
 <h1>Create an account</h1>
     <form method="post" action=".">{% csrf_token %}
         <table border="0">
@@ -13,6 +13,11 @@
         </table>
         <input type="submit" value="Register" />
     </form>
+</div>
+<div class="col-xs-7">
+<h3>Beta Testing</h3>
+<p>The site is still in beta testing phase. So parden any hickups. Feel free to create an account and use the site. If you have any questions or comments you can email us at <a href="mailto:scanoc.com@gmail.com">scanoc.com@gmail.com</a>.
+</p>
 </div>
 </div>
 </div>
