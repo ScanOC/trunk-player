@@ -39,16 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'local_override',
+    'radio',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.instagram',
+    #'allauth.socialaccount.providers.facebook',
+    #'allauth.socialaccount.providers.instagram',
     'rest_framework',
     'channels',
-    'local_override',
-    'radio',
 ]
 
 MIDDLEWARE_CLASSES = [
