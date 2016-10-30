@@ -39,6 +39,7 @@ urlpatterns = [
     url(r'^api_v1/', include(router.urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^(tg|scan)/(.*)/$',TemplateView.as_view(template_name='radio/player_main.html')),
+    url(r'^(tg2|scan2)/(.*)/$',TemplateView.as_view(template_name='radio/player_main2.html')),
     url(r'^scan/$', RedirectView.as_view(url='/scan/default/', permanent=False)),
     url(r'^userscan/$', TemplateView.as_view(template_name='radio/player_userscan.html')),
     url(r'^talkgroups/$', views.TalkGroupList.as_view()),
