@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load radio_js_config %}
+{% trunkplayer_js_config user as js_config %}
 <head>
 <meta charset="UTF-8">
 <title>ScanOC</title>
+<script>
+js_config = {{ js_config|safe }}
+</script>
 {% block pre-head %}{% endblock %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
@@ -20,12 +25,6 @@
 <script src="/static/radio/js/scanoc_play.js?ver=0.4"></script>
 <script src="/static/radio/js/reconnecting-websocket.min.js"></script>
 <script src="/static/radio/js/live_calls.js?ver=0.1"></script>
-<script>
-  js_logged_in_edit_units = 0;
-  {% if user.is_staff %}
-    js_logged_in_edit_units = 1;
-  {% endif %}
-</script>
 {% block head %}{% endblock %}
 </head>
 <body>

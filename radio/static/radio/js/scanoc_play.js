@@ -196,7 +196,7 @@ function buildpage() {
               if(data.results[a].units[unit].description) {
                   new_html += data.results[a].units[unit].description + ', ';
               } else {
-                  if(js_logged_in_edit_units) {
+                  if(js_config.user_is_staff) {
                       new_html += '?<a href="/admin/radio/unit/' + data.results[a].units[unit].pk + '/change/">' + data.results[a].units[unit].dec_id + '</a>, ';
                   } else {
                       new_html += '?' + data.results[a].units[unit].dec_id + ', ';

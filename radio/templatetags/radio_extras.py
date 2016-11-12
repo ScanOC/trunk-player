@@ -24,3 +24,11 @@ def settings_amazon_ad(value):
         return getattr(settings, value, False)
     return None
 
+# Allow settings in VISABLE_SETTINGS to be aviliable
+@register.simple_tag()
+def get_setting(value):
+    visable_settings = getattr(settings, 'VISABLE_SETTINGS', None)
+    if value in visable_settings:
+        return getattr(settings, value, False)
+    return None
+    

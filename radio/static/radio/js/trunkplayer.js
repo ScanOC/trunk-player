@@ -1,8 +1,17 @@
+// Global Setup
+
+// Live PlayBack, try and play next newest transmission
+live_play_back = 1;
+// Live Update, pull new transmissions from site
+live_update = 1;
+
 active_play=1;
+// Is the page curently being built
 buildpage_running = 0;
 currently_playing=0;
 last_call = 0;
-page_title = 'ScanOC';
+// Set base name from settings
+var page_title = js_config.SITE_TITLE;
 first_load = 1;
 first_play = 1;
 seen = [];
@@ -12,20 +21,13 @@ curr_tg_list = [];
 curr_tg_slug_list = [];
 var force_page_rebuild = 0;
 var base_api_url = "/api_v1/";
-//var url_params = document.location.search
-//var api_url = base_api_url + "/scanlist/default/";
-//var pathArray = window.location.pathname.split( '/' );
-// leading slash (/) causes a blank first object
-//pathArray.shift();
-//api_url = base_api_url + pathArray.join('/');
-//if(url_params) {
-//  api_url = api_url + url_params
-//
 var api_url = null;
 var url_params = null;
 var pagination_older_url = null;
 var pagination_newer_url = null;
-var muted_tg = {}
+var muted_tg = {};
+
+var base_audio_url = js_config.AUDIO_URL_BASE;
 
 var buildpage_running = 0;
 
@@ -51,18 +53,19 @@ function update_pagination_links() {
         pg_array = pagination_newer_url.split( '?' );
         new_url = window.location.pathname + '?' + pg_array[1];
         home_url = window.location.pathname;
-        pagination_html = '<button onclick="url_change(\'' + home_url + '\')">Current</button>'
-        pagination_html += '<button onclick="url_change(\'' + new_url + '\')">Newer</button>'
+        pagination_html = '<button onclick="url_change(\'' + home_url + '\')">Current</button>';
+        pagination_html += '<button onclick="url_change(\'' + new_url + '\')">Newer</button>';
     }
     if(pagination_older_url) {
         pg_array = pagination_older_url.split( '?' );
         new_url = window.location.pathname + '?' + pg_array[1];
-        pagination_html += '<button onclick="url_change(\'' + new_url + '\')">Older</button>'
+        pagination_html += '<button onclick="url_change(\'' + new_url + '\')">Older</button>';
     }
-    $('#pagination').html(pagination_html);
+    //$('#pagination').html(pagination_html);
+    return pagination_html;
 }
 function update_api_url() {
-    url_params = document.location.search
+    url_params = document.location.search;
     pathArray = window.location.pathname.split( '/' );
     pathArray.shift();
     console.log("url build");
@@ -72,10 +75,10 @@ function update_api_url() {
     if(pathArray[0] == "userscan") {
         // Build TGs from select box
         console.log("In userscan url build");
-        tg_array = $('.tg-multi-select').select2("val")
+        tg_array = $('.tg-multi-select').select2("val");
         if(tg_array) {
           api_url = base_api_url + "tg/" + tg_array.join('+');
-          console.log("New API url " + api_url)
+          console.log("New API url " + api_url);
         } else {
           api_url = null;
         }
@@ -83,8 +86,8 @@ function update_api_url() {
         api_url = base_api_url + pathArray.join('/');
     }
     if(api_url && url_params) {
-        api_url = api_url + url_params
-        console.log("URL End " + url_params)
+        api_url = api_url + url_params;
+        console.log("URL End " + url_params);
     }
     //start_socket(); // reconnect with new talkgroups
 }
@@ -123,8 +126,8 @@ function update_menu() {
         }
         a  = '<li class="divider"></li>';
         a += '<li><a href="/userscan/">Custom Scan List</a></li>';
-        new_html_live += a
-        new_html += a
+        new_html_live += a;
+        new_html += a;
         $('#menu-scanlist-live').html(new_html_live);
         $('#menu-scanlist').html(new_html);
     });
@@ -178,7 +181,6 @@ function buildpage() {
       new_file_list = [];
       new_tg_list = [];
       new_tg_slug_list = [];
-      js_logged_in_edit_units = 0; // XXX Get from JS config
       count=0;
       for (var a in data.results) {
           curr_results = data.results[a];
@@ -198,14 +200,14 @@ function buildpage() {
             tg_muted="mute-mute ";
           }
 
-          new_html += '<div id="row-' + curr_id + '" class="row">'
-          new_html += '<div class="top-data"><span class="player-action glyphicon glyphicon-play" aria-hidden="true" onclick="return click_play_clip(\'//s3.amazonaws.com/scanoc-audio-001/' + curr_results.audio_file + '\', ' + curr_id + ');"></span><span class="talk-group talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
+          new_html += '<div id="row-' + curr_id + '" class="row">';
+          new_html += '<div class="top-data"><span id="gl-player-action-' + curr_id + '" class="player-action glyphicon glyphicon-play" aria-hidden="false" onclick="click_play_clip(\'' + base_audio_url + curr_results.audio_file + '\', ' + curr_id + '); return false;"></span><span class="talk-group talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
           new_html += '<div class="unit-data"><span class="unit-id-1 unit-list">';
           for (unit in data.results[a].units) {
               if(data.results[a].units[unit].description) {
                   new_html += data.results[a].units[unit].description + ', ';
               } else {
-                  if(js_logged_in_edit_units) {
+                  if(js_config.user_is_staff) {
                       new_html += '?<a href="/admin/radio/unit/' + data.results[a].units[unit].pk + '/change/">' + data.results[a].units[unit].dec_id + '</a>, ';
                   } else {
                       new_html += '?' + data.results[a].units[unit].dec_id + ', ';
@@ -237,10 +239,13 @@ function buildpage() {
       curr_file_list = new_file_list;
       curr_tg_list = new_tg_list;
       curr_tg_slug_list = new_tg_slug_list;
-      $('#main-data-table').html(new_html);
       pagination_older_url = data.next;
       pagination_newer_url = data.previous;
-      update_pagination_links();
+      new_html += '<div>';
+      new_html += update_pagination_links()
+      new_html += '</div>';
+      $('#main-data-table').html(new_html);
+      //update_pagination_links();
       }
       last_call = data.results[0].pk;
       first_load = 0;
@@ -249,22 +254,27 @@ function buildpage() {
 }
 
 function click_play_clip(audio_file, audio_id){
-    $("#button_start_scanner").hide();
+    //$("#button_start_scanner").hide();
     reset_play_list(audio_id);
     play_clip(audio_file, audio_id);
     play_next();
+    return true;
 }
 
 function play_clip(audio_file, audio_id){
-      console.log("Play clip")     
-      $(".play-btn").removeClass('active-trans');
+      console.log("Play clip " + audio_file)     
+      //$(".play-btn").removeClass('active-trans');
       currently_playing=audio_id;
       if(audio_id == 0) {
-        $("#button_start_scanner").removeClass('btn-default').addClass('btn-success ');
+        //$("#button_start_scanner").removeClass('btn-default').addClass('btn-success ');
       } else {
 	console.log("Trying to set button");
-        $("#button_" + audio_id).removeClass('btn-default').addClass('btn-success ');
+        //$("#button_" + audio_id).removeClass('btn-default').addClass('btn-success ');
+        $(".active-trans").removeClass("active-trans");
         $("#row-" + audio_id).addClass('active-trans ');
+        // Remove anything that still shows playing
+        $(".glyphicon-pause").removeClass("glyphicon-pause").addClass("glyphicon-play ");
+        $("#gl-player-action-" + audio_id).removeClass("glyphicon-play").addClass("glyphicon-pause ");
       }
       $("#jquery_jplayer_1").jPlayer("setMedia", {
          //oga: audio_file + ".ogg",
@@ -300,9 +310,9 @@ function play_next() {
                  return;
               }
               //play_clip(audio_file, audio_id){
-              mp3 = "//s3.amazonaws.com/scanoc-audio-001/" + curr_file_list[r_id];
+              mp3 = base_audio_url + curr_file_list[r_id];
               if(first_load == 0 && first_play == 0) { // Dont play them all on first load
-                  tmp_title = '>>' + curr_tg_list[r_id] + '<< ' + page_title
+                  tmp_title = '>>' + curr_tg_list[r_id] + '<< ' + page_title;
                   document.title = tmp_title;
                   play_clip(mp3, curr_id_list[r_id]);
               }
@@ -317,12 +327,15 @@ function play_next() {
 function setup_player() {
       $("#jquery_jplayer_1").jPlayer({
        ready: function () {
-        console.log("Setting up jPlayer")
+        console.log("Setting up jPlayer");
        },
        ended: function() {
-           active_play=1
-           $("#row_" + currently_playing).removeClass('active-trans');
-           $("#button_start_scanner").hide();
+           active_play=1;
+           $('.active-trans').removeClass('active-trans');
+           //$("#row-" + currently_playing).removeClass('active-trans');
+           $('.glyphicon-pause').removeClass("glyphicon-pause").addClass("glyphicon-play ");
+           //$("#gl-player-action-" + audio_id).removeClass("glyphicon-pause").addClass("glyphicon-play");
+           //$("#button_start_scanner").hide();
            currently_playing=0;
            $(document).prop('title', page_title);
        },
@@ -347,7 +360,7 @@ function setup_player() {
       });
       $("#jquery_jplayer_1").bind($.jPlayer.event.error + ".myProject", function(event) { 
           console.log("Error Event: type = " + event.jPlayer.error.type);
-          active_play=1
+          active_play=1;
           $("#button_" + currently_playing).removeClass('active-trans');
           currently_playing=0;
           $(document).prop('title', page_title);
@@ -356,16 +369,16 @@ function setup_player() {
 
 $(document).ready(function(){ 
     if($(".tg-multi-select").length) {
-        $(".tg-multi-select").select2()
+        $(".tg-multi-select").select2();
     }
     setup_player();
-    play_clip("//s3.amazonaws.com/scanoc-audio-001/point1sec", 0, 0)
+    play_clip(base_audio_url + "point1sec", 0, 0);
     first_load = 1;
     buildpage();
     //setInterval(buildpage, 2000);
     play_next();
     setInterval(play_next, 500);
-    update_menu();
+    //update_menu();
 
     //first_load = 0;
 });
