@@ -245,6 +245,7 @@ function buildpage() {
       new_html += update_pagination_links()
       new_html += '</div>';
       $('#main-data-table').html(new_html);
+      $("#row-" + currently_playing).addClass('active-trans ');
       //update_pagination_links();
       }
       last_call = data.results[0].pk;
@@ -273,8 +274,9 @@ function play_clip(audio_file, audio_id){
         $(".active-trans").removeClass("active-trans");
         $("#row-" + audio_id).addClass('active-trans ');
         // Remove anything that still shows playing
-        $(".glyphicon-pause").removeClass("glyphicon-pause").addClass("glyphicon-play ");
-        $("#gl-player-action-" + audio_id).removeClass("glyphicon-play").addClass("glyphicon-pause ");
+        // For now keep it a play button as clicking on it just re starts it
+        //$(".glyphicon-pause").removeClass("glyphicon-pause").addClass("glyphicon-play ");
+        //$("#gl-player-action-" + audio_id).removeClass("glyphicon-play").addClass("glyphicon-pause ");
       }
       $("#jquery_jplayer_1").jPlayer("setMedia", {
          //oga: audio_file + ".ogg",
@@ -333,7 +335,8 @@ function setup_player() {
            active_play=1;
            $('.active-trans').removeClass('active-trans');
            //$("#row-" + currently_playing).removeClass('active-trans');
-           $('.glyphicon-pause').removeClass("glyphicon-pause").addClass("glyphicon-play ");
+           // Just keep it a play button
+           //$('.glyphicon-pause').removeClass("glyphicon-pause").addClass("glyphicon-play ");
            //$("#gl-player-action-" + audio_id).removeClass("glyphicon-pause").addClass("glyphicon-play");
            //$("#button_start_scanner").hide();
            currently_playing=0;
