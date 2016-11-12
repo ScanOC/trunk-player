@@ -269,8 +269,16 @@ $(".container").on('click touch', function () {
    </div>
 </nav>
 <div class="container">
-  <div id="main-data-table" class="col-sm-12 col-md-10 col-lg-10">
+  <div class="col-sm-12 col-md-10 col-lg-10">
+  <div id="main-data-table">
 Loading Data.....
+  </div>
+  {% settings_anonymous_time as anonymous_time %}
+  {% if not user.is_authenticated and anonymous_time != 0 %}
+  <div class=" alert alert-danger" role="alert">
+	You are not currently logged into the system. {% if anonymous_time == -1%} <a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a> to access the system.{% else %}You will only see the last {{ anonymous_time }} minutes of history. <a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a> to see more history.{% endif %}
+  </div>
+  {% endif %}
   </div>
   <div class="col-md-2 col-lg-2">
     <div class="row row-no-border">
@@ -292,6 +300,9 @@ amzn_assoc_rows = "6";
     </div>
   </div>
 <div id="jPlayer"><div id="jquery_jplayer_1"></div></div>
+</div>
+<div class="col-12 pull-right">
+ScanOC.com - (C) 2016
 </div>
 <div class="navbar navbar-default navbar-footer navbar-fixed-bottom">
     <div class="container">
