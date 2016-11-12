@@ -36,6 +36,21 @@ function update_scan_list() {
     buildpage();
 }
 
+function start_scanner() {
+    play_clip('//s3.amazonaws.com/scanoc-audio-001/point1sec', 0, 0);
+    $(".stop-btn").show();
+    $(".start-btn").hide();
+}
+
+function stop_scanner() {
+    $("#jquery_jplayer_1").jPlayer("stop");
+    active_play = 0;
+    $(".active-trans").removeClass("active-trans");
+    $(".stop-btn").hide();
+    $(".start-btn").show();
+    $(document).prop('title', page_title);
+}
+
 function mute_click(tg) {
     console.log("User click on Mute for TG " + tg)
     if (muted_tg[tg]) {
@@ -223,12 +238,12 @@ function buildpage() {
           new_html += '<i class="fa fa-list-ul" aria-hidden="true" title="Menu"></i>';
           new_html += '</a>';
           new_html += '<ul class="dropdown-menu pull-right">';
-          new_html += '<li><a href="#"><i class="fa fa-filter fa-fw"></i> Hold on TalkGroup</a></li>';
-          new_html += '<li><a href="#"><i class="fa fa-volume-off fa-fw"></i> Mute TalkGroup</a></li>';
-          new_html += '<li><a href="#"><i class="fa fa-pencil fa-fw"></i> Edit Unit ID</a></li>';
-          new_html += '<li><a href="#"><i class="fa fa-info-circle fa-fw"></i> Details</a></li>';
-          new_html += '<li class="divider"></li>';
-          new_html += '<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Flag for delete</a></li>';
+          new_html += '<li><a href="/tg/' + curr_results.talkgroup_info.slug + '/"><i class="fa fa-filter fa-fw"></i> Hold on TalkGroup</a></li>';
+          //new_html += '<li><a href="#"><i class="fa fa-volume-off fa-fw"></i> Mute TalkGroup</a></li>'; 
+          //new_html += '<li><a href="#"><i class="fa fa-pencil fa-fw"></i> Edit Unit ID</a></li>';
+          new_html += '<li><a href="/audio/' + curr_results.slug + '/"><i class="fa fa-info-circle fa-fw"></i> Details</a></li>';
+          //new_html += '<li class="divider"></li>';
+          //new_html += '<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Flag for delete</a></li>';
           new_html += '</ul>';
           new_html += '</div>';
           new_html += '</span>';
@@ -341,6 +356,8 @@ function setup_player() {
            //$("#button_start_scanner").hide();
            currently_playing=0;
            $(document).prop('title', page_title);
+           $(".stop-btn").show();
+           $(".start-btn").hide();
        },
        swfPath: "https://jplayer.org/latest/dist/jplayer/",
        solution: "html,flash",
@@ -374,6 +391,7 @@ $(document).ready(function(){
     if($(".tg-multi-select").length) {
         $(".tg-multi-select").select2();
     }
+    $(".stop-btn").hide();
     setup_player();
     play_clip(base_audio_url + "point1sec", 0, 0);
     first_load = 1;
@@ -381,7 +399,7 @@ $(document).ready(function(){
     //setInterval(buildpage, 2000);
     play_next();
     setInterval(play_next, 500);
-    //update_menu();
+    update_menu();
 
     //first_load = 0;
 });

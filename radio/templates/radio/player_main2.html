@@ -177,11 +177,12 @@ table {
 .navbar-fixed-bottom {
     padding-top: 4px;
 }
-.start-btn {
+.start-btn, .stop-btn {
     background-color: orange;
     border-color: #ff4f00;
 }
-.start-btn:hover, .start-btn:active, .start-btn:focus {
+.start-btn:hover, .start-btn:active, .start-btn:focus,
+.stop-btn:hover, .stop-btn:active, .stop-btn:focus {
     background-color: #ff4f00;
     border-color: orange;
 }
@@ -236,14 +237,11 @@ $(".container").on('click touch', function () {
                <b class = "caret"></b>
             </a>
             
-            <ul class = "dropdown-menu">
-               <li><a href = "#">Default</a></li>
-               <li><a href = "#">OCFA</a></li>
-               <li><a href = "#">Misc</a></li>
-               
+            <ul id="menu-scanlist" role="menu" class="dropdown-menu">
                <li class = "divider"></li>
-               <li><a href = "#">Custom</a></li>
+                 <li><a href="/userscan/">Custom Scan List</a></li>
             </ul>
+
             
          </li>
 
@@ -253,13 +251,9 @@ $(".container").on('click touch', function () {
                <b class = "caret"></b>
             </a>
 
-            <ul class = "dropdown-menu">
-               <li><a href = "#">5B</a></li>
-               <li><a href = "#">5D</a></li>
-               <li><a href = "#">5E</a></li>
-
-               <li class = "divider"></li>
-               <li><a href = "#">List All</a></li>
+            <ul id="menu-talkgrouplist" role="menu" class="dropdown-menu">
+                <li class = "divider"></li>
+                <li><a href="/talkgroups/">List TalkGroups</a></li>
             </ul>
 
          </li>
@@ -309,6 +303,9 @@ ScanOC.com - (C) 2016
         <span class="footer-audio-control">
 <span class="play-menu">
 
+<button type="button" class="btn btn-primary start-btn" onclick="start_scanner()"><i class="fa fa-play fa-fw"></i> Start Scanner</button>
+<button type="button" class="btn btn-primary stop-btn" onclick="stop_scanner()"><i class="fa fa-stop fa-fw"></i> Stop Scanner</button>
+<!--
 <div class="btn-group dropup">
 <a class="btn btn-primary start-btn" href="#"><i class="fa fa-play fa-fw"></i> Start Scaner</a>
   <a class="btn btn-primary dropdown-toggle start-btn" data-toggle="dropdown" href="#">
@@ -321,7 +318,7 @@ ScanOC.com - (C) 2016
     <li class="divider"></li>
     <li><a href="#"><i class="fa fa-unlock"></i> Make admin</a></li>
   </ul>
-</div>
+</div> -->
 </span>
 
 </span>
