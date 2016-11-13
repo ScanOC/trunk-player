@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load radio_extras %}
 {% load radio_js_config %}
 {% trunkplayer_js_config user as js_config %}
 <head>
 <meta charset="UTF-8">
-<title>ScanOC</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% get_setting 'SITE_TITLE' %}</title>
 <script>
 js_config = {{ js_config|safe }}
 </script>
 {% block pre-head %}{% endblock %}
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/jplayer/jquery.jplayer.js"></script> 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
 <link href="/apple-touch-icon.png" rel="apple-touch-icon" />
 <link href="/apple-touch-icon-76x76.png" rel="apple-touch-icon" sizes="76x76" />
 <link href="/apple-touch-icon-120x120.png" rel="apple-touch-icon" sizes="120x120" />
@@ -21,14 +20,25 @@ js_config = {{ js_config|safe }}
 <link href="/apple-touch-icon-180x180.png" rel="apple-touch-icon" sizes="180x180" />
 <link href="/icon-hires.png" rel="icon" sizes="192x192" />
 <link href="/icon-normal.png" rel="icon" sizes="128x128" />
-<link rel="stylesheet" href="/static/radio/css/scanoc_layout.css?ver=0.2">
-<script src="/static/radio/js/scanoc_play.js?ver=0.4"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/jplayer/jquery.jplayer.js"></script> 
+<script src="https://use.fontawesome.com/c792248a2e.js"></script>
+<script src="/static/radio/js/trunkplayer.js?ver=0.3"></script>
 <script src="/static/radio/js/reconnecting-websocket.min.js"></script>
-<script src="/static/radio/js/live_calls.js?ver=0.1"></script>
+<script src="/static/radio/js/live_calls2.js?ver=0.3"></script>
+<link rel="stylesheet" href="/static/radio/css/scanoc_layout.css?ver=0.3"> 
 {% block head %}{% endblock %}
 </head>
 <body>
-{% block main-nav %}{% endblock %}
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
 {% block main-body %}{% endblock %}
+{% block main-footer %}
+{% include "radio/site_footer.html" %}
+{% endblock %}
 </body>
 </html>                                		

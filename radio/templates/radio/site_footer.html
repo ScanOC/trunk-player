@@ -1,0 +1,28 @@
+<div class="navbar navbar-default navbar-footer navbar-fixed-bottom">
+    <div class="container">
+        <span class="footer-audio-control">
+<span class="play-menu">
+
+<button type="button" class="btn btn-primary start-btn" onclick="start_scanner()"><i class="fa fa-play fa-fw"></i> Start Scanner</button>
+<button type="button" class="btn btn-primary stop-btn" onclick="stop_scanner()"><i class="fa fa-stop fa-fw"></i> Stop Scanner</button>
+<!--
+<div class="btn-group dropup">
+<a class="btn btn-primary start-btn" href="#"><i class="fa fa-play fa-fw"></i> Start Scaner</a>
+  <a class="btn btn-primary dropdown-toggle start-btn" data-toggle="dropdown" href="#">
+    <span class="fa fa-caret-down" title="Toggle dropdown menu"></span>
+  </a>
+  <ul class="dropdown-menu">
+    <li><a href="#"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
+    <li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+    <li><a href="#"><i class="fa fa-ban fa-fw"></i> Ban</a></li>
+    <li class="divider"></li>
+    <li><a href="#"><i class="fa fa-unlock"></i> Make admin</a></li>
+  </ul>
+</div> -->
+</span>
+
+</span>
+        <span class="footer-login">{% if user.is_authenticated %}<a href="{% url 'logout' %}?next={{ request.path | urlencode }}">LogOut</a>{% else %}<a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login/Create an Account</a>{% endif %}</span>
+    </div>
+</div>
+

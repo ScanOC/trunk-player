@@ -1,61 +1,40 @@
 {% extends "radio/site_base.html" %}
 {% load radio_extras %}
-{% block main-nav %}
-{% include "radio/site_live_nav.html" %}
-{% endblock %}
 {% block main-body %}
 <div class="container">
-	<div class="row">
-		<div id="start_bar" class="col-xs-12">
-			<!-- <button type="button" id="button_start_scanner" class="btn play-btn btn-success btn-lg" onclick="play_clip('//s3.amazonaws.com/scanoc-audio-001/MotoTalkPermit', 0, 0)"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Start Scanner </button> -->
-			<button type="button" id="button_start_scanner" class="btn play-btn btn-success btn-lg" onclick="play_clip('//s3.amazonaws.com/scanoc-audio-001/point1sec', 0, 0)"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Start Scanner </button>
-	<div class="row">
-		<div id="main-data-table" class="col-xs-10">
-		</div>
-		<div class="col-xs-2">
-			<!--
-			<div class="alert alert-danger fade in">
-				<a href="#" class="close" data-dismiss="alert">&times;</a>
-				<strong>Error!</strong><p>South Site Offline.</p>
-			</div>
-			-->
-			<!--
-			<p>Filter on TalkGroups</p>
-			<p>Build Scan Lists</p>
-			-->
-{% settings_amazon_adds as amazon_adds %}
-{% if amazon_adds %}
+<div class="container">
+  <div class="col-sm-12 col-md-10 col-lg-10">
+  <div id="main-data-table">
+Loading Data.....
+  </div>
+  {% settings_anonymous_time as anonymous_time %}
+  {% if not user.is_authenticated and anonymous_time != 0 %}
+  <div class=" alert alert-danger" role="alert">
+        You are not currently logged into the system. {% if anonymous_time == -1%} <a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a> to access the system.{% else %}You will only see the last {{ anonymous_time }} minutes of history. <a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a> to see more history.{% endif %}
+  </div>
+  {% endif %}
+  </div>
+  <div class="col-md-2 col-lg-2">
+    <div class="row row-no-border">
 <script type="text/javascript">
 amzn_assoc_placement = "adunit0";
 amzn_assoc_enable_interest_ads = "true";
-amzn_assoc_tracking_id = "{% settings_amazon_ad 'AMAZON_AD_TRACKING_ID' %}";
+amzn_assoc_tracking_id = "scanoc-20";
 amzn_assoc_ad_mode = "auto";
 amzn_assoc_ad_type = "smart";
 amzn_assoc_marketplace = "amazon";
 amzn_assoc_region = "US";
-amzn_assoc_linkid = "{% settings_amazon_ad 'AMAZON_AD_LINK_ID' %}";
-amzn_assoc_emphasize_categories = "{% settings_amazon_ad 'AMAZON_AD_EMPHASIZE_CATEGORIES' %}";
-amzn_assoc_fallback_mode = {"type":"search","value":"{% settings_amazon_ad 'AMAZON_AD_FALL_BACK_SEARCH' %}"};
+amzn_assoc_linkid = "366e01afa07db536277fa926bed3cb27";
+amzn_assoc_emphasize_categories = "15684181,13900871,172282,3760901,16310091,229534";
+amzn_assoc_fallback_mode = {"type":"search","value":"fire extinguisher"};
 amzn_assoc_default_category = "All";
 amzn_assoc_rows = "6";
 </script>
 <script src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US"></script>
-{% endif %}
-		</div>
-	</div>
-        <div class="row">
-		<div class="col-xs-4"></div>
-                    <div class="col-xs-4" id="pagination"></div>
-                <div class="col-xs-4"></div>
-        </div>
-        {% settings_anonymous_time as anonymous_time %}
-	{% if not user.is_authenticated and anonymous_time != 0 %}
-	<div class="row">
-		<div class="col-xs-12 alert alert-danger" role="alert">
-			You are not currently logged into the system. {% if anonymous_time == -1%} <a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a> to access the system.{% else %}You will only see the last {{ anonymous_time }} minutes of history. <a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a> to see more history.{% endif %}
-		</div>
-	</div>
-	{% endif %}
+    </div>
+  </div>
+<div id="jPlayer"><div id="jquery_jplayer_1"></div></div>
+</div>
 	<hr>
 	<div class="row">
 		<div class="col-xs-12">

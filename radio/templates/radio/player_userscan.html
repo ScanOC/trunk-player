@@ -1,8 +1,5 @@
 {% extends "radio/site_base.html" %}
 {% load radio_extras %}
-{% block main-nav %}
-{% include "radio/site_nav.html" %}
-{% endblock %}
 {% block head %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.js"></script>
@@ -42,11 +39,6 @@ load_tg();
 {% endblock %}
 {% block main-body %}
 <div class="container">
-	<div class="row">
-		<div id="start_bar" class="col-xs-12">
-			<!-- <button type="button" id="button_start_scanner" class="btn play-btn btn-success btn-lg" onclick="play_clip('//s3.amazonaws.com/scanoc-audio-001/MotoTalkPermit', 0, 0)"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Start Scanner </button> -->
-			<button type="button" id="button_start_scanner" class="btn play-btn btn-success btn-lg" onclick="play_clip('//s3.amazonaws.com/scanoc-audio-001/point1sec', 0, 0)"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Start Scanner </button>
-	</div>
 	<div class="row">
 		<div id="muti-select" class="col-xs-12">
 			<select id="tg-multi" class="tg-multi-select" multiple="multiple">
