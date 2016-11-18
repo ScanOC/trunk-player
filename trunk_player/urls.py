@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'^(tg2|scan2)/(.*)/$',TemplateView.as_view(template_name='radio/player_main2.html')),
     url(r'^scan/$', RedirectView.as_view(url='/scan/default/', permanent=False)),
     url(r'^userscan/$', TemplateView.as_view(template_name='radio/player_userscan.html')),
+    url(r'^about/$', TemplateView.as_view(template_name='radio/site_about.html'), name='about'),
     url(r'^talkgroups/$', views.TalkGroupList.as_view()),
     url(r'^audio/(?P<slug>[-\w]+)/$',views.TransDetailView.as_view(), name='trans'),
     url(r'^register/$', views.register, name='register'),

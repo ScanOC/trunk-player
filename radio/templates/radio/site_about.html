@@ -1,0 +1,73 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+{% block head %}
+<script>
+    live_play_back = 0;
+    live_update = 0;
+</script>
+{% endblock %}
+{% block main-body %}
+<div class="container">
+<div class="container">
+  <div class="col-sm-12 col-md-10 col-lg-10">
+  <div id="about">
+<h2>About ScanOC.com</h2>
+<p>ScanOC is a the new way to listen to your local fire department. Many other sites allow you to live stream audio feeds from a radio scanner. This site is different from all the rest.</p>
+<p><strong>Features :</strong></p>
+<ul>
+  <li>You select the talk groups or scan lists you want to listen to</li>
+  <li>History, you can listen to radio traffic from the past*</li>
+  <li>View which unit is transmitting**</li>
+  <li>Concurrent recording of multiple transmissions, you will not miss any of the action</li>
+</ul>
+<p><strong>Upcomming Features :</strong></p>
+<ul>
+  <li>Create and save your own custom scan lists*</li>
+  <li>Alerting, you can receive an email or text message when there is radio traffic on talkgroups used on large incidents</li>
+  <li>Group multiple transmissions together as a single incident for easy playback*</li>
+  <li>Save transmissions for easy playback*</li>
+</ul>
+<p><strong>Data Source :</strong></p>
+<p>The radio transmissions on this site are from the Orange County, CA public safety radio system. This site is not affiliated with any fire department or county agency.</p>
+<p><strong>Why is it mainly fire departments :</strong></p>
+<p>The sheriff and police radio transmissions on this system are almost all encrypted. The fire department transmissions are analog</p>
+<p><strong>Is this free :</strong></p>
+<p>There is and will be a free tier to listen to most live traffic and limited history. Current beta users have access to full history. When the site is complete with beta testing more info on subscription plans will be made available.</p>
+<p><strong>Question, comments, suggestions :</strong></p>
+<p>You can always email scanoc.com@gmail.com</p>
+
+<small>* Some of these features require a paid plan / ** The unit names are entered by listeners and are not guaranteed to be 100% correct</small>
+  </div>
+  </div>
+  <div class="col-md-2 col-lg-2">
+    <div class="row row-no-border">
+<script type="text/javascript">
+amzn_assoc_placement = "adunit0";
+amzn_assoc_enable_interest_ads = "true";
+amzn_assoc_tracking_id = "scanoc-20";
+amzn_assoc_ad_mode = "auto";
+amzn_assoc_ad_type = "smart";
+amzn_assoc_marketplace = "amazon";
+amzn_assoc_region = "US";
+amzn_assoc_linkid = "366e01afa07db536277fa926bed3cb27";
+amzn_assoc_emphasize_categories = "15684181,13900871,172282,3760901,16310091,229534";
+amzn_assoc_fallback_mode = {"type":"search","value":"fire extinguisher"};
+amzn_assoc_default_category = "All";
+amzn_assoc_rows = "6";
+</script>
+<script src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US"></script>
+    </div>
+  </div>
+<div id="jPlayer"><div id="jquery_jplayer_1"></div></div>
+</div>
+	<hr>
+	<div class="row">
+		<div class="col-xs-12">
+			<footer>
+				<p>&copy; Copyright 2016 ScanOC.com</p>
+			</footer>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
