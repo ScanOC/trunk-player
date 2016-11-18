@@ -55,6 +55,7 @@ class TalkGroup(models.Model):
     description = models.CharField(max_length=100, blank=True, null=True)
     slug = models.SlugField(null=True)
     public = models.BooleanField(default=True)
+    comments = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         ordering = ["alpha_tag"]

@@ -1,17 +1,17 @@
 {% extends "radio/site_base.html" %}
 {% block main-nav %}
-{% include "radio/site_nav.html" %}
+{% include "radio/site_live_nav.html" %}
 {% endblock %}
 {% block main-body %}
 <div class="container">
 	<div class="row">
 <table>
 <thead>
-<tr><th>ID</th><th>Alpha</th><th>Short</th><th>Description</td></tr>
+<tr><th>ID</th><th>Alpha</th><th>Short</th><th>Description</td><th>Notes</th></tr>
 </thead>
 <tbody>
 {% for tg in talkgroups %}
-   <tr><td>{% if user.is_staff %}<a href="/admin/radio/talkgroup/{{ tg.pk }}/change/">{{ tg.dec_id }}</a>{% else %}{{ tg.dec_id }}{% endif %}</td><td><a href="/tg/{{ tg.slug }}/">{{ tg.alpha_tag }}</a></td><td>{{ tg.common_name }}</td><td>{{ tg.description }}</td></tr>
+   <tr><td>{% if user.is_staff %}<a href="/admin/radio/talkgroup/{{ tg.pk }}/change/">{{ tg.dec_id }}</a>{% else %}{{ tg.dec_id }}{% endif %}</td><td><a href="/tg/{{ tg.slug }}/">{{ tg.alpha_tag }}</a></td><td>{{ tg.common_name }}</td><td>{{ tg.description }}</td><td>{% if tg.comments %}{{ tg.comments }}{% else %}&nbsp;{% endif %}</td></tr>
 {% endfor %}
 </tbody>
 </table>
