@@ -130,7 +130,7 @@ table {
     cursor: pointer;
 }
 .row {
-  border-top: 5px solid orange;
+  border-top: 3px solid orange;
   padding-right: 5px;
   padding-left: 5px;
 }
