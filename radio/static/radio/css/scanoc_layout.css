@@ -3,7 +3,7 @@ body {
   padding-bottom: 70px;
   font-size: 16px;
   background: #fff6e5;
-  background: #FFE4B2
+  background: #FFE4B2;
 }
 
 .navbar-default {
@@ -100,8 +100,10 @@ table {
     font-size: 18px;
 }
 .active-trans {
+   background-image: none;
    background-color: #FFE4B2;
    background-color: #fff6e5;
+   background: #fff6e5 !important;
    color: red;
 
 }
@@ -170,6 +172,14 @@ table {
 .beta-title {
   font-family: 'Pacifico', cursive;
   color: grey;
+}
+
+.grad {
+    background: #FFE4B2; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#ffc966, #ffdb99); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#ffc966, #ffdb99); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#ffc966, #ffdb99); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#ffc966, #ffdb99); /* Standard syntax */
 }
 
 
