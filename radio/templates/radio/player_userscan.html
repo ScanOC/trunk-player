@@ -85,7 +85,7 @@ amzn_assoc_rows = "6";
         {% if not user.is_authenticated and anonymous_time > 0 %}
         <div class="row">
                 <div id="main-data-table" class="col-xs-12 alert alert-danger" role="alert">
-                        You are not currently logged into the system. You will only see the last {{ anonymous_time }} minutes of history. <a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a> to see more history.
+                        You are not currently logged into the system. You will only see the last {{ anonymous_time }} minutes of history. <a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a> or <a href="{% url 'register' %}?next={{ request.path | urlencode }}">Create</a> a free acount to see more history.
                 </div>
         </div>
         {% endif %}
