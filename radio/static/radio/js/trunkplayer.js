@@ -293,6 +293,8 @@ function play_clip(audio_file, audio_id){
         //$(".glyphicon-pause").removeClass("glyphicon-pause").addClass("glyphicon-play ");
         //$("#gl-player-action-" + audio_id).removeClass("glyphicon-play").addClass("glyphicon-pause ");
       }
+      // Google Analytics
+      ga('send', 'event', 'Transmisison', 'play', audio_id);
       $("#jquery_jplayer_1").jPlayer("setMedia", {
          //oga: audio_file + ".ogg",
          //m4a: audio_file + ".m4a",
