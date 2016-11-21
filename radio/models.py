@@ -9,6 +9,7 @@ from django.conf import settings
 from channels import Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.auth.models import User
 
 import radio.choices as choice
 
@@ -195,3 +196,28 @@ class MenuTalkGroupList(MenuList):
     @property
     def tg_slug(self):
         return self.name.slug
+
+
+class Plan(models.Model):
+    DEFAULT_PK = 1 # This is added via a migration
+    name = models.CharField(max_length=30, unique=True)
+
+    def __str__(self):
+        return '{}'.format(self.name)
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    plan = models.ForeignKey(Plan, default=Plan.DEFAULT_PK)
+
+
+def create_profile(sender, **kwargs):
+    user = kwargs["instance"]
+    if kwargs["created"]:
+        default_plan = Plan.objects.get(pk=Plan.DEFAULT_PK)
+        up = Profile(user=user, plan=default_plan)
+        up.save()
+
+
+post_save.connect(create_profile, sender=User)
+

@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
 
 from .models import *
 
@@ -67,6 +69,16 @@ class ScanListAdminForm(forms.ModelForm):
 class ScanListAdmin(admin.ModelAdmin):
   form = ScanListAdminForm
 
+
+class ProfileInline(admin.StackedInline):
+    model = Profile
+    can_delete = False
+    verbose_name_plural = 'profile'
+
+
+class UserAdmin(BaseUserAdmin):
+    inlines = (ProfileInline, )
+
 admin.site.register(Transmission, TransmissionAdmin)
 admin.site.register(Unit,UnitAdmin)
 admin.site.register(TranmissionUnit)
@@ -76,3 +88,6 @@ admin.site.register(MenuScanList)
 admin.site.register(MenuTalkGroupList)
 admin.site.register(Source, SourceAdmin)
 admin.site.register(Agency)
+admin.site.register(Plan)
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
