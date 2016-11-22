@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate, login
 from django.conf import settings
 from django.views.generic import ListView, UpdateView
 from django.views.generic.detail import DetailView
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from .models import *
 from rest_framework import viewsets, generics
 from .serializers import TransmissionSerializer, TalkGroupSerializer, ScanListSerializer, MenuScanListSerializer, MenuTalkGroupListSerializer
@@ -164,7 +165,8 @@ class MenuTalkGroupListViewSet(viewsets.ModelViewSet):
     serializer_class = MenuTalkGroupListSerializer
     queryset = MenuTalkGroupList.objects.all()
 
-class UnitUpdateView(UpdateView):
+class UnitUpdateView(PermissionRequiredMixin, UpdateView):
     model = Unit
     form_class = UnitEditForm
     success_url = '/unitupdategood/'
+    permission_required = ('radio.change_unit')
