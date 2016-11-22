@@ -31,6 +31,9 @@ var base_audio_url = js_config.AUDIO_URL_BASE;
 
 var buildpage_running = 0;
 
+update_unit_url = "";
+unit_submit_action = "";
+
 function update_scan_list() {
     start_socket();   
     buildpage();
@@ -222,8 +225,9 @@ function buildpage() {
               if(data.results[a].units[unit].description) {
                   new_html += data.results[a].units[unit].description + ', ';
               } else {
-                  if(js_config.user_is_staff) {
-                      new_html += '?<a href="/admin/radio/unit/' + data.results[a].units[unit].pk + '/change/">' + data.results[a].units[unit].dec_id + '</a>, ';
+                  if(js_config.radio_change_unit) {
+                      //new_html += '?<a href="/admin/radio/unit/' + data.results[a].units[unit].pk + '/change/">' + data.results[a].units[unit].dec_id + '</a>, ';
+                      new_html += '?<a href="/unitupdate/' + data.results[a].units[unit].pk + '/" data-toggle="modal" data-target="#unitupdatemodal">' + data.results[a].units[unit].dec_id + '</a>, ';
                   } else {
                       new_html += '?' + data.results[a].units[unit].dec_id + ', ';
                   }
@@ -240,7 +244,9 @@ function buildpage() {
           new_html += '<ul class="dropdown-menu pull-right">';
           new_html += '<li><a href="/tg/' + curr_results.talkgroup_info.slug + '/"><i class="fa fa-filter fa-fw"></i> Hold on TalkGroup</a></li>';
           //new_html += '<li><a href="#"><i class="fa fa-volume-off fa-fw"></i> Mute TalkGroup</a></li>'; 
-          //new_html += '<li><a href="#"><i class="fa fa-pencil fa-fw"></i> Edit Unit ID</a></li>';
+          //if(js_config.radio_change_unit) {
+          //  new_html += '<li><a data-toggle="modal" data-target="#myModalNorm"><i class="fa fa-pencil fa-fw"></i> Edit Unit ID</a></li>';
+          //}
           new_html += '<li><a href="/audio/' + curr_results.slug + '/"><i class="fa fa-info-circle fa-fw"></i> Details</a></li>';
           //new_html += '<li class="divider"></li>';
           //new_html += '<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Flag for delete</a></li>';
@@ -389,6 +395,34 @@ function setup_player() {
       });
   }
 
+function unit_edit_post_setup1() {
+    $("#unitupdatemodal").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+        //$(this).find(".modal-body").load(link.attr("href"));
+        $(this).find(".modal-content").load(link.attr("href"));
+    });
+}
+
+function unit_edit_post_setup() {
+    $('#update-unit-form').off('submit');
+    $('#update-unit-form').trigger("reset");
+    $('#update-unit-form').on('submit', function(e){
+    e.preventDefault();
+    $.ajax({
+      url : $(this).attr('action'),
+      type: "POST",
+      data : $(this).serialize(),
+      success: function(data){
+           //alert("Successfully submitted.")
+           force_page_rebuild = 1;
+           buildpage();
+           $('#unitupdatemodal').modal('hide');
+      }
+    });
+  });
+}
+
+
 $(document).ready(function(){ 
     if($(".tg-multi-select").length) {
         $(".tg-multi-select").select2();
@@ -398,6 +432,7 @@ $(document).ready(function(){
     play_clip(base_audio_url + "point1sec", 0, 0);
     first_load = 1;
     buildpage();
+    unit_edit_post_setup1();
     //setInterval(buildpage, 2000);
     play_next();
     setInterval(play_next, 500);

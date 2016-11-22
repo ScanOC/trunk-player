@@ -9,12 +9,13 @@ from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login
 from django.conf import settings
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
 from django.views.generic.detail import DetailView
 from .models import *
 from rest_framework import viewsets, generics
 from .serializers import TransmissionSerializer, TalkGroupSerializer, ScanListSerializer, MenuScanListSerializer, MenuTalkGroupListSerializer
 from datetime import datetime, timedelta
+
 from .forms import *
 
 class TransDetailView(DetailView):
@@ -162,3 +163,8 @@ class MenuScanListViewSet(viewsets.ModelViewSet):
 class MenuTalkGroupListViewSet(viewsets.ModelViewSet):
     serializer_class = MenuTalkGroupListSerializer
     queryset = MenuTalkGroupList.objects.all()
+
+class UnitUpdateView(UpdateView):
+    model = Unit
+    form_class = UnitEditForm
+    success_url = '/unitupdategood/'

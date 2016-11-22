@@ -1,0 +1,15 @@
+<div class="modal-header">
+<h1>Update Unit Description</h1>
+</div>
+<div class="modal-body">
+<form id="update-unit-form" action="{{ request.path }}" method="post">{% csrf_token %}
+    {{ form.as_p }}
+ 
+ <button type="submit" class="btn btn-default">Update Name</button>
+
+    <button type="button" class="btn btn-default" data-dismiss="modal"> Cancel </button> 
+</form>
+</div>
+<script>
+unit_edit_post_setup();
+</script>
