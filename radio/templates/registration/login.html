@@ -8,7 +8,10 @@
         <div class="row">
 <div class="col-xs-12">
 {% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
+<p></p>
+<div class="alert alert-danger">
+Your username and password didn't match. Please try again. If you have an account you can <a href="{% url 'account_reset_password' %}">recover your password</a>. Or create a <a href="{% url 'register' %}{% if next %}?next={{ next}}{% endif %}">new account</a>.
+</div>
 {% endif %}
 
 {% if next %}
@@ -22,7 +25,7 @@
 
 <form method="post" action="{% url 'login' %}">
 {% csrf_token %}
-<table>
+<table border="0">
 <tr>
     <td>{{ form.username.label_tag }}</td>
     <td>{{ form.username }}</td>
