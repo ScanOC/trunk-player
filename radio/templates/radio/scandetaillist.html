@@ -1,0 +1,29 @@
+{% extends "radio/site_base.html" %}
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+{% block main-body %}
+<div class="container">
+	<div class="row">
+<h2>TalkGroups in Scan List {% if scanlist %}<a href="/scan/{{ scanlist.name }}/">{{ scanlist.description }}</a>{% else %}Default/All{% endif %}</h2>
+<table>
+<thead>
+<tr><th>ID</th><th>Alpha</th><th>Short</th><th>Description</td><th>Notes</th></tr>
+</thead>
+<tbody>
+{% for tg in object_list %}
+   <tr><td>{% if requst.user.is_staff %}<a href="/admin/radio/talkgroup/{{ tg.pk }}/change/">{{ tg.dec_id }}</a>{% else %}{{ tg.dec_id }}{% endif %}</td><td><a href="/tg/{{ tg.slug }}/">{{ tg.alpha_tag }}</a></td><td>{{ tg.common_name }}</td><td>{{ tg.description }}</td><td>{% if tg.comments %}{{ tg.comments }}{% else %}&nbsp;{% endif %}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-xs-12">
+			<footer>
+				<p>&copy; Copyright 2016 ScanOC.com</p>
+			</footer>
+		</div>
+	</div>
+</div>
+{% endblock %}

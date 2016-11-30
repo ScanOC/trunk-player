@@ -170,3 +170,18 @@ class UnitUpdateView(PermissionRequiredMixin, UpdateView):
     form_class = UnitEditForm
     success_url = '/unitupdategood/'
     permission_required = ('radio.change_unit')
+
+def ScanDetailsList(request, name):
+    template = 'radio/scandetaillist.html'
+    scanlist = None
+    try:
+        scanlist = ScanList.objects.get(name=name)
+    except ScanList.DoesNotExist:
+        if name == 'default':
+            query_data = TalkGroup.objects.all()
+        else:
+            raise Http404
+    if scanlist:
+        query_data = scanlist.talkgroups.all()
+    return render_to_response(template, {'object_list': query_data, 'scanlist': scanlist, 'request': request})
+
