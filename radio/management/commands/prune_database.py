@@ -26,7 +26,7 @@ class Command(BaseCommand):
             type=int,
             #action='store_true',
             #dest='source',
-            default=-5,
+            default=5,
             help='Set the number of days older than to prune',
         )
 
