@@ -68,6 +68,10 @@ class TalkGroup(models.Model):
         self.slug = slugify(self.alpha_tag)
         super(TalkGroup, self).save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        return '/tg/{}/'.format(self.slug)
+
+
 class Transmission(models.Model):
     slug = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False) 
     start_datetime = models.DateTimeField(db_index=True)
@@ -155,6 +159,9 @@ class ScanList(models.Model):
 
     def __str__(self):
         return '{}'.format(self.name)
+
+    def get_absolute_url(self):
+        return '/scan/{}/'.format(self.name)
 
 class MenuList(models.Model):
     order = models.IntegerField(default=1)
