@@ -49,11 +49,15 @@ def move_all_db_data(opt):
     #table_list = ()
 
     for table_info in table_list:
-        tb = table_info.split('_')
+        tb = table_info.split('_',1)
         app = tb[0]
         table = tb[1]
         print("Moving data from app {} table {} into new db".format(app,table))
-        tb_model = apps.get_model(app_label=app, model_name=table)
+        try:
+            tb_model = apps.get_model(app_label=app, model_name=table)
+        except:
+            print("Model {} does not exist, skipping..".format(table))
+            continue
         tb_data = tb_model.objects.using('old').all()
         for rec in tb_data:
             rec.save(using='default')
