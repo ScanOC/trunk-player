@@ -119,7 +119,7 @@ class Transmission(models.Model):
 def send_mesg(sender, instance, **kwargs):
     #log.debug('Hit post save()')
     #log.debug('DATA %s', json.dumps(instance.as_dict()))
-    log.debug('DATA %s', json.dumps(instance.as_dict()))
+    #log.debug('DATA %s', json.dumps(instance.as_dict()))
     tg = TalkGroup.objects.get(pk=instance.talkgroup_info.pk)
     groups = tg.scanlist_set.all()
     for g in groups:
