@@ -115,12 +115,11 @@ def move_all_db_data(opt):
             trans = Transmission.objects.using('old').all()[start_rec:end_rec]
             for rec in trans:
                 rec.save(using='default')
-            #with connection.cursor() as cursor:
-            #    update_seq = "SELECT setval(pg_get_serial_sequence('{}', 'id'), coalesce(max(id),0) + 1, false) FROM {};".format(Transmission._meta.db_table, Transmission._meta.db_table)
-            #    #print("Run",update_seq)
-            #    cursor.execute(update_seq)
             end_time = datetime.datetime.now()
             end_rec = end_rec - amount
             start_rec = start_rec - amount
             if start_rec < 0:
                 start_rec = 0
+        with connection.cursor() as cursor:
+            update_seq = "SELECT setval(pg_get_serial_sequence('{}', 'id'), coalesce(max(id),0) + 1, false) FROM {};".format(Transmission._meta.db_table, Transmission._meta.db_table)
+            cursor.execute(update_seq)
