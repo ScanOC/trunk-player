@@ -1,4 +1,5 @@
 # Local devel Settings
+import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCAL_SETTINGS = True
 

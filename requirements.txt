@@ -9,7 +9,6 @@ django-allauth==0.27.0
 djangorestframework==3.3.3
 msgpack-python==0.4.7
 oauthlib==2.0.0
-pkg-resources==0.0.0
 python3-openid==3.0.10
 pytz==2016.6.1
 redis==2.10.5
