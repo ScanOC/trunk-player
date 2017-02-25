@@ -26,6 +26,14 @@ class Agency(models.Model):
         return self.short
 
 
+class System(models.Model):
+    name = models.CharField(max_length=100)
+    system_id = models.CharField(max_length=20, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Source(models.Model):
     description = models.CharField(max_length=100)
 
