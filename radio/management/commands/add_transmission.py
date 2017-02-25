@@ -29,18 +29,31 @@ class Command(BaseCommand):
             default=-1,
             help='Set the source of the transmission',
         )
+        parser.add_argument(
+            '--system',
+            type=int,
+            default=-1,
+            help='Set the radio system of the transmission',
+       )
 
     def handle(self, *args, **options):
         print('You passed in {}'.format(options['json_name']))
         add_new_trans(options)
 
-
+def talkgroup(tg_dec,system):
+    try:
+        tg = TalkGroup.objects.get(dec_id=tg_dec, system=0)
+    except TalkGroup.DoesNotExist:
+        name = '#{}'.format(tg_dec)
+        tg = TalkGroup.objects.create(dec_id=tg_dec, system=system, alpha_tag=name, description='TalkGroup {}'.format(name))
+    return tg
 
 def add_new_trans(options):
 
     file_name = options['json_name']
     vhf = options['vhf']
     source_opt = options['source']
+    system_opt = options['system']
     source_default = False
     if source_opt == -1:
         source_opt = 0
@@ -66,11 +79,6 @@ def add_new_trans(options):
         freq = 0
     else:
         freq = file_name.split('_', 2)[1]
-    try:
-        tg = TalkGroup.objects.get(dec_id=tg_dec)
-    except TalkGroup.DoesNotExist:
-        name = '#{}'.format(tg_dec)
-        tg = TalkGroup.objects.create(dec_id=tg_dec, alpha_tag=name, description='TalkGroup {}'.format(name))
 
     dt = datetime.datetime.fromtimestamp(int(epoc_ts))
     #if vhf:
@@ -81,11 +89,11 @@ def add_new_trans(options):
     t = Transmission( start_datetime = dt,
                      audio_file = file_name,
                      talkgroup = tg_dec,
-                     talkgroup_info = tg,
                      freq = int(float(freq)),
                      emergency = False,
                      source = source,
                    )
+    system = 0
     if not vhf:
         with open('audio_files/{}.json'.format(file_name)) as data_file:    
             data = json.load(data_file)
@@ -94,6 +102,11 @@ def add_new_trans(options):
                 t.emergency = True
             count = 0
             t.play_length = data['play_length']
+            system = data.get('system', 0)
+            if system_opt >= 0: 
+                system = system_opt # Command line overrides json
+            t.system = System.objects.get(pk=system)
+            t.talkgroup_info = talkgroup(tg_dec, system)
             if source_default:
                 json_source = data.get('source', 0)
                 if(json_source > 0):
@@ -102,8 +115,11 @@ def add_new_trans(options):
                     t.source = source
             t.save()
             for trans_unit in data['srcList']:
-                u,created = Unit.objects.get_or_create(dec_id=trans_unit)
+                u,created = Unit.objects.get_or_create(dec_id=trans_unit,system=t.system)
                 tu = TranmissionUnit.objects.create(transmission=t, unit=u, order=count)
                 count=count+1
     else:
+        if system_opt >= 0:
+            system = system_opt # Command line overrides json
+        t.talkgroup_info = talkgroup(tg_dec, system)
         t.save()
