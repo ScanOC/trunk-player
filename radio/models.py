@@ -44,12 +44,16 @@ class Source(models.Model):
         return self.description
 
 class Unit(models.Model):
-    dec_id = models.IntegerField(unique=True)
+    dec_id = models.IntegerField()
     description = models.CharField(max_length=100, blank=True, null=True)
     agency = models.ForeignKey(Agency, default=settings.RADIO_DEFAULT_UNIT_AGENCY)
     #agency = models.ForeignKey(Agency, default=2)
     type = models.CharField(max_length=1, choices=choice.RADIO_TYPE_CHOICES, default=choice.RADIO_TYPE_MOBILE)
     number = models.IntegerField(default=1)
+    system = models.ForeignKey(System, default=0)
+
+    class Meta:
+        unique_together = ('dec_id', 'system',)
 
     def __str__(self):
         if(self.description):
@@ -65,9 +69,11 @@ class TalkGroup(models.Model):
     slug = models.SlugField(null=True)
     public = models.BooleanField(default=True)
     comments = models.CharField(max_length=100, blank=True, null=True)
+    system = models.ForeignKey(System, default=0)
 
     class Meta:
         ordering = ["alpha_tag"]
+        unique_together = ('dec_id', 'system',)
 
     def __str__(self):
         return self.alpha_tag
@@ -91,6 +97,7 @@ class Transmission(models.Model):
     units = models.ManyToManyField(Unit, through='TranmissionUnit')
     play_length = models.FloatField(default=0.0)
     source = models.ForeignKey(Source, default=0)
+    system = models.ForeignKey(System, default=0)
 
     def __str__(self):
         return '{} {}'.format(self.talkgroup, self.start_datetime)
