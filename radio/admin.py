@@ -8,11 +8,11 @@ from .models import *
 
 class TalkGroupAdmin(admin.ModelAdmin):
     search_fields = ['alpha_tag', 'description', 'dec_id']
-    list_display = ('alpha_tag', 'description', 'dec_id')
+    list_display = ('alpha_tag', 'description', 'dec_id', 'system')
 
 class UnitAdmin(admin.ModelAdmin): 
     search_fields = ['description', 'dec_id' ]
-    list_display = ('description', 'dec_id' )
+    list_display = ('description', 'dec_id', 'system' )
 
 class TranmissionUnitInline(admin.TabularInline):
     model = TranmissionUnit
