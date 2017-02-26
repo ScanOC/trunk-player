@@ -51,6 +51,7 @@ class Unit(models.Model):
     type = models.CharField(max_length=1, choices=choice.RADIO_TYPE_CHOICES, default=choice.RADIO_TYPE_MOBILE)
     number = models.IntegerField(default=1)
     system = models.ForeignKey(System, default=0)
+    slug = models.SlugField(null=True, blank=True)
 
     class Meta:
         unique_together = ('dec_id', 'system',)
@@ -60,6 +61,12 @@ class Unit(models.Model):
             return self.description
         else:
             return str(self.dec_id)
+
+    def save(self, *args, **kwargs):
+        if self.description:
+            self.slug = slugify(self.description)
+        super(Unit, self).save(*args, **kwargs)
+
 
 class TalkGroup(models.Model):
     dec_id = models.IntegerField(unique=True)
