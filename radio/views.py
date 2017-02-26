@@ -113,6 +113,24 @@ class TalkGroupFilterViewSet(generics.ListAPIView):
             rc_data = rc_data.filter(start_datetime__gt=time_threshold)
         return rc_data
 
+class UnitFilterViewSet(generics.ListAPIView):
+    serializer_class = TransmissionSerializer
+
+    def get_queryset(self):
+        unit_var = self.kwargs['filter_val']
+        search_unit = re.split('[\+]', unit_var)
+        q = Q()
+        for s_unit in search_unit:
+            q |= Q(slug__iexact=s_unit)
+        units = Unit.objects.filter(q)
+        rc_data = Transmission.objects.filter(units__in=units)
+        if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
+            time_threshold = datetime.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
+            rc_data = rc_data.filter(start_datetime__gt=time_threshold)
+        return rc_data
+
+
+
 class TalkGroupList(ListView):
     model = TalkGroup
     context_object_name = 'talkgroups'
