@@ -123,7 +123,7 @@ class UnitFilterViewSet(generics.ListAPIView):
         for s_unit in search_unit:
             q |= Q(slug__iexact=s_unit)
         units = Unit.objects.filter(q)
-        rc_data = Transmission.objects.filter(units__in=units).filter(talkgroup_info__public=True).prefetch_related('units')
+        rc_data = Transmission.objects.filter(units__in=units).filter(talkgroup_info__public=True).prefetch_related('units').distinct()
         if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
             time_threshold = datetime.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
             rc_data = rc_data.filter(start_datetime__gt=time_threshold)
