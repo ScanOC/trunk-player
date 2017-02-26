@@ -107,7 +107,7 @@ class TalkGroupFilterViewSet(generics.ListAPIView):
             q |= Q(common_name__iexact=stg)
             q |= Q(slug__iexact=stg)
         tg = TalkGroup.objects.filter(q)
-        rc_data = Transmission.objects.filter(talkgroup_info__in=tg)
+        rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units')
         if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
             time_threshold = datetime.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
             rc_data = rc_data.filter(start_datetime__gt=time_threshold)
@@ -123,7 +123,7 @@ class UnitFilterViewSet(generics.ListAPIView):
         for s_unit in search_unit:
             q |= Q(slug__iexact=s_unit)
         units = Unit.objects.filter(q)
-        rc_data = Transmission.objects.filter(units__in=units)
+        rc_data = Transmission.objects.filter(units__in=units).filter(talkgroup_info__public=True).prefetch_related('units')
         if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
             time_threshold = datetime.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
             rc_data = rc_data.filter(start_datetime__gt=time_threshold)
