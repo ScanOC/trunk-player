@@ -106,7 +106,7 @@ def add_new_trans(options):
             if system_opt >= 0: 
                 system = system_opt # Command line overrides json
             t.system = System.objects.get(pk=system)
-            t.talkgroup_info = talkgroup(tg_dec, system)
+            t.talkgroup_info = talkgroup(tg_dec, t.system)
             if source_default:
                 json_source = data.get('source', 0)
                 if(json_source > 0):
@@ -121,5 +121,6 @@ def add_new_trans(options):
     else:
         if system_opt >= 0:
             system = system_opt # Command line overrides json
-        t.talkgroup_info = talkgroup(tg_dec, system)
+        t.system = System.objects.get(pk=system)
+        t.talkgroup_info = talkgroup(tg_dec, t.system)
         t.save()
