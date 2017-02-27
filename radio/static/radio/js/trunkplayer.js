@@ -137,10 +137,15 @@ function update_menu() {
     url = '/api_v1/menuscanlist/';
     new_html_live = '';
     new_html = '';
+    count = 0;
     $.getJSON(url, function(data) {
         for (var a in data.results) {
             new_html_live += '<li><a href="/scan/' + data.results[a].scan_name + '/" onclick="return url_change(\'/scan/' + data.results[a].scan_name + '/\');">' + data.results[a].scan_description + '</a></li>';
             new_html += '<li><a href="/scan/' + data.results[a].scan_name + '/">' + data.results[a].scan_description + '</a></li>';
+            count++;
+        }
+        if(count == 0) {
+            new_html += '<li><a href="/scan/default/">Default</a></li>';
         }
         a  = '<li class="divider"></li>';
         a += '<li><a href="/userscan/">Custom Scan List</a></li>';
