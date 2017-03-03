@@ -42,7 +42,7 @@ class Command(BaseCommand):
 
 def talkgroup(tg_dec,system):
     try:
-        tg = TalkGroup.objects.get(dec_id=tg_dec, system=0)
+        tg = TalkGroup.objects.get(dec_id=tg_dec, system=system)
     except TalkGroup.DoesNotExist:
         name = '#{}'.format(tg_dec)
         tg = TalkGroup.objects.create(dec_id=tg_dec, system=system, alpha_tag=name, description='TalkGroup {}'.format(name))
