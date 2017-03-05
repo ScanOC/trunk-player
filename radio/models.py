@@ -69,7 +69,7 @@ class Unit(models.Model):
 
 
 class TalkGroup(models.Model):
-    dec_id = models.IntegerField(unique=True)
+    dec_id = models.IntegerField()
     alpha_tag = models.CharField(max_length=30)
     common_name = models.CharField(max_length=10, blank=True, null=True)
     description = models.CharField(max_length=100, blank=True, null=True)
