@@ -13,6 +13,7 @@ Contents:
 
    install
    configure
+   config_local
 
 
 
