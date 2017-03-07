@@ -25,6 +25,7 @@ def export_tg_file(file_name):
         for t in talkgroups:
             alpha = t.alpha_tag
             description = t.description
+            hex_val = str(hex(t.dec_id))[2:-1].zfill(3)
             try:
                 alpha = alpha.rstrip()
             except AttributeError:
@@ -36,5 +37,5 @@ def export_tg_file(file_name):
             common = ''
             if(t.common_name):
                 common = t.common_name
-            tg_file.write("{},0x00,A,{},{},,3,{}\n".format(t.dec_id,alpha,description,common))
+            tg_file.write("{},{},{},{},{},{}\n".format(t.dec_id,hex_val,t.mode,alpha,description,t.priority))
 

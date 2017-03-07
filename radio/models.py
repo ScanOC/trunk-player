@@ -77,6 +77,8 @@ class TalkGroup(models.Model):
     public = models.BooleanField(default=True)
     comments = models.CharField(max_length=100, blank=True, null=True)
     system = models.ForeignKey(System, default=0)
+    mode = models.CharField(max_length=1, choices=choice.TG_MODE_CHOICES, default=choice.TG_MODE_DIGITAL, help_text='mode used by trunk-recorder')
+    priority = models.IntegerField(default=3, help_text='record priority used by trunk-recorder')
 
     class Meta:
         ordering = ["alpha_tag"]

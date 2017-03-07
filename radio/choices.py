@@ -10,3 +10,12 @@ RADIO_TYPE_CHOICES = (
     (RADIO_TYPE_BASE, 'Base'),
     (RADIO_TYPE_DISPATCH, 'Dispatch'),
 )
+
+TG_MODE_ANALOG = 'A'
+TG_MODE_DIGITAL = 'D'
+TG_MODE_ENCRYPTED = 'E'
+TG_MODE_CHOICES = (
+    (TG_MODE_ANALOG, "Analog"),
+    (TG_MODE_DIGITAL, "Digital"),
+    (TG_MODE_ENCRYPTED, "Encrypted"),
+)
