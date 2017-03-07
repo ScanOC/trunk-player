@@ -12,15 +12,25 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('file')
+        parser.add_argument(
+            '--system',
+            type=int,
+            default=-1,
+            help='Export talkgroups from only this system',
+       )
+
 
     def handle(self, *args, **options):
-        f_name = options['file']
-        export_tg_file(f_name)
+        export_tg_file(options)
 
 
-def export_tg_file(file_name):
+def export_tg_file(options):
     ''' Using the talkgroup file from trunk-recorder'''
+    file_name = options['file']
+    system = options['system']
     talkgroups = TalkGroup.objects.all()
+    if system >= 0:
+        talkgroups = talkgroups.filter(system=system)
     with open(file_name, "w") as tg_file:
         for t in talkgroups:
             alpha = t.alpha_tag
