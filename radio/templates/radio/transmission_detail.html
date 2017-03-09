@@ -63,14 +63,14 @@
 	<div class="row">
 		<div class="col-xs-1"></div>
 		<div class="col-xs-2"><strong>File Name</strong></div>
-		<div class="col-xs-6"><a href="{% get_setting 'AUDIO_URL_BASE' %}{{ object.audio_file }}.mp3">{{ object.audio_file }}.mp3</a></div>
+		<div class="col-xs-6"><a href="{{object.audio_url}}{{ object.audio_file }}.mp3">{{ object.audio_file }}.mp3</a></div>
 		<div class="col-xs-4"></div>
 	</div>
 	{% endif %}
 	<div class="row">
                 <div class="col-xs-1"></div>
 		<div class="col-xs-2">
-<button id="button_{{ object.pk }}" type="button" class="btn play-btn btn-success" onclick="click_play_clip('{% get_setting 'AUDIO_URL_BASE' %}{{ object.audio_file }}', '{{ object.pk }}')"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Play </button>
+<button id="button_{{ object.pk }}" type="button" class="btn play-btn btn-success" onclick="click_play_clip('{{object.audio_url}}{{ object.audio_file }}', '{{ object.pk }}')"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Play </button>
 </div>
 		<div class="col-xs-9"></div>
 	</div>

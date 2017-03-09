@@ -1,3 +1,4 @@
+import os
 import sys
 import datetime
 import json
@@ -34,7 +35,12 @@ class Command(BaseCommand):
             type=int,
             default=-1,
             help='Set the radio system of the transmission',
-       )
+        )
+        parser.add_argument(
+            '--web_url',
+            default='/',
+            help='Set the web folder the audio file is in',
+        )
 
     def handle(self, *args, **options):
         print('You passed in {}'.format(options['json_name']))
@@ -54,6 +60,7 @@ def add_new_trans(options):
     vhf = options['vhf']
     source_opt = options['source']
     system_opt = options['system']
+    web_url_opt = options['web_url']
     source_default = False
     if source_opt == -1:
         source_opt = 0
@@ -92,9 +99,15 @@ def add_new_trans(options):
                      freq = int(float(freq)),
                      emergency = False,
                      source = source,
+                     audio_file_url_path = web_url_opt,
                    )
     system = 0
     if not vhf:
+        # First try and open file with given path, if not fail back
+        # to old hardcoded audio_files path
+        json_file = '{}.json'.format(file_name)
+        if not os.path.exists(json_file):
+            json_file = 'audio_files/{}.json'.format(file_name)
         with open('audio_files/{}.json'.format(file_name)) as data_file:    
             data = json.load(data_file)
         if data:

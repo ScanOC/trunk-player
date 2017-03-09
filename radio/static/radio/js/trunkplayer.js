@@ -224,7 +224,7 @@ function buildpage() {
           }
 
           new_html += '<div id="row-' + curr_id + '" class="row grad">';
-          new_html += '<div class="top-data"><span id="gl-player-action-' + curr_id + '" class="player-action glyphicon glyphicon-play" aria-hidden="false" onclick="click_play_clip(\'' + base_audio_url + curr_results.audio_file + '\', ' + curr_id + '); return false;"></span><span class="talk-group talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
+          new_html += '<div class="top-data"><span id="gl-player-action-' + curr_id + '" class="player-action glyphicon glyphicon-play" aria-hidden="false" onclick="click_play_clip(\'' + curr_results.audio_url + curr_results.audio_file + '\', ' + curr_id + '); return false;"></span><span class="talk-group talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
           new_html += '<div class="unit-data"><span class="unit-id-1 unit-list">';
           for (unit in data.results[a].units) {
               if(data.results[a].units[unit].description) {

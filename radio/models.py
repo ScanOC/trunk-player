@@ -1,6 +1,7 @@
 import json
 import logging
 import uuid
+import urllib.parse
 
 from django.db import models
 from django.utils import timezone
@@ -99,6 +100,7 @@ class Transmission(models.Model):
     slug = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False) 
     start_datetime = models.DateTimeField(db_index=True)
     audio_file = models.FileField()
+    audio_file_url_path = models.CharField(max_length=100, default='/')
     talkgroup = models.IntegerField()
     talkgroup_info = models.ForeignKey(TalkGroup)
     freq = models.IntegerField()
@@ -134,6 +136,11 @@ class Transmission(models.Model):
             return self.talkgroup_info.common_name
         else:
             return self.talkgroup_info.alpha_tag
+
+    @property
+    def audio_url(self):
+        base_path = settings.AUDIO_URL_BASE
+        return urllib.parse.urljoin(base_path, self.audio_file_url_path.lstrip('/'))
 
     class Meta:
         ordering = ["-pk"]
