@@ -14,6 +14,7 @@ Contents:
    install
    configure
    config_local
+   config_muti_folder_audio
 
 
 
