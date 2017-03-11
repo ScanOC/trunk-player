@@ -1,7 +1,7 @@
 ==============================================
 Configure - Local Audio Files Multiple Folders
 ==============================================
-This document will show you how to configure Trunk Player using mutiple folders to store and play back your audio in the same structure as trunk-recorder.
+This document will show you how to configure Trunk Player using multiple folders to store and play back your audio in the same structure as trunk-recorder.
 
 Currently install is based on a Debian like system, Ubuntu.
 
@@ -48,7 +48,7 @@ Migrate any new database schema changes
 Update Trunk-Recorder
 =====================
 
-Confgure trunk-recorder to save our wav/json files in  ``/home/radio/trunk-player/audio_files/``
+Configure trunk-recorder to save our wav/json files in  ``/home/radio/trunk-player/audio_files/``
 
 Edit the trunk-recorder config file ``/home/radio/trunk-recorder/config.json``
 
