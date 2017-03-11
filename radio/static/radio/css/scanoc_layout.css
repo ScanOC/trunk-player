@@ -130,6 +130,11 @@ table {
 .player-action {
     padding-right: 5px;
     cursor: pointer;
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    overflow: hidden;
+    outline: none;
 }
 .row {
   border-top: 3px solid orange;
