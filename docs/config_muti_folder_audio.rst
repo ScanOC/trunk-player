@@ -1,6 +1,6 @@
-=============================================
-Configure - Local Audio Files Mutiple Folders
-=============================================
+==============================================
+Configure - Local Audio Files Multiple Folders
+==============================================
 This document will show you how to configure Trunk Player using mutiple folders to store and play back your audio in the same structure as trunk-recorder.
 
 Currently install is based on a Debian like system, Ubuntu.
