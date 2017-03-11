@@ -40,7 +40,7 @@ function update_scan_list() {
 }
 
 function start_scanner() {
-    play_clip('//s3.amazonaws.com/scanoc-audio-001/point1sec', 0, 0);
+    play_clip(base_audio_url + 'point1sec', 0, 0);
     $(".stop-btn").show();
     $(".start-btn").hide();
 }
@@ -210,7 +210,7 @@ function buildpage() {
           curr_id = curr_results.pk;
 
           new_id_list.unshift(data.results[a].pk);
-          new_file_list.unshift(data.results[a].audio_file);
+          new_file_list.unshift(data.results[a].audio_url + data.results[a].audio_file);
           new_tg_list.unshift(data.results[a].tg_name);
           new_tg_slug_list.unshift(data.results[a].talkgroup_info.slug);
           button_type = "btn-default";
@@ -224,7 +224,7 @@ function buildpage() {
           }
 
           new_html += '<div id="row-' + curr_id + '" class="row grad">';
-          new_html += '<div class="top-data"><button aria-label="Play" id="gl-player-action-' + curr_id + '" onclick="click_play_clip(\'' + base_audio_url + curr_results.audio_file + '\', ' + curr_id + '); return false;" class="player-action glyphicon glyphicon-play" aria-hidden="false"></button><span class="talk-group talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
+          new_html += '<div class="top-data"><button aria-label="Play" id="gl-player-action-' + curr_id + '" onclick="click_play_clip(\'' + curr_results.audio_url + curr_results.audio_file + '\', ' + curr_id + '); return false;" class="player-action glyphicon glyphicon-play" aria-hidden="false"></button><span class="talk-group talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
           new_html += '<div class="unit-data"><span class="unit-id-1 unit-list">';
           for (unit in data.results[a].units) {
               if(data.results[a].units[unit].description) {
@@ -340,7 +340,7 @@ function play_next() {
                  return;
               }
               //play_clip(audio_file, audio_id){
-              mp3 = base_audio_url + curr_file_list[r_id];
+              mp3 = curr_file_list[r_id];
               if(first_load == 0 && first_play == 0) { // Dont play them all on first load
                   tmp_title = '>>' + curr_tg_list[r_id] + '<< ' + page_title;
                   document.title = tmp_title;

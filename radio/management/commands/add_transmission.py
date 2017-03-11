@@ -56,7 +56,8 @@ def talkgroup(tg_dec,system):
 
 def add_new_trans(options):
 
-    file_name = options['json_name']
+    full_file_name = options['json_name']
+    file_name = os.path.basename(full_file_name)
     vhf = options['vhf']
     source_opt = options['source']
     system_opt = options['system']
@@ -105,10 +106,10 @@ def add_new_trans(options):
     if not vhf:
         # First try and open file with given path, if not fail back
         # to old hardcoded audio_files path
-        json_file = '{}.json'.format(file_name)
+        json_file = '{}.json'.format(full_file_name)
         if not os.path.exists(json_file):
             json_file = 'audio_files/{}.json'.format(file_name)
-        with open('audio_files/{}.json'.format(file_name)) as data_file:    
+        with open(json_file) as data_file:
             data = json.load(data_file)
         if data:
             if data['emergency']:

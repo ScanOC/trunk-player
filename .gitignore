@@ -5,6 +5,7 @@ nohup.out
 _build/
 env/
 /static/
+audio_files/*/*
 audio_files/*.mp3
 audio_files/*.json
 audio_files/*.wav
