@@ -224,7 +224,7 @@ function buildpage() {
           }
 
           new_html += '<div id="row-' + curr_id + '" class="row grad">';
-          new_html += '<div class="top-data"><span id="gl-player-action-' + curr_id + '" class="player-action glyphicon glyphicon-play" aria-hidden="false" onclick="click_play_clip(\'' + curr_results.audio_url + curr_results.audio_file + '\', ' + curr_id + '); return false;"></span><span class="talk-group talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
+          new_html += '<div class="top-data"><button aria-label="Play" id="gl-player-action-' + curr_id + '" onclick="click_play_clip(\'' + base_audio_url + curr_results.audio_file + '\', ' + curr_id + '); return false;" class="player-action glyphicon glyphicon-play" aria-hidden="false"></button><span class="talk-group talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
           new_html += '<div class="unit-data"><span class="unit-id-1 unit-list">';
           for (unit in data.results[a].units) {
               if(data.results[a].units[unit].description) {
@@ -244,15 +244,15 @@ function buildpage() {
           new_html += '<span class="tran-menu">';
           new_html += '<div class="btn-group">';
           new_html += '<a class="btn dropdown-toggle tran-menu-a" data-toggle="dropdown" href="#">';
-          new_html += '<i class="fa fa-list-ul" aria-hidden="true" title="Menu"></i>';
+          new_html += '<i class="fa fa-list-ul" aria-hidden="false" title="Call Menu"></i>';
           new_html += '</a>';
           new_html += '<ul class="dropdown-menu pull-right">';
-          new_html += '<li><a href="/tg/' + curr_results.talkgroup_info.slug + '/"><i class="fa fa-filter fa-fw"></i> Hold on TalkGroup</a></li>';
+          new_html += '<li><a href="/tg/' + curr_results.talkgroup_info.slug + '/"><i class="fa fa-filter fa-fw" aria-hidden="true"></i> Hold on TalkGroup</a></li>';
           //new_html += '<li><a href="#"><i class="fa fa-volume-off fa-fw"></i> Mute TalkGroup</a></li>'; 
           //if(js_config.radio_change_unit) {
           //  new_html += '<li><a data-toggle="modal" data-target="#myModalNorm"><i class="fa fa-pencil fa-fw"></i> Edit Unit ID</a></li>';
           //}
-          new_html += '<li><a href="/audio/' + curr_results.slug + '/"><i class="fa fa-info-circle fa-fw"></i> Details</a></li>';
+          new_html += '<li><a href="/audio/' + curr_results.slug + '/"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Details</a></li>';
           //new_html += '<li class="divider"></li>';
           //new_html += '<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Flag for delete</a></li>';
           new_html += '</ul>';
