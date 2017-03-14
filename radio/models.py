@@ -184,6 +184,7 @@ class ScanList(models.Model):
     name = models.CharField(max_length=30, unique=True)
     description = models.CharField(max_length=100)
     talkgroups = models.ManyToManyField(TalkGroup)
+    slug = models.SlugField(null=True, blank=True)
 
     class Meta:
         ordering = ["name"]
@@ -191,8 +192,12 @@ class ScanList(models.Model):
     def __str__(self):
         return '{}'.format(self.name)
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(ScanList, self).save(*args, **kwargs)
+
     def get_absolute_url(self):
-        return '/scan/{}/'.format(self.name)
+        return '/scan/{}/'.format(self.slug)
 
 class MenuList(models.Model):
     order = models.IntegerField(default=1)
@@ -211,6 +216,10 @@ class MenuList(models.Model):
     @property
     def scan_description(self):
         return self.name.description
+
+    @property
+    def scan_slug(self):
+        return self.name.slug
 
 class MenuScanList(MenuList):
     name = models.ForeignKey(ScanList)

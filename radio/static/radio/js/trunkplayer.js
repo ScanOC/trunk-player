@@ -140,8 +140,8 @@ function update_menu() {
     count = 0;
     $.getJSON(url, function(data) {
         for (var a in data.results) {
-            new_html_live += '<li><a href="/scan/' + data.results[a].scan_name + '/" onclick="return url_change(\'/scan/' + data.results[a].scan_name + '/\');">' + data.results[a].scan_description + '</a></li>';
-            new_html += '<li><a href="/scan/' + data.results[a].scan_name + '/">' + data.results[a].scan_description + '</a></li>';
+            new_html_live += '<li><a href="/scan/' + data.results[a].scan_slug + '/" onclick="return url_change(\'/scan/' + data.results[a].scan_slug + '/\');">' + data.results[a].scan_description + '</a></li>';
+            new_html += '<li><a href="/scan/' + data.results[a].scan_slug + '/">' + data.results[a].scan_description + '</a></li>';
             count++;
         }
         if(count == 0) {

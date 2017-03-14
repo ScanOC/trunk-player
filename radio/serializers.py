@@ -25,13 +25,13 @@ class TransmissionSerializer(serializers.ModelSerializer):
 class ScanListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ScanList
-        fields = ('pk', 'name', 'description')
+        fields = ('pk', 'name', 'description', 'slug')
 
 class MenuScanListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MenuScanList
-        fields = ('pk', 'name', 'scan_name', 'scan_description')
+        fields = ('pk', 'name', 'scan_name', 'scan_description', 'scan_slug')
 
 class MenuTalkGroupListSerializer(serializers.ModelSerializer):
 

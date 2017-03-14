@@ -81,7 +81,7 @@ class ScanViewSet(generics.ListAPIView):
     def get_queryset(self):
         scanlist = self.kwargs['filter_val']
         try:
-            sl = ScanList.objects.get(name=scanlist)
+            sl = ScanList.objects.get(slug__iexact=scanlist)
         except ScanList.DoesNotExist:
             if scanlist == 'default':
                 tg = TalkGroup.objects.all()
