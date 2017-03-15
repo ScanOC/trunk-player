@@ -139,7 +139,11 @@ def add_new_trans(options):
                     source = Source.objects.get(pk=data['source'])
                     t.source = source
             t.save()
-            for trans_unit in data['srcList']:
+            for unit in data['srcList']:
+                try:
+                    trans_unit = unit['src']
+                except TypeError:
+                    trans_unit = unit
                 u,created = Unit.objects.get_or_create(dec_id=trans_unit,system=t.system)
                 tu = TranmissionUnit.objects.create(transmission=t, unit=u, order=count)
                 count=count+1
