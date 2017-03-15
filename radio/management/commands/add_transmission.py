@@ -41,9 +41,15 @@ class Command(BaseCommand):
             default='/',
             help='Set the web folder the audio file is in',
         )
+        parser.add_argument(
+            '--verbose',
+            action='store_true',
+            dest='verbose',
+            default=False,
+            help='Verbose output',
+        )
 
     def handle(self, *args, **options):
-        print('You passed in {}'.format(options['json_name']))
         add_new_trans(options)
 
 def talkgroup(tg_dec,system):
@@ -62,6 +68,9 @@ def add_new_trans(options):
     source_opt = options['source']
     system_opt = options['system']
     web_url_opt = options['web_url']
+    verbose = options['verbose']
+    if verbose:
+        print('You passed in {}'.format(options['json_name']))
     source_default = False
     if source_opt == -1:
         source_opt = 0
@@ -77,20 +86,22 @@ def add_new_trans(options):
         epoc_ts = epoc_ts - 25200
         #pytz.timezone('UTC').localize(new_time, is_dst=None)
         #epoc_ts = new_time.timestamp()
-        print("Time {} is {}".format(full_dt,epoc_ts))
+        if verbose:
+            print("Time {} is {}".format(full_dt,epoc_ts))
         #epoc_ts.replace(tzinfo=pytz.UTC)
     else:
         tg_dec = file_name.split('-', 1)[0]
         epoc_ts = file_name.split('-', 2)[1].split('_', 1)[0]
-    print("TalkGroup", tg_dec)
+    if verbose:
+        print("TalkGroup", tg_dec)
     if vhf:
         freq = 0
     else:
         freq = file_name.split('_', 2)[1]
 
-    dt = datetime.datetime.fromtimestamp(int(epoc_ts))
+    dt = datetime.datetime.fromtimestamp(int(epoc_ts), pytz.UTC)
     #if vhf:
-    #  dt.replace(tzinfo=pytz.UTC)
+    #dt.replace(tzinfo=pytz.UTC)
     
     source = Source.objects.get(pk=source_opt)
 
