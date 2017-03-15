@@ -113,6 +113,9 @@ class Transmission(models.Model):
     def __str__(self):
         return '{} {}'.format(self.talkgroup, self.start_datetime)
 
+    def get_absolute_url(self):
+        return '/audio/{}/'.format(self.slug)
+
     @property
     def local_start_datetime(self):
         return timezone.localtime(self.start_datetime).strftime('%H:%M:%S %m/%d/%Y')
