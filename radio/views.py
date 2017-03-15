@@ -16,6 +16,7 @@ from .models import *
 from rest_framework import viewsets, generics
 from .serializers import TransmissionSerializer, TalkGroupSerializer, ScanListSerializer, MenuScanListSerializer, MenuTalkGroupListSerializer
 from datetime import datetime, timedelta
+from django.utils import timezone
 
 from .forms import *
 
@@ -68,7 +69,7 @@ def TalkGroupFilterBase(request, filter_val, template):
     try:
         query_data = Transmission.objects.filter(talkgroup_info=tg).prefetch_related('units')
         if not request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
-            time_threshold = datetime.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
+            time_threshold = timezone.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
             query_data = query_data.filter(start_datetime__gt=time_threshold)
 
     except Transmission.DoesNotExist:
@@ -92,7 +93,7 @@ class ScanViewSet(generics.ListAPIView):
             tg = sl.talkgroups.all()
         rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units')
         if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
-            time_threshold = datetime.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
+            time_threshold = timezone.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
             rc_data = rc_data.filter(start_datetime__gt=time_threshold)
         return rc_data
 
@@ -109,7 +110,7 @@ class TalkGroupFilterViewSet(generics.ListAPIView):
         tg = TalkGroup.objects.filter(q)
         rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units')
         if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
-            time_threshold = datetime.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
+            time_threshold = timezone.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
             rc_data = rc_data.filter(start_datetime__gt=time_threshold)
         return rc_data
 
@@ -125,7 +126,7 @@ class UnitFilterViewSet(generics.ListAPIView):
         units = Unit.objects.filter(q)
         rc_data = Transmission.objects.filter(units__in=units).filter(talkgroup_info__public=True).prefetch_related('units').distinct()
         if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
-            time_threshold = datetime.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
+            time_threshold = timezone.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
             rc_data = rc_data.filter(start_datetime__gt=time_threshold)
         return rc_data
 
