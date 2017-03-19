@@ -114,7 +114,7 @@ function url_change(new_url) {
     clearpage();
     // Simple funcation to change url and rebuild the page
     var stateObj = { foo: "bar" };
-    window.history.pushState(stateObj, "ScanOC.com", new_url);
+    window.history.pushState(stateObj, page_title, new_url);
     //window.history.pushState(.object or string., .Title., ./new-url.);
     $("#jquery_jplayer_1").jPlayer("stop");
     force_page_rebuild = 1;

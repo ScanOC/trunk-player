@@ -42,7 +42,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^scan/(?P<name>.*)/details/$', views.ScanDetailsList, name='scan_details'),
     url(r'^(tg|scan|unit)/(.*)/$',TemplateView.as_view(template_name='radio/player_main.html')),
-    url(r'^(tg2|scan2)/(.*)/$',TemplateView.as_view(template_name='radio/player_main2.html')),
     url(r'^scan/$', RedirectView.as_view(url='/scan/default/', permanent=False)),
     url(r'^userscan/$', TemplateView.as_view(template_name='radio/player_userscan.html')),
     url(r'^about/$', views.Generic, {'page_name': 'about'}, name='about'),

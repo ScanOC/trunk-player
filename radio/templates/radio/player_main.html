@@ -19,14 +19,14 @@ Loading Data.....
 <script type="text/javascript">
 amzn_assoc_placement = "adunit0";
 amzn_assoc_enable_interest_ads = "true";
-amzn_assoc_tracking_id = "scanoc-20";
+amzn_assoc_tracking_id = "{% settings_amazon_ad 'AMAZON_AD_TRACKING_ID' %}";
 amzn_assoc_ad_mode = "auto";
 amzn_assoc_ad_type = "smart";
 amzn_assoc_marketplace = "amazon";
 amzn_assoc_region = "US";
-amzn_assoc_linkid = "366e01afa07db536277fa926bed3cb27";
-amzn_assoc_emphasize_categories = "15684181,13900871,172282,3760901,16310091,229534";
-amzn_assoc_fallback_mode = {"type":"search","value":"fire extinguisher"};
+amzn_assoc_linkid = "{% settings_amazon_ad 'AMAZON_AD_LINK_ID' %}";
+amzn_assoc_emphasize_categories = "{% settings_amazon_ad 'AMAZON_AD_EMPHASIZE_CATEGORIES' %}";
+amzn_assoc_fallback_mode = {"type":"search","value":"{% settings_amazon_ad 'AMAZON_AD_FALL_BACK_SEARCH' %}"};
 amzn_assoc_default_category = "All";
 amzn_assoc_rows = "6";
 </script>
@@ -39,7 +39,7 @@ amzn_assoc_rows = "6";
 	<div class="row">
 		<div class="col-xs-12">
 			<footer>
-				<p>&copy; Copyright 2016 ScanOC.com</p>
+				<p>&copy; Copyright 2016-2017 {% get_setting 'SITE_TITLE' %}</p>
 			</footer>
 		</div>
 	</div>

@@ -229,6 +229,7 @@ AMAZON_AD_FALL_BACK_SEARCH = ['fire extinguisher', 'first aid',]
 GOOGLE_ANALYTICS_PROPERTY_ID = '0'
 
 SITE_TITLE = 'Trunk-Player'
+SITE_EMAIL = 'help@example.com'
 
 # Set this to the location of your audio files
 AUDIO_URL_BASE = '//s3.amazonaws.com/SET-TO-MY-BUCKET/'
@@ -237,7 +238,7 @@ AUDIO_URL_BASE = '//s3.amazonaws.com/SET-TO-MY-BUCKET/'
 JS_SETTINGS = ['SITE_TITLE', 'AUDIO_URL_BASE']
 
 # Which settings are aviable to the template tag GET_SETTING
-VISABLE_SETTINGS = ['SITE_TITLE', 'AUDIO_URL_BASE', 'GOOGLE_ANALYTICS_PROPERTY_ID']
+VISABLE_SETTINGS = ['SITE_TITLE', 'AUDIO_URL_BASE', 'GOOGLE_ANALYTICS_PROPERTY_ID', 'COLOR_CSS', 'SITE_EMAIL']
 
 # Load our local settings 
 try:
