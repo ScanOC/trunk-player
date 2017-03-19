@@ -31,7 +31,8 @@ router.register(r'menutalkgrouplist', views.MenuTalkGroupListViewSet)
 
 
 urlpatterns = [
-    url('^$', TemplateView.as_view(template_name='radio/index_beta.html')),
+    #url('^$', TemplateView.as_view(template_name='radio/index_beta.html')),
+    url('^$', views.Generic, {'page_name': 'index'}, name='index'),
     url('^', include('django.contrib.auth.urls')),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^api_v1/unit/(?P<filter_val>[+\w-]+)/$', views.UnitFilterViewSet.as_view()),
@@ -44,7 +45,7 @@ urlpatterns = [
     url(r'^(tg2|scan2)/(.*)/$',TemplateView.as_view(template_name='radio/player_main2.html')),
     url(r'^scan/$', RedirectView.as_view(url='/scan/default/', permanent=False)),
     url(r'^userscan/$', TemplateView.as_view(template_name='radio/player_userscan.html')),
-    url(r'^about/$', TemplateView.as_view(template_name='radio/site_about.html'), name='about'),
+    url(r'^about/$', views.Generic, {'page_name': 'about'}, name='about'),
     url(r'^talkgroups/$', views.TalkGroupList.as_view()),
     url(r'^audio/(?P<slug>[-\w]+)/$',views.TransDetailView.as_view(), name='trans'),
     url(r'^register/$', views.register, name='register'),

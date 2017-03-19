@@ -271,3 +271,10 @@ def create_profile(sender, **kwargs):
 
 post_save.connect(create_profile, sender=User)
 
+class WebHtml(models.Model):
+    name = models.CharField(max_length=30, unique=True)
+    bodytext = models.TextField()
+    
+    def __str__(self):
+        return self.name
+

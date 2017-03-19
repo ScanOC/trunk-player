@@ -61,6 +61,12 @@ def TalkGroupFilter(request, filter_val):
     template = 'radio/transmission_list.html'
     return TalkGroupFilterBase(request, filter_val, template)
 
+def Generic(request, page_name):
+    template = 'radio/generic.html'
+    query_data = WebHtml.objects.get(name=page_name)
+    return render(request, template, {'html_object': query_data})
+
+
 def TalkGroupFilterBase(request, filter_val, template):
     try:
         tg = TalkGroup.objects.get(alpha_tag__startswith=filter_val)
