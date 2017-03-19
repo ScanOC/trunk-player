@@ -1,0 +1,43 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+{% block main-body %}
+<div class="container">
+	<div class="row">
+		<div class="col-xs-10">
+{{ html_object.bodytext|safe }}
+		</div>
+                <div class="col-xs-2">
+{% settings_amazon_adds as amazon_adds %}
+{% if amazon_adds %}
+<script type="text/javascript">
+amzn_assoc_placement = "adunit0";
+amzn_assoc_enable_interest_ads = "true";
+amzn_assoc_tracking_id = "{% settings_amazon_ad 'AMAZON_AD_TRACKING_ID' %}";
+amzn_assoc_ad_mode = "auto";
+amzn_assoc_ad_type = "smart";
+amzn_assoc_marketplace = "amazon";
+amzn_assoc_region = "US";
+amzn_assoc_linkid = "{% settings_amazon_ad 'AMAZON_AD_LINK_ID' %}";
+amzn_assoc_emphasize_categories = "{% settings_amazon_ad 'AMAZON_AD_EMPHASIZE_CATEGORIES' %}";
+amzn_assoc_fallback_mode = {"type":"search","value":"{% settings_amazon_ad 'AMAZON_AD_FALL_BACK_SEARCH' %}"};
+amzn_assoc_default_category = "All";
+amzn_assoc_rows = "6";
+</script>
+<script src="https://z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US"></script>
+{% endif %}
+                  </div>
+
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-xs-12">
+			<footer>
+				<p>&copy; Copyright 2016 ScanOC.com</p>
+			</footer>
+		</div>
+	</div>
+</div>
+{% endblock %}
