@@ -16,6 +16,8 @@ Loading Data.....
   </div>
   <div class="col-md-2 col-lg-2">
     <div class="row row-no-border">
+{% settings_amazon_adds as amazon_adds %}
+{% if amazon_adds %}
 <script type="text/javascript">
 amzn_assoc_placement = "adunit0";
 amzn_assoc_enable_interest_ads = "true";
@@ -31,6 +33,7 @@ amzn_assoc_default_category = "All";
 amzn_assoc_rows = "6";
 </script>
 <script src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US"></script>
+{% endif %}
     </div>
   </div>
 <div id="jPlayer"><div id="jquery_jplayer_1"></div></div>
