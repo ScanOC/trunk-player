@@ -24,6 +24,7 @@ table_list = (
     #'django_migrations',
     #'django_session',
     'sites_site',
+    'radio_system',
     'radio_agency',
     'radio_source',
     #'radio_profile',
