@@ -8,7 +8,7 @@ from django.utils import timezone
 from radio.models import *
 
 class Command(BaseCommand):
-    help = 'Import talkgroup info'
+    help = 'Export talkgroup info'
 
     def add_arguments(self, parser):
         parser.add_argument('file')
@@ -21,16 +21,19 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
-        export_tg_file(options)
+        export_tg_file(self, options)
 
 
-def export_tg_file(options):
+def export_tg_file(self, options):
     ''' Using the talkgroup file from trunk-recorder'''
     file_name = options['file']
     system = options['system']
     talkgroups = TalkGroup.objects.all()
     if system >= 0:
         talkgroups = talkgroups.filter(system=system)
+        self.stdout.write("Exporting talkgroups for system #{}".format(system))
+    else:
+        self.stdout.write("Exporting talkgroups for all systems")
     with open(file_name, "w") as tg_file:
         for t in talkgroups:
             alpha = t.alpha_tag
