@@ -34,7 +34,7 @@ def import_tg_file(self, options):
         self.stdout.write("Valid systems")
         for system in System.objects.all():
             self.stdout.write("#{} - {}".format(system.pk, system.name))
-        raise CommandError('System #{} was not a vaild system'.format(system_id))
+        raise CommandError('System #{} was not a valid system'.format(system_id))
     self.stdout.write("Importing talkgroups for system #{} - {}".format(system.pk, system.name))
     with open(file_name) as tg_file:
         tg_info = csv.reader(tg_file, delimiter=',', quotechar='"')
