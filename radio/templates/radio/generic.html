@@ -1,32 +1,66 @@
 {% extends "radio/site_base.html" %}
 {% load radio_extras %}
+{% load socialaccount %}
 {% block main-nav %}
 {% include "radio/site_live_nav.html" %}
 {% endblock %}
 {% block main-body %}
 <div class="container">
 	<div class="row">
-		<div class="col-xs-10">
+		<div class="col-xs-8">
 {{ html_object.bodytext|safe }}
 		</div>
-                <div class="col-xs-2">
-{% settings_amazon_adds as amazon_adds %}
-{% if amazon_adds %}
-<script type="text/javascript">
-amzn_assoc_placement = "adunit0";
-amzn_assoc_enable_interest_ads = "true";
-amzn_assoc_tracking_id = "{% settings_amazon_ad 'AMAZON_AD_TRACKING_ID' %}";
-amzn_assoc_ad_mode = "auto";
-amzn_assoc_ad_type = "smart";
-amzn_assoc_marketplace = "amazon";
-amzn_assoc_region = "US";
-amzn_assoc_linkid = "{% settings_amazon_ad 'AMAZON_AD_LINK_ID' %}";
-amzn_assoc_emphasize_categories = "{% settings_amazon_ad 'AMAZON_AD_EMPHASIZE_CATEGORIES' %}";
-amzn_assoc_fallback_mode = {"type":"search","value":"{% settings_amazon_ad 'AMAZON_AD_FALL_BACK_SEARCH' %}"};
-amzn_assoc_default_category = "All";
-amzn_assoc_rows = "6";
-</script>
-<script src="https://z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US"></script>
+                <div class="col-xs-4">
+{% if not user.is_authenticated %}
+
+{% if form.errors %}
+<p></p>
+<div class="alert alert-danger">
+Your username and password didn't match. Please try again. If you have an account you can <a href="{% url 'account_reset_password' %}">recover your password</a>. Or create a <a href="{% url 'register' %}{% if next %}?next={{ next}}{% endif %}">new account</a>.
+</div>
+{% endif %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+    <p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+    {% else %}
+    <p>Please login.</p>
+    {% endif %}
+{% endif %}
+
+<h2>Login</h2>
+<form method="post" action="{% url 'login' %}">
+{% csrf_token %}
+<table border="0">
+<tr>
+    <td><label for="id_username">Username:</label></td>
+    <td><input id="id_username" maxlength="254" name="username" type="text" /></td>
+</tr>
+<tr>
+    <td><label for="id_password">Password:</label></td>
+    <td><input id="id_password" name="password" type="password" /></td>
+</tr>
+</table>
+
+<input type="submit" value="login" />
+<input type="hidden" name="next" value="{{ next }}" /> <big> OR <a href="{% provider_login_url "google" %}"><img src="/static/radio/img/btn_google_signin_dark_normal_web.png"></a> </big>
+</form>
+<hr>
+<h2>Create a free account</h2>
+<form method="post" action="{% url 'register' %}">
+{% csrf_token %}
+<table border="0">
+     <tr><th><label for="id_username">Username:</label></th><td><input id="id_username" max_length="30" name="username" type="text" required /></td></tr>
+<tr><th><label for="id_email">Email address:</label></th><td><input id="id_email" max_length="30" name="email" type="text" required /></td></tr>
+<tr><th><label for="id_password1">Password:</label></th><td><input id="id_password1" max_length="30" name="password1" type="password" required /></td></tr>
+<tr><th><label for="id_password2">Password (again):</label></th><td><input id="id_password2" max_length="30" name="password2" type="password" required /></td></tr>
+</table>
+<input type="submit" value="Register" />
+</form>
+
+
+
 {% endif %}
                   </div>
 
