@@ -196,6 +196,7 @@ function buildpage() {
       console.log(data);
       //console.log("Checking for new calls")
       //console.log("Last Call " + last_call + " New last " + data.results[0].pk)
+      if(data.count > 0) {
       if (data.results[0].pk != last_call || force_page_rebuild == 1) {
       console.log("Rebuild");
       force_page_rebuild = 0;
@@ -276,6 +277,9 @@ function buildpage() {
       }
       last_call = data.results[0].pk;
       first_load = 0;
+      } else {
+        $('#main-data-table').html("")
+      }
     });
     buildpage_running = 0;
 }
