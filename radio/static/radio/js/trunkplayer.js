@@ -179,7 +179,7 @@ var last_ajax;
 
 function buildpage() {
     console.log("In build page running : " + buildpage_running);
-    if(buildpage_running == 1) {
+    if(buildpage_running == 1 || live_update === 0) {
        return false;
     }
     buildpage_running = 1;
@@ -448,6 +448,14 @@ $(document).ready(function(){
     update_menu();
 
     //first_load = 0;
+
+    // Disable updating when a transmission menu is clicked, reenable after 5 second timeout
+    $('.tran-menu-a').on('click', function () {
+        live_update = 0;
+        setTimeout(function () {
+            live_update = 1;
+        },5000);
+    });
 });
 
 window.onfocus = function() {
