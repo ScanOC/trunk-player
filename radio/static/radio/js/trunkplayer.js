@@ -452,6 +452,7 @@ $(document).ready(function(){
     // Disable updating when a transmission menu is clicked, reenable after 5 second timeout
     $(document).on('click', 'a.tran-menu-a', function() {
         live_update = 0;
+        $(this).click(); // Try to resolve the occasional need to click twice if the first click falls mid refresh
         setTimeout(function() {
             live_update = 1;
             //buildpage();
