@@ -178,7 +178,7 @@ function update_menu() {
 var last_ajax;
 
 function buildpage() {
-    console.log("In build page running : " + buildpage_running);
+    console.log("In build page running : " + buildpage_running + ", live_update " + live_update);
     if(buildpage_running == 1 || live_update === 0) {
        return false;
     }
@@ -450,10 +450,11 @@ $(document).ready(function(){
     //first_load = 0;
 
     // Disable updating when a transmission menu is clicked, reenable after 5 second timeout
-    $('.tran-menu-a').on('click', function () {
+    $('.tran-menu-a').click(function () {
         live_update = 0;
         setTimeout(function () {
             live_update = 1;
+            buildpage();
         },5000);
     });
 });
