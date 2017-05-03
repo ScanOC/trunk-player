@@ -179,7 +179,7 @@ var last_ajax;
 
 function buildpage() {
     console.log("In build page running : " + buildpage_running + ", live_update " + live_update);
-    if(buildpage_running == 1 || live_update === 0) {
+    if(buildpage_running == 1 || live_update == 0) {
        return false;
     }
     buildpage_running = 1;
