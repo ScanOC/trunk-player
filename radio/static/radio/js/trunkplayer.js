@@ -450,9 +450,9 @@ $(document).ready(function(){
     //first_load = 0;
 
     // Disable updating when a transmission menu is clicked, reenable after 5 second timeout
-    $('.tran-menu-a').click(function () {
+    $('.tran-menu-a').click(function() {
         live_update = 0;
-        setTimeout(function () {
+        setTimeout(function() {
             live_update = 1;
             buildpage();
         },5000);
