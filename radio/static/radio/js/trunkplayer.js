@@ -178,8 +178,8 @@ function update_menu() {
 var last_ajax;
 
 function buildpage() {
-    console.log("In build page running : " + buildpage_running);
-    if(buildpage_running == 1) {
+    console.log("In build page running : " + buildpage_running + ", live_update " + live_update);
+    if(buildpage_running == 1 || live_update == 0) {
        return false;
     }
     buildpage_running = 1;
@@ -448,6 +448,15 @@ $(document).ready(function(){
     update_menu();
 
     //first_load = 0;
+
+    // Disable updating when a transmission menu is clicked, reenable after 5 second timeout
+    $(document).on('click', 'a.tran-menu-a', function() {
+        live_update = 0;
+                setTimeout(function() {
+            live_update = 1;
+            buildpage();
+        },5000);
+    });
 });
 
 window.onfocus = function() {
