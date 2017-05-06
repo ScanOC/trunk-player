@@ -95,5 +95,9 @@ table {
     background: linear-gradient(#E0E0E0, #F7F7F7); /* Standard syntax */
 }
 
+.mute-mute {
+  text-decoration: line-through;
+}
+
 
 #preload-01 { background: url(/static/radio/img/loader.gif) no-repeat -9999px -9999px; }
