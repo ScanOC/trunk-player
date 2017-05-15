@@ -37,7 +37,7 @@ class SourceAdmin(admin.ModelAdmin):
 
 class ScanListAdminForm(forms.ModelForm):
     talkgroups = forms.ModelMultipleChoiceField(
-        queryset=TalkGroup.objects.all(),
+        queryset=TalkGroupWithSystem.objects.all(),
         required=False,
         widget=FilteredSelectMultiple(
             verbose_name = 'talkgroups',

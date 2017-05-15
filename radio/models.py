@@ -95,6 +95,13 @@ class TalkGroup(models.Model):
     def get_absolute_url(self):
         return '/tg/{}/'.format(self.slug)
 
+class TalkGroupWithSystem(TalkGroup):
+    class Meta:
+        proxy = True
+
+    def __str__(self):
+        return "{} ({})".format(self.alpha_tag, self.system)
+
 
 class Transmission(models.Model):
     slug = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False) 
