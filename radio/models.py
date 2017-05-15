@@ -95,6 +95,7 @@ class TalkGroup(models.Model):
     def get_absolute_url(self):
         return '/tg/{}/'.format(self.slug)
 
+
 class TalkGroupWithSystem(TalkGroup):
     class Meta:
         proxy = True
@@ -244,7 +245,7 @@ class MenuScanList(MenuList):
 
 
 class MenuTalkGroupList(MenuList):
-    name = models.ForeignKey(TalkGroup)
+    name = models.ForeignKey(TalkGroupWithSystem)
 
     @property
     def tg_name(self):
@@ -253,6 +254,14 @@ class MenuTalkGroupList(MenuList):
     @property
     def tg_slug(self):
         return self.name.slug
+
+class TalkGroupAccess(models.Model):
+    name = models.CharField(max_length=30, unique=True)
+    talkgroups = models.ManyToManyField(TalkGroupWithSystem)
+    default_group = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '{}'.format(self.name)
 
 
 class Plan(models.Model):
@@ -266,6 +275,7 @@ class Plan(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     plan = models.ForeignKey(Plan, default=Plan.DEFAULT_PK)
+    talkgroup_access = models.ManyToManyField(TalkGroupAccess)
 
 
 def create_profile(sender, **kwargs):
@@ -274,6 +284,8 @@ def create_profile(sender, **kwargs):
         default_plan = Plan.objects.get(pk=Plan.DEFAULT_PK)
         up = Profile(user=user, plan=default_plan)
         up.save()
+        for tg in TalkGroupAccess.objects.filter(default_group=True):
+            up.talkgroup_access.add(tg)
 
 
 post_save.connect(create_profile, sender=User)
