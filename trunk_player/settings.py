@@ -207,7 +207,7 @@ LOGGING = {
 ANONYMOUS_TIME = 15
 
 # This Agency must exist in radio.Agency 
-RADIO_DEFAULT_UNIT_AGENCY = 0
+RADIO_DEFAULT_UNIT_AGENCY = 1
 
 SITE_ID = 1
 

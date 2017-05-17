@@ -126,7 +126,7 @@ def add_new_trans(options):
             if data['emergency']:
                 t.emergency = True
             count = 0
-            t.play_length = data.get('play_length',0)
+            t.play_length = data.get('play_length',1)
             system = data.get('system', 0)
             if system_opt >= 0: 
                 system = system_opt # Command line overrides json
