@@ -51,7 +51,7 @@ class Unit(models.Model):
     #agency = models.ForeignKey(Agency, default=2)
     type = models.CharField(max_length=1, choices=choice.RADIO_TYPE_CHOICES, default=choice.RADIO_TYPE_MOBILE)
     number = models.IntegerField(default=1)
-    system = models.ForeignKey(System, default=0)
+    system = models.ForeignKey(System, default=1)
     slug = models.SlugField(null=True, blank=True)
 
     class Meta:
@@ -77,7 +77,7 @@ class TalkGroup(models.Model):
     slug = models.SlugField(null=True)
     public = models.BooleanField(default=True)
     comments = models.CharField(max_length=100, blank=True, null=True)
-    system = models.ForeignKey(System, default=0)
+    system = models.ForeignKey(System, default=1)
     mode = models.CharField(max_length=1, choices=choice.TG_MODE_CHOICES, default=choice.TG_MODE_DIGITAL, help_text='mode used by trunk-recorder')
     priority = models.IntegerField(default=3, help_text='record priority used by trunk-recorder')
 
@@ -115,8 +115,8 @@ class Transmission(models.Model):
     emergency = models.BooleanField(default=False)
     units = models.ManyToManyField(Unit, through='TranmissionUnit')
     play_length = models.FloatField(default=0.0)
-    source = models.ForeignKey(Source, default=0)
-    system = models.ForeignKey(System, default=0)
+    source = models.ForeignKey(Source, default=1)
+    system = models.ForeignKey(System, default=1)
 
     def __str__(self):
         return '{} {}'.format(self.talkgroup, self.start_datetime)

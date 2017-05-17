@@ -14,5 +14,5 @@ class Migration(migrations.Migration):
 
     operations = [
         # Setup a default source
-        migrations.RunSQL([("INSERT INTO radio_source (id,description) VALUES (0,'Default');", None)]),
+        migrations.RunSQL([("INSERT INTO radio_source (id,description) VALUES (1,'Default');", None)]),
     ]

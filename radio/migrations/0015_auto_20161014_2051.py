@@ -28,6 +28,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='unit',
             name='agency',
-            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, to='radio.Agency'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='radio.Agency'),
         ),
     ]

@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
 
     operations = [
         # Setup a default source
-        migrations.RunSQL([("INSERT INTO radio_system (id,name) VALUES (0,'Default');", None)],
-                           [("DELETE FROM radio_agency where id=0;", None)],),
+        migrations.RunSQL([("INSERT INTO radio_system (id,name) VALUES (1,'Default');", None)],
+                           [("DELETE FROM radio_agency where id=1;", None)],),
     ]

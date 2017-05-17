@@ -73,7 +73,7 @@ def add_new_trans(options):
         print('You passed in {}'.format(options['json_name']))
     source_default = False
     if source_opt == -1:
-        source_opt = 0
+        source_opt = 1
         source_default = True
     if vhf:
         tg_dec = file_name.split('_', 1)[0]
@@ -113,7 +113,7 @@ def add_new_trans(options):
                      source = source,
                      audio_file_url_path = web_url_opt,
                    )
-    system = 0
+    system = 1
     if not vhf:
         # First try and open file with given path, if not fail back
         # to old hardcoded audio_files path
@@ -133,7 +133,7 @@ def add_new_trans(options):
             t.system = System.objects.get(pk=system)
             t.talkgroup_info = talkgroup(tg_dec, t.system)
             if source_default:
-                json_source = data.get('source', 0)
+                json_source = data.get('source', 1)
                 if(json_source > 0):
                     # No need to re add source if its still 0
                     source = Source.objects.get(pk=data['source'])
