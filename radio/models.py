@@ -267,6 +267,7 @@ class TalkGroupAccess(models.Model):
 class Plan(models.Model):
     DEFAULT_PK = 1 # This is added via a migration
     name = models.CharField(max_length=30, unique=True)
+    history = models.IntegerField(default=15, help_text='visible history in minutes')
 
     def __str__(self):
         return '{}'.format(self.name)
