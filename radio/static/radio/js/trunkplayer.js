@@ -80,6 +80,9 @@ function update_pagination_links() {
         pg_array = pagination_older_url.split( '?' );
         new_url = window.location.pathname + '?' + pg_array[1];
         pagination_html += '<button onclick="url_change(\'' + new_url + '\')">Older</button>';
+        $("#anoymous_time_warn").hide();
+    } else {
+        $("#anoymous_time_warn").show();
     }
     //$('#pagination').html(pagination_html);
     return pagination_html;

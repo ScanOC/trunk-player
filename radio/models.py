@@ -276,7 +276,7 @@ class Plan(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     plan = models.ForeignKey(Plan, default=Plan.DEFAULT_PK)
-    talkgroup_access = models.ManyToManyField(TalkGroupAccess)
+    talkgroup_access = models.ManyToManyField(TalkGroupAccess, blank=True)
 
 
 def create_profile(sender, **kwargs):

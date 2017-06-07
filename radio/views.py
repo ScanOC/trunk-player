@@ -12,16 +12,27 @@ from django.conf import settings
 from django.views.generic import ListView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.exceptions import ImproperlyConfigured
 from .models import *
 from rest_framework import viewsets, generics
 from .serializers import TransmissionSerializer, TalkGroupSerializer, ScanListSerializer, MenuScanListSerializer, MenuTalkGroupListSerializer
 from datetime import datetime, timedelta
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 from .forms import *
 
+def check_anonymous(decorator):
+    """
+    Decarator used to see if we allow anonymous access
+    """
+    anonymous = getattr(settings, 'ALLOW_ANONYMOUS', True)
+    return decorator if not anonymous else lambda x: x
+
+
 class TransDetailView(DetailView):
     model = Transmission
+
 
 class TransmissionViewSet(viewsets.ModelViewSet):
     """
@@ -30,9 +41,11 @@ class TransmissionViewSet(viewsets.ModelViewSet):
     queryset = Transmission.objects.all().prefetch_related('units')
     serializer_class = TransmissionSerializer
 
+
 class ScanListViewSet(viewsets.ModelViewSet):
     queryset = ScanList.objects.all().prefetch_related('talkgroups')
     serializer_class = ScanListSerializer
+
 
 class TalkGroupViewSet(viewsets.ModelViewSet):
     """
@@ -41,30 +54,54 @@ class TalkGroupViewSet(viewsets.ModelViewSet):
     queryset = TalkGroup.objects.filter(public=True)
     serializer_class = TalkGroupSerializer
 
+
 class TransmissionView(ListView):
     model = Transmission
     paginate_by = 50
+
 
 def ScanListFilter(request, filter_val):
     template = 'radio/transmission.html'
     return render_to_response(template, {'filter_data': filter_val, 'api_url': '/api_v1/ScanList'})
 
+
 def TalkGroupFilterNew(request, filter_val):
     template = 'radio/transmission_play.html'
     return render_to_response(template, {'filter_data': filter_val})
+
 
 def TalkGroupFilterjq(request, filter_val):
     template = 'radio/transmission_list_jq.html'
     return TalkGroupFilterBase(request, filter_val, template)
 
+
 def TalkGroupFilter(request, filter_val):
     template = 'radio/transmission_list.html'
     return TalkGroupFilterBase(request, filter_val, template)
 
+# Open to anyone
 def Generic(request, page_name):
     template = 'radio/generic.html'
     query_data = WebHtml.objects.get(name=page_name)
     return render(request, template, {'html_object': query_data})
+
+def limit_transmission_history(request, query_data):
+    if request.user.is_authenticated():
+        user_profile = Profile.objects.get(user=request.user)
+    else:
+        try:
+            anon_user = User.objects.get(username='ANONYMOUS_USER')
+        except User.DoesNotExist:
+            raise ImproperlyConfigured('ANONYMOUS_USER is missing from User table, was "./manage.py migrations" not run?')
+        user_profile = Profile.objects.get(user=anon_user)
+    if user_profile:
+        history_minutes = user_profile.plan.history
+    else:
+        history_minutes = settings.ANONYMOUS_TIME
+    if history_minutes > 0:
+        time_threshold = timezone.now() - timedelta(minutes=history_minutes)
+        query_data = query_data.filter(start_datetime__gt=time_threshold)
+    return query_data
 
 
 def TalkGroupFilterBase(request, filter_val, template):
@@ -74,13 +111,11 @@ def TalkGroupFilterBase(request, filter_val, template):
         raise Http404
     try:
         query_data = Transmission.objects.filter(talkgroup_info=tg).prefetch_related('units')
-        if not request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
-            time_threshold = timezone.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
-            query_data = query_data.filter(start_datetime__gt=time_threshold)
-
+        query_data = limit_transmission_history(self.request, rc_data)
     except Transmission.DoesNotExist:
         raise Http404
     return render_to_response(template, {'object_list': query_data, 'filter_data': filter_val})
+
 
 class ScanViewSet(generics.ListAPIView):
     serializer_class = TransmissionSerializer
@@ -98,10 +133,8 @@ class ScanViewSet(generics.ListAPIView):
         else:
             tg = sl.talkgroups.all()
         rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units')
-        if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
-            time_threshold = timezone.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
-            rc_data = rc_data.filter(start_datetime__gt=time_threshold)
-        return rc_data
+        return limit_transmission_history(self.request, rc_data)
+
 
 class TalkGroupFilterViewSet(generics.ListAPIView):
     serializer_class = TransmissionSerializer
@@ -115,10 +148,8 @@ class TalkGroupFilterViewSet(generics.ListAPIView):
             q |= Q(slug__iexact=stg)
         tg = TalkGroup.objects.filter(q)
         rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units')
-        if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
-            time_threshold = timezone.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
-            rc_data = rc_data.filter(start_datetime__gt=time_threshold)
-        return rc_data
+        return limit_transmission_history(self.request, rc_data)
+
 
 class UnitFilterViewSet(generics.ListAPIView):
     serializer_class = TransmissionSerializer
@@ -131,11 +162,7 @@ class UnitFilterViewSet(generics.ListAPIView):
             q |= Q(slug__iexact=s_unit)
         units = Unit.objects.filter(q)
         rc_data = Transmission.objects.filter(units__in=units).filter(talkgroup_info__public=True).prefetch_related('units').distinct()
-        if not self.request.user.is_authenticated() and settings.ANONYMOUS_TIME != 0:
-            time_threshold = timezone.now() - timedelta(minutes=settings.ANONYMOUS_TIME)
-            rc_data = rc_data.filter(start_datetime__gt=time_threshold)
-        return rc_data
-
+        return limit_transmission_history(self.request, rc_data)
 
 
 class TalkGroupList(ListView):
@@ -182,19 +209,23 @@ def register_success(request):
     'registration/success.html', {},
     )
 
+
 class MenuScanListViewSet(viewsets.ModelViewSet):
     serializer_class = MenuScanListSerializer
     queryset = MenuScanList.objects.all()
 
+
 class MenuTalkGroupListViewSet(viewsets.ModelViewSet):
     serializer_class = MenuTalkGroupListSerializer
     queryset = MenuTalkGroupList.objects.all()
+
 
 class UnitUpdateView(PermissionRequiredMixin, UpdateView):
     model = Unit
     form_class = UnitEditForm
     success_url = '/unitupdategood/'
     permission_required = ('radio.change_unit')
+
 
 def ScanDetailsList(request, name):
     template = 'radio/scandetaillist.html'

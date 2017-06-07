@@ -240,6 +240,8 @@ JS_SETTINGS = ['SITE_TITLE', 'AUDIO_URL_BASE']
 # Which settings are aviable to the template tag GET_SETTING
 VISABLE_SETTINGS = ['SITE_TITLE', 'AUDIO_URL_BASE', 'GOOGLE_ANALYTICS_PROPERTY_ID', 'COLOR_CSS', 'SITE_EMAIL']
 
+ALLOW_ANONYMOUS = False
+
 # Load our local settings 
 try:
     LOCAL_SETTINGS

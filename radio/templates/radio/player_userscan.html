@@ -81,12 +81,14 @@ amzn_assoc_rows = "6";
 
 		</div>
 	</div>
-        {% settings_anonymous_time as anonymous_time %}
-        {% if not user.is_authenticated and anonymous_time > 0 %}
-        <div class="row">
-                <div id="main-data-table" class="col-xs-12 alert alert-danger" role="alert">
-                        You are not currently logged into the system. You will only see the last {{ anonymous_time }} minutes of history. <a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a> or <a href="{% url 'register' %}?next={{ request.path | urlencode }}">Create</a> a free acount to see more history.
-                </div>
+        {% get_user_time user as anonymous_time %}
+        {% if not user.is_authenticated and anonymous_time != 0 %}
+        <div id="anoymous_time_warn" style="display: none" class=" alert alert-danger" role="alert">
+        You are not currently logged into the system. {% if anonymous_time.minutes == -1%} <a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a> to access the system.{% else %}You will only see the last {{ anonymous_time.display }} of history. <a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a> or <a href="{% url 'register' %}?next={{ request.path | urlencode }}">Create</a> a free acount to see more history.{% endif %}
+        </div>
+        {% else %}
+        <div id="anoymous_time_warn" style="display: none" class=" alert alert-danger" role="alert">
+        Your current plan access allows you to listen to radio traffic up to {{ anonymous_time.display }} ago. For more info see the <a href="{% url 'plans' %}">Plans</a> page.
         </div>
         {% endif %}
 	<hr>
