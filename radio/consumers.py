@@ -25,6 +25,7 @@ def ws_connect(message):
     for new_label in label_list: 
         channel_name = 'livecall-{}-{}'.format(tg_type, new_label)
         log.debug("Connected to channel {}".format(channel_name))
+        message.reply_channel.send({"accept": True})
         Group(channel_name, channel_layer=message.channel_layer).add(message.reply_channel)
 
     message.channel_session['scan'] = label
