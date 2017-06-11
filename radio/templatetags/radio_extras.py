@@ -35,7 +35,7 @@ def get_user_time(user):
     history.update(hours = history['minutes'] / 60)
     if history['minutes'] % 60 == 0:
         if history['minutes'] % 1440 == 0:
-            history.update(display = '{} days'.format(history['minutes'] // 1140))
+            history.update(display = '{} days'.format(history['minutes'] // 1440))
         else:
             history.update(display = '{} hours'.format(history['minutes'] // 60))
     else:
