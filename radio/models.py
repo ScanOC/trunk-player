@@ -165,7 +165,7 @@ def send_mesg(sender, instance, **kwargs):
     tg = TalkGroup.objects.get(pk=instance.talkgroup_info.pk)
     groups = tg.scanlist_set.all()
     for g in groups:
-        Group('livecall-scan-'+g.name, ).send({'text': json.dumps(instance.as_dict())})
+        Group('livecall-scan-'+g.slug, ).send({'text': json.dumps(instance.as_dict())})
     Group('livecall-tg-' + tg.slug, ).send({'text': json.dumps(instance.as_dict())})
 
 
