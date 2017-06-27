@@ -52,4 +52,6 @@ urlpatterns = [
     url(r'^register/success/$', views.register_success),
     url(r'^unitupdate/(?P<pk>\d+)/$', views.UnitUpdateView.as_view(), name='unitupdate'),
     url(r'^unitupdategood/$',  TemplateView.as_view(template_name='radio/unitupdategood.html')),
+    url(r"^payments/", include("pinax.stripe.urls")),
+    url(r'^upgrade/$', views.upgrade, name='upgrade'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

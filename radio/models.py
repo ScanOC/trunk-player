@@ -14,6 +14,8 @@ from django.contrib.auth.models import User
 
 import radio.choices as choice
 
+from pinax.stripe.models import Plan as pinax_Plan
+
 log = logging.getLogger(__name__)
 
 class Agency(models.Model):
@@ -297,4 +299,19 @@ class WebHtml(models.Model):
     
     def __str__(self):
         return self.name
+
+
+class StripePlanMatrix(models.Model):
+    name = models.CharField(max_length=30, unique=True)
+    stripe_plan = models.ForeignKey(pinax_Plan)
+    radio_plan = models.ForeignKey(Plan)
+    active = models.BooleanField(default=True)
+    order = models.IntegerField(default=99)
+
+    class Meta:
+        ordering = ["order"]
+
+
+    def __str__(self):
+       return self.name
 

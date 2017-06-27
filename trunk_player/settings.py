@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'local_override',
-    'radio',
+    'radio.apps.RadioConfig',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     #'allauth.socialaccount.providers.instagram',
     'rest_framework',
     'channels',
+    'pinax.stripe',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -241,6 +242,9 @@ GOOGLE_ANALYTICS_PROPERTY_ID = '0'
 SITE_TITLE = 'Trunk-Player'
 SITE_EMAIL = 'help@example.com'
 
+PINAX_STRIPE_SECRET_KEY = '0'
+PINAX_STRIPE_PUBLIC_KEY = '0'
+
 # Set this to the location of your audio files
 AUDIO_URL_BASE = '//s3.amazonaws.com/SET-TO-MY-BUCKET/'
 
@@ -248,9 +252,14 @@ AUDIO_URL_BASE = '//s3.amazonaws.com/SET-TO-MY-BUCKET/'
 JS_SETTINGS = ['SITE_TITLE', 'AUDIO_URL_BASE']
 
 # Which settings are aviable to the template tag GET_SETTING
-VISABLE_SETTINGS = ['SITE_TITLE', 'AUDIO_URL_BASE', 'GOOGLE_ANALYTICS_PROPERTY_ID', 'COLOR_CSS', 'SITE_EMAIL']
+VISABLE_SETTINGS = ['SITE_TITLE', 'AUDIO_URL_BASE', 'GOOGLE_ANALYTICS_PROPERTY_ID', 'COLOR_CSS', 'SITE_EMAIL', 'PINAX_STRIPE_PUBLIC_KEY']
 
 ALLOW_ANONYMOUS = False
+
+PINAX_STRIPE_SECRET_KEY = 'sk_test_xxxxxxxxxxxxxxxxxxxx'
+PINAX_STRIPE_PUBLIC_KEY = 'pk_test_xxxxxxxxxxxxxxxxxxxx'
+PINAX_STRIPE_INVOICE_FROM_EMAIL = 'help@example.com'
+
 
 # Load our local settings 
 try:

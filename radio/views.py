@@ -1,10 +1,12 @@
 #import functools
+import sys
 import re
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.http import Http404
 from django.views.generic import ListView
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login
@@ -20,7 +22,17 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 
+import pinax.stripe.actions as stripe_actions
+import pinax.stripe.models as stripe_models
+import stripe
+from pprint import pprint
+from django.contrib import messages
+import logging
+
 from .forms import *
+
+logger = logging.getLogger(__name__)
+
 
 def check_anonymous(decorator):
     """
@@ -172,6 +184,56 @@ class TalkGroupList(ListView):
     queryset = TalkGroup.objects.filter(public=True)
 
 
+@login_required
+@csrf_protect
+def upgrade(request):
+    if request.method == 'POST':
+        form = PaymentForm(request.POST)
+        if not form.is_valid():
+            return render(
+                request,
+                'registration/upgrade.html',
+                {'form': form},
+            )
+
+        try:
+            plan = form.cleaned_data.get('plan_type')
+            card_name = form.cleaned_data.get('cardholder_name')
+            stripe_cust = stripe_models.Customer.objects.get(user=request.user)
+            logger.error('Change plan to {} for customer {} Card Name {}'.format(plan, stripe_cust, card_name))
+            stripe_info = stripe_actions.subscriptions.create(customer=stripe_cust, plan=plan, token=request.POST.get('stripeToken'))
+        except stripe.InvalidRequestError as e:
+            messages.error(request, "Error with stripe {}".format(e))
+            logger.error("Error with stripe {}".format(e))
+            return render(
+                request,
+                'registration/upgrade.html',
+                {'form': form},
+            )
+        except stripe.CardError as e:
+            messages.error(request, "<b>Error</b> Sorry there was an error with processing your card:<br>{}".format(e))
+            logger.error("Error with stripe user card{}".format(e))
+            return render(
+                request,
+                'registration/upgrade.html',
+                {'form': form},
+            )
+
+        print('------ STRIPE DEBUG -----')
+        pprint(stripe_info, sys.stderr)
+        return render(
+           request,
+           'registration/upgrade_complete.html',
+        )
+    else:
+        form = PaymentForm()
+        return render(
+           request,
+           'registration/upgrade.html',
+           {'form': form},
+        )
+
+
 @csrf_protect
 def register(request):
     if request.method == 'POST':
@@ -187,6 +249,7 @@ def register(request):
             new_user = authenticate(username=username, password=password)
             if new_user is not None:
                 if new_user.is_active:
+                    stripe_actions.customers.create(user=new_user)
                     login(request, new_user)
                     return HttpResponseRedirect('/scan/default/')
                 else:
