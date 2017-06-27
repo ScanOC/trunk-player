@@ -1,0 +1,21 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+{% block main-body %}
+<div class="container">
+        <div class="row">
+<div class="col-xs-5">
+<h1>Successes</h1>
+<p>Thanks for helping support ScanOC and keeping the sie going...</p>
+<p>Your plan has been updated. It may take a couple minutes for the site to show you the extended history.</p>
+<p>As always if you have any question feel free to email us @ <a href="mailto:{% get_setting 'SITE_EMAIL' %}">{% get_setting 'SITE_EMAIL' %}</a></p>
+
+
+</div>
+</div>
+</div>
+{% endblock %}
+

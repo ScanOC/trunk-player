@@ -1,0 +1,177 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+{% block head %}
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+</style>
+
+<script>
+var stripe = Stripe('{% get_setting 'PINAX_STRIPE_PUBLIC_KEY' %}')
+var elements = stripe.elements();
+var style = {
+  base: {
+    // Add your base input styles here. For example:
+    //fontSize: '16px',
+    //lineHeight: '24px',
+      iconColor: '#666EE8',
+      color: '#31325F',
+      lineHeight: '40px',
+      fontWeight: 300,
+      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+      fontSize: '15px',
+
+      '::placeholder': {
+        color: '#CFD7E0',
+      },
+  }
+};
+
+$(document).ready(function(){ 
+
+// Create an instance of the card Element
+var card = elements.create('card', {  iconStyle: 'solid',
+  style: {
+    base: {
+      iconColor: '#8898AA',
+      color: '#090909',
+      lineHeight: '38px',
+      fontWeight: 300,
+      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+      fontSize: '24px',
+
+      '::placeholder': {
+        //color: '#8898AA',
+        color: '#686868',
+      },
+    },
+    invalid: {
+      iconColor: '#e85746',
+      color: '#e85746',
+    }
+  },
+  classes: {
+    focus: 'is-focused',
+    empty: 'is-empty',
+  },
+});
+
+// Add an instance of the card Element into the `card-element` <div>
+card.mount('#card-element');
+
+card.addEventListener('change', function(event) {
+  var displayError = document.getElementById('card-errors');
+  if (event.error) {
+    displayError.textContent = event.error.message;
+  } else {
+    displayError.textContent = '';
+  }
+});
+
+// Create a token or display an error the form is submitted.
+var form = document.getElementById('payment-form');
+var extraDetails = {
+    name: form.querySelector('input[name=cardholder_name]').value,
+  };
+form.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  stripe.createToken(card, extraDetails).then(function(result) {
+    if (result.error) {
+      // Inform the user if there was an error
+      var errorElement = document.getElementById('card-errors');
+      errorElement.textContent = result.error.message;
+    } else {
+      // Send the token to your server
+      stripeTokenHandler(result.token);
+    }
+  });
+});
+
+});
+
+function stripeTokenHandler(token) {
+  // Insert the token ID into the form so it gets submitted to the server
+  var form = document.getElementById('payment-form');
+  var hiddenInput = document.createElement('input');
+  hiddenInput.setAttribute('type', 'hidden');
+  hiddenInput.setAttribute('name', 'stripeToken');
+  hiddenInput.setAttribute('value', token.id);
+  form.appendChild(hiddenInput);
+
+  // Submit the form
+  form.submit();
+}
+
+</script>
+
+{% endblock %}
+
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+{% block main-body %}
+<div class="container">
+        <div class="row">
+<div class="col-xs-5">
+<h1>Upgrade your plan</h1>
+{% if form.errors %}
+    <p>NOT VALID</p>
+    {% for errors in form.errors %}
+        {{ errors }}
+    {% endfor %}
+{% endif %}
+<form action="{% url 'upgrade' %}" method="post" id="payment-form">
+{% csrf_token %}
+  <div class="form-row">
+    <label for="{{ form.plan_type.id_for_label }}">
+      Plan Type
+    </label>
+    <div>
+      {{ form.plan_type.errors }}
+      {{ form.plan_type }}
+    </div>
+    <!--
+    <label for="card-holder">Name on Card</label>
+    <div id="card-holder" class="group">
+    <input name="cardholder-name" class="field" placeholder="John Smith" />
+    </div>
+    -->
+    <div>
+    <label for="{{ form.cardholder_name.id_for_label }}">Card Holder Name</label>
+    <p>
+    <input id="{{ form.cardholder_name.id_for_label }}" name="cardholder_name" class="field is-empty" placeholder="Jane Doe" />
+    </p>
+    </div>
+</div>
+    <label for="card-element">
+      Credit or debit card
+    </label>
+    <div id="card-element">
+      <!-- a Stripe Element will be inserted here. -->
+    </div>
+
+    <!-- Used to display Element errors -->
+    <div id="card-errors"></div>
+   <button>Submit Payment</button>
+  </div>
+{% if messages %}
+    {% for message in messages %}
+        <div class=" alert alert-danger" role="alert">
+        {% autoescape off %}{{ message }}{% endautoescape %}
+        </div>
+    {% endfor %}
+{% endif %}
+</form>
+</div>
+<div class="col-xs-7">
+<h3>Help</h3>
+<p>If you have any questions or comments you can email us at <a href="mailto:{% get_setting 'SITE_EMAIL' %}">{% get_setting 'SITE_EMAIL' %}</a>.</p>
+</p>
+<p><h3>Cancellation</h3>
+Cancel at any time. Right now just email us with your account name and we will cancel the recuring charges immediately. <a href="mailto:{% get_setting 'SITE_EMAIL' %}">{% get_setting 'SITE_EMAIL' %}</a>
+</p>
+</div>
+</div>
+</div>
+{% endblock %}
+
