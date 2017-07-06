@@ -60,6 +60,10 @@ load_tg();
 			<p>Filter on TalkGroups</p>
 			<p>Build Scan Lists</p>
 			-->
+{% get_setting 'TWITTER_ACTIVE' as twitter_active %}
+{% if twitter_active %}
+<a class="twitter-timeline" data-width="220" data-height="1200" href="{% get_setting 'TWITTER_LIST_URL' %}">Alerts</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+{% endif %}
 {% settings_amazon_adds as amazon_adds %}
 {% if amazon_adds %}
 <script type="text/javascript">
