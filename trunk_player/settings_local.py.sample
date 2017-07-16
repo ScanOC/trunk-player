@@ -15,6 +15,7 @@ SECRET_KEY = 'gv*f9ntgqmj8fqp+=ycx)v%6*o*#k1v25*a_gmrla3y*yy@*!0'
 # Name for site
 SITE_TITLE = 'Trunk-Player'
 SITE_EMAIL = 'help@example.com'
+DEFAULT_FROM_EMAIL='Trunk-Player WebSite <scanner-web@help@example.com>'
 
 # Set this to the location of your audio files
 AUDIO_URL_BASE = '//s3.amazonaws.com/SET-TO-MY-BUCKET/'

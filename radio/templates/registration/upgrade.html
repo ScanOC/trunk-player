@@ -164,6 +164,57 @@ function stripeTokenHandler(token) {
 </form>
 </div>
 <div class="col-xs-7">
+<h3>Pay</h3>
+<form name="plan_399" action="" method="POST">
+{% csrf_token %}
+<script
+  src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+  data-key="{% get_setting 'PINAX_STRIPE_PUBLIC_KEY' %}"
+  data-amount="399"
+  data-name="ScanOC.com"
+  data-description="3.99 Plan"
+  data-panel-label="Subscribe"
+  data-label="Subscribe"
+  data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+  data-locale="auto"
+  data-allow-remember-me="false"
+  data-email="{{ request.user.email }}"
+  data-zip-code="true">
+</script>
+</form>
+<form name="plan_699" action="" method="POST">
+{% csrf_token %}
+<script
+  src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+  data-key="{% get_setting 'PINAX_STRIPE_PUBLIC_KEY' %}"
+  data-amount="699"
+  data-name="ScanOC.com"
+  data-description="6.99 Plan"
+  data-panel-label="Subscribe"
+  data-label="Subscribe"
+  data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+  data-locale="auto"
+  data-allow-remember-me="false"
+  data-zip-code="true">
+</script>
+</form>
+<form name="plan_1499" action="" method="POST">
+{% csrf_token %}
+<script
+  src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+  data-key="{% get_setting 'PINAX_STRIPE_PUBLIC_KEY' %}"
+  data-amount="1499"
+  data-name="ScanOC.com"
+  data-description="14.99 Plan"
+  data-panel-label="Subscribe"
+  data-label="Subscribe"
+  data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+  data-locale="auto"
+  data-allow-remember-me="false"
+  data-zip-code="true">
+</script>
+</form>
+
 <h3>Help</h3>
 <p>If you have any questions or comments you can email us at <a href="mailto:{% get_setting 'SITE_EMAIL' %}">{% get_setting 'SITE_EMAIL' %}</a>.</p>
 </p>

@@ -1,42 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends "radio/site_base.html" %}
 {% load radio_extras %}
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{% get_setting 'SITE_TITLE' %}</title>
-{% block pre-head %}{% endblock %}
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/jplayer/jquery.jplayer.js"></script> 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<link href="/apple-touch-icon.png" rel="apple-touch-icon" />
-<link href="/apple-touch-icon-76x76.png" rel="apple-touch-icon" sizes="76x76" />
-<link href="/apple-touch-icon-120x120.png" rel="apple-touch-icon" sizes="120x120" />
-<link href="/apple-touch-icon-152x152.png" rel="apple-touch-icon" sizes="152x152" />
-<link href="/apple-touch-icon-180x180.png" rel="apple-touch-icon" sizes="180x180" />
-<link href="/icon-hires.png" rel="icon" sizes="192x192" />
-<link href="/icon-normal.png" rel="icon" sizes="128x128" />
-<link rel="stylesheet" href="/static/radio/css/trunkplayer.css?ver=0.2">
-{% get_setting 'COLOR_CSS' as color_css %}
-{% if color_css %}
-<link rel="stylesheet" href="/static/radio/css/{{ color_css }}">
-{% endif %}
-<script>
-  js_logged_in_edit_units = 0;
-  {% if user.is_staff %}
-    js_logged_in_edit_units = 1;
-  {% endif %}
-</script>
-{% block head %}{% endblock %}
-</head>
-<body>
+{% load socialaccount %}
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+{% block main-body %}
 <div class="container">
-      <div class="content">
+        <div class="row">
+                <div class="col-xs-8">
 {% block content %}{% endblock %}
 </div>
 </div>
+</div>
+{% endblock %}
 </body>
-</html>                                		
+</html>

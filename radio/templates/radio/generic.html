@@ -48,7 +48,8 @@ Your username and password didn't match. Please try again. If you have an accoun
 </form>
 <hr>
 <h2>Create a free account</h2>
-<form method="post" action="{% url 'register' %}">
+<!-- <form method="post" action="{% url 'register' %}"> -->
+<form method="post" action="/accounts/signup/">
 {% csrf_token %}
 <table border="0">
      <tr><th><label for="id_username">Username:</label></th><td><input id="id_username" max_length="30" name="username" type="text" required /></td></tr>
@@ -64,7 +65,7 @@ Your username and password didn't match. Please try again. If you have an accoun
 {% endif %}
 {% get_setting 'TWITTER_ACTIVE' as twitter_active %}
 {% if twitter_active %}
-<a class="twitter-timeline" data-width="400" data-height="1200" href="{% get_setting 'TWITTER_LIST_URL' %}">Alerts</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<a class="twitter-timeline" data-height="1200" href="{% get_setting 'TWITTER_LIST_URL' %}">Alerts</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 {% endif %}
 
                   </div>

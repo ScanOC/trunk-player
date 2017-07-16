@@ -10,7 +10,7 @@
 <div class="col-xs-5">
 <h1>Create an account</h1>
 You can use your Goggle account to create an account here <a href="{% provider_login_url "google" %}"><img src="/static/radio/img/btn_google_signin_dark_normal_web.png"></a> or create a new account below.
-    <form method="post" action=".">{% csrf_token %}
+    <form method="post" action="/accounts/signup/">{% csrf_token %}
         <table border="0">
             {{ form.as_table }}
         </table>
