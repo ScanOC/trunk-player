@@ -71,6 +71,22 @@ class Unit(models.Model):
         super(Unit, self).save(*args, **kwargs)
 
 
+class RepeaterSite(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=500, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Service(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=500, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 class TalkGroup(models.Model):
     dec_id = models.IntegerField()
     alpha_tag = models.CharField(max_length=30)
@@ -82,6 +98,8 @@ class TalkGroup(models.Model):
     system = models.ForeignKey(System, default=0)
     mode = models.CharField(max_length=1, choices=choice.TG_MODE_CHOICES, default=choice.TG_MODE_DIGITAL, help_text='mode used by trunk-recorder')
     priority = models.IntegerField(default=3, help_text='record priority used by trunk-recorder')
+    _home_site = models.ForeignKey(RepeaterSite, blank=True, null=True)
+    _service_type = models.ForeignKey(Service, blank=True, null=True)
 
     class Meta:
         ordering = ["alpha_tag"]
@@ -96,6 +114,15 @@ class TalkGroup(models.Model):
 
     def get_absolute_url(self):
         return '/tg/{}/'.format(self.slug)
+
+    @property
+    def home_site(self):
+        return self._home_site
+
+    @home_site.setter
+    def home_site(self, value):
+        hs, created = RepeaterSite.objects.get_or_create(name=value)
+        self._home_site = hs
 
 
 class TalkGroupWithSystem(TalkGroup):
