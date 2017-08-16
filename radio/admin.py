@@ -111,12 +111,14 @@ class TalkGroupAccessAdminForm(forms.ModelForm):
         return tglist
 
 class TalkGroupAccessAdmin(admin.ModelAdmin):
-  form = TalkGroupAccessAdminForm
+    form = TalkGroupAccessAdminForm
 
+class TranmissionUnitAdmin(admin.ModelAdmin):
+    raw_id_fields = ("transmission", "unit")
 
 admin.site.register(Transmission, TransmissionAdmin)
 admin.site.register(Unit,UnitAdmin)
-admin.site.register(TranmissionUnit)
+admin.site.register(TranmissionUnit, TranmissionUnitAdmin)
 admin.site.register(TalkGroup, TalkGroupAdmin)
 admin.site.register(TalkGroupAccess, TalkGroupAccessAdmin)
 admin.site.register(ScanList, ScanListAdmin)
