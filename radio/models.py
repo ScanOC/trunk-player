@@ -124,6 +124,15 @@ class TalkGroup(models.Model):
         hs, created = RepeaterSite.objects.get_or_create(name=value)
         self._home_site = hs
 
+    @property
+    def service_type(self):
+        return self._service_type
+
+    @service_type.setter
+    def service_type(self, value):
+        st, created = Service.objects.get_or_create(name=value)
+        self._service_type = st
+
 
 class TalkGroupWithSystem(TalkGroup):
     class Meta:
