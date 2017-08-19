@@ -16,7 +16,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--system',
             type=int,
-            help='Export talkgroups from only this system',
+            help='System that this import is for',
             required=True,
         )
         parser.add_argument(
@@ -64,7 +64,9 @@ def import_tg_file(self, options):
                     if len(row[4]) > description_max_length:
                       row[4] = row[4][:description_max_length]
                       self.stdout.write("Truncating description from line ({}) TG {}".format(line_number, row[3]))
-                obj, create = TalkGroup.objects.update_or_create(dec_id=row[0], system=system, defaults={'mode': row[2], 'alpha_tag': row[3], 'description': row[4], 'priority': row[5]})
+                obj, create = TalkGroup.objects.update_or_create(dec_id=row[0], system=system, defaults={'mode': row[2], 'alpha_tag': row[3], 'description': row[4], 'priority': row[7]})
+                obj.service_type = row[5]
+                obj.save()
             except (IntegrityError, IndexError):
                 print("Skipping {}".format(row[3]))
 
