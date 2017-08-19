@@ -13,11 +13,12 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('file')
         parser.add_argument(
+            '-s',
             '--system',
             type=int,
             default=-1,
             help='Export talkgroups from only this system',
-       )
+        )
 
 
     def handle(self, *args, **options):
@@ -50,5 +51,11 @@ def export_tg_file(self, options):
             common = ''
             if(t.common_name):
                 common = t.common_name
-            tg_file.write("{},{},{},{},{},{}\n".format(t.dec_id,hex_val,t.mode,alpha,description,t.priority))
+            service_type = ''
+            if(t.service_type):
+                service_type = t.service_type
+            home_site = ''
+            if(t.home_site):
+                home_site = t.home_site
+            tg_file.write("{},{},{},{},{},{},{},{}\n".format(t.dec_id,hex_val,t.mode,alpha,description,service_type,home_site,t.priority))
 
