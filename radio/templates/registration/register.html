@@ -7,7 +7,7 @@
 {% block main-body %}
 <div class="container">
         <div class="row">
-<div class="col-xs-5">
+<div class="col-sm-12 col-md-8 col-lg-8">
 <h1>Create an account</h1>
 You can use your Goggle account to create an account here <a href="{% provider_login_url "google" %}"><img src="/static/radio/img/btn_google_signin_dark_normal_web.png"></a> or create a new account below.
     <form method="post" action="/accounts/signup/">{% csrf_token %}
@@ -17,7 +17,7 @@ You can use your Goggle account to create an account here <a href="{% provider_l
         <input type="submit" value="Register" />
     </form>
 </div>
-<div class="col-xs-7">
+<div class="col-md-4 col-lg-4">
 <h3>Help</h3>
 <p>If you have any questions or comments you can email us at <a href="mailto:{% get_setting 'SITE_EMAIL' %}">{% get_setting 'SITE_EMAIL' %}</a>.</p>
 </p>
