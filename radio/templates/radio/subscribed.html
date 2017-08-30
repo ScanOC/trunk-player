@@ -1,0 +1,39 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+{% load socialaccount %}
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+{% block main-body %}
+{% get_setting 'PINAX_STRIPE_PUBLIC_KEY' as stripe_pub_key %}
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12 col-md-8 col-lg-8">
+
+<h2>ScanOC Subscribed</h2>
+
+<p>Thank you for your subscription. We hope you enjoy the additional listening history</p>
+<p>If at any time you would like to cancel, just email us at scanoc.com@google.com</p>
+<p>Use the menu at the top to select the scan list or talkgroup you want to listen to..</p>
+<p>Note: It can take up to 5 minues for your plan access to change.</p>
+
+		</div>
+                <div class="col-md-4 col-lg-4">
+{% get_setting 'TWITTER_ACTIVE' as twitter_active %}
+{% if twitter_active %}
+<a class="twitter-timeline" data-height="1200" href="{% get_setting 'TWITTER_LIST_URL' %}">Alerts</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+{% endif %}
+
+                  </div>
+
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-xs-12">
+			<footer>
+				<p>&copy; Copyright 2016-2017 {% get_setting 'SITE_TITLE' %}</p>
+			</footer>
+		</div>
+	</div>
+</div>
+{% endblock %}

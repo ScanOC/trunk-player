@@ -38,7 +38,7 @@ Your username and password didn't match. Please try again. If you have an accoun
 </table>
 
 <input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" /> <big> OR <a href="{% provider_login_url "google" %}"><img src="/static/radio/img/btn_google_signin_dark_normal_web.png"></a> </big>
+<input type="hidden" name="next" value="{{ next }}" /> <big> OR <a href="{% provider_login_url "google" %}"><img src="/static/radio/img/btn_google_signin_dark_normal_web.png"></a> OR </big> <a href="{% url 'register' %}{% if next %}?next={{ next}}{% endif %}">Create an account</a>
 </form>
 <h2>Help</h2>
 <p>If you have any questions or comments you can email us at <a href="mailto:{% get_setting 'SITE_EMAIL' %}">{% get_setting 'SITE_EMAIL' %}</a>.</p>

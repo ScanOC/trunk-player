@@ -21,10 +21,13 @@ from .serializers import TransmissionSerializer, TalkGroupSerializer, ScanListSe
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
+
 
 import pinax.stripe.actions as stripe_actions
 import pinax.stripe.models as stripe_models
 import stripe
+from allauth.account.models import EmailAddress as allauth_emailaddress
 from pprint import pprint
 from django.contrib import messages
 import logging
@@ -230,7 +233,7 @@ def upgrade(request):
         return render(
            request,
            'registration/upgrade.html',
-           {'form': form},
+           {'form': form, },
         )
 
 
@@ -304,3 +307,33 @@ def ScanDetailsList(request, name):
         query_data = scanlist.talkgroups.all()
     return render_to_response(template, {'object_list': query_data, 'scanlist': scanlist, 'request': request})
 
+@login_required
+@csrf_protect
+def plans(request):
+    token = None
+    has_verified_email = False
+    plans = None
+    if request.method == 'POST':
+        template = 'radio/subscribed.html'
+        token = request.POST.get('stripeToken')
+        plan = request.POST.get('plan')
+        # See if this user already has a stripe account
+        try:
+            stripe_cust = stripe_models.Customer.objects.get(user=request.user)
+        except ObjectDoesNotExist:
+            stripe_actions.customers.create(user=request.user)
+            stripe_cust = stripe_models.Customer.objects.get(user=request.user)
+        stripe_info = stripe_actions.subscriptions.create(customer=stripe_cust, plan=plan, token=request.POST.get('stripeToken'))
+        for t in request.POST:
+          logger.error("{} {}".format(t, request.POST[t]))
+    else:
+        template = 'radio/plans.html'
+        plans = StripePlanMatrix.objects.filter(order__lt=99).filter(active=True)
+
+        # Check if users email address is verified
+        verified_email = allauth_emailaddress.objects.filter(user=request.user, primary=True, verified=True)
+        if verified_email:
+            has_verified_email = True
+
+
+    return render(request, template, {'token': token, 'verified_email': has_verified_email, 'plans': plans} )

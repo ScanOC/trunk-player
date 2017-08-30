@@ -351,3 +351,9 @@ class StripePlanMatrix(models.Model):
     def __str__(self):
        return self.name
 
+
+    def stripe_amount(self):
+       return int(self.stripe_plan.amount * 100)
+
+    def history_days(self):
+       return int(self.radio_plan.history / 1440)

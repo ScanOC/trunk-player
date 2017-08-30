@@ -45,7 +45,7 @@ urlpatterns = [
     url(r'^scan/$', RedirectView.as_view(url='/scan/default/', permanent=False)),
     url(r'^userscan/$', TemplateView.as_view(template_name='radio/player_userscan.html')),
     url(r'^about/$', views.Generic, {'page_name': 'about'}, name='about'),
-    url(r'^plans/$', views.Generic, {'page_name': 'plans'}, name='plans'),
+    url(r'^plans/$', views.plans, name='plans'),
     url(r'^talkgroups/$', views.TalkGroupList.as_view()),
     url(r'^audio/(?P<slug>[-\w]+)/$',views.TransDetailView.as_view(), name='trans'),
     url(r'^register/$', views.register, name='register'),

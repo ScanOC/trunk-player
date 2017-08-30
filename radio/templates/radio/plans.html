@@ -1,0 +1,79 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+{% load socialaccount %}
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+{% block main-body %}
+{% get_setting 'PINAX_STRIPE_PUBLIC_KEY' as stripe_pub_key %}
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12 col-md-8 col-lg-8">
+
+<h2>ScanOC Plan Page</h2>
+<table class="table-bordered ">
+<tr><th>Listening History</th><td>2 Hours</td>
+{% for plan in plans %}
+<td>{{ plan.history_days }} Days</td>
+{% endfor %}
+</tr>
+<tr><th>Plan Price</th><td>Free</td>
+{% for plan in plans %}
+<td>${{ plan.stripe_plan.amount }} per month</td>
+{% endfor %}
+{% if verified_email %}
+<tr><th>&nbsp;</th><td>&nbsp;</td>
+
+{% for plan in plans %}
+
+<td><form name="plan_{{ plan.stripe_amount }}" action="." method="POST">
+{% csrf_token %}
+<script
+  src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+  data-key="{{ stripe_pub_key }}"
+  data-amount="{{ plan.stripe_amount }}"
+  data-name="ScanOC.com"
+  data-description="{{ plan.stripe_plan.amount }} Plan"
+  data-panel-label="Subscribe"
+  data-label="Subscribe ${{ plan.stripe_plan.amount }}"
+  data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+  data-locale="auto"
+  data-allow-remember-me="false"
+  data-email="{{ request.user.email }}" 
+  data-zip-code="true">
+</script>
+<input type="hidden" name="plan" value="{{ plan.stripe_plan.stripe_id }}">
+</form>
+</td>
+
+{% endfor %}
+
+</tr>
+{% else %}
+<tr><td colspan=5><strong>Note: You do not have a verified email address, you need to <a href="/accounts/email/">validate</a> your email before upgrading</stong></td></tr>
+{% endif %}
+</table>
+<div></div>
+<div class="plan-questions"><strong>Do I need to have a subscription to us this site?</strong> No. The site is usable to listen to live radio trafic. An upgraded plan allows you listen to radio trafic in the past.
+</div>
+
+		</div>
+                <div class="col-md-4 col-lg-4">
+{% get_setting 'TWITTER_ACTIVE' as twitter_active %}
+{% if twitter_active %}
+<a class="twitter-timeline" data-height="1200" href="{% get_setting 'TWITTER_LIST_URL' %}">Alerts</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+{% endif %}
+
+                  </div>
+
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-xs-12">
+			<footer>
+				<p>&copy; Copyright 2016-2017 {% get_setting 'SITE_TITLE' %}</p>
+			</footer>
+		</div>
+	</div>
+</div>
+{% endblock %}
