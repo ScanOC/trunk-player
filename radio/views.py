@@ -45,8 +45,20 @@ def check_anonymous(decorator):
     return decorator if not anonymous else lambda x: x
 
 
-class TransDetailView(DetailView):
-    model = Transmission
+def TransDetailView(request, slug):
+    template = 'radio/transmission_detail.html'
+    status = 'Good'
+    try:
+        query_data = Transmission.objects.filter(slug=slug)
+        if not query_data:
+            raise Http404
+    except Transmission.DoesNotExist:
+        raise Http404
+    query_data2 = limit_transmission_history(request, query_data)
+    if not query_data2:
+        query_data[0].audio_file = None
+        status = 'Expired'
+    return render(request, template, {'object': query_data[0], 'status': status})
 
 
 class TransmissionViewSet(viewsets.ModelViewSet):
@@ -100,9 +112,9 @@ def Generic(request, page_name):
     query_data = WebHtml.objects.get(name=page_name)
     return render(request, template, {'html_object': query_data})
 
-def limit_transmission_history(request, query_data):
-    if request.user.is_authenticated():
-        user_profile = Profile.objects.get(user=request.user)
+def get_history_allow(user):
+    if user.is_authenticated():
+        user_profile = Profile.objects.get(user=user)
     else:
         try:
             anon_user = User.objects.get(username='ANONYMOUS_USER')
@@ -113,6 +125,11 @@ def limit_transmission_history(request, query_data):
         history_minutes = user_profile.plan.history
     else:
         history_minutes = settings.ANONYMOUS_TIME
+    return history_minutes
+
+
+def limit_transmission_history(request, query_data):
+    history_minutes = get_history_allow(request.user)
     if history_minutes > 0:
         time_threshold = timezone.now() - timedelta(minutes=history_minutes)
         query_data = query_data.filter(start_datetime__gt=time_threshold)

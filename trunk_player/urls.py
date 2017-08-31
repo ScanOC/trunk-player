@@ -47,7 +47,7 @@ urlpatterns = [
     url(r'^about/$', views.Generic, {'page_name': 'about'}, name='about'),
     url(r'^plans/$', views.plans, name='plans'),
     url(r'^talkgroups/$', views.TalkGroupList.as_view()),
-    url(r'^audio/(?P<slug>[-\w]+)/$',views.TransDetailView.as_view(), name='trans'),
+    url(r'^audio/(?P<slug>[-\w]+)/$',views.TransDetailView, name='trans'),
     url(r'^register/$', views.register, name='register'),
     url(r'^register/success/$', views.register_success),
     url(r'^unitupdate/(?P<pk>\d+)/$', views.UnitUpdateView.as_view(), name='unitupdate'),
