@@ -4,6 +4,7 @@ from .models import Transmission, TalkGroup, Unit, ScanList, MenuScanList, MenuT
 
 
 class TalkGroupSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name="talkgroups-detail")
     class Meta:
         model = TalkGroup
         fields = ('url', 'dec_id', 'alpha_tag', 'description', 'slug')

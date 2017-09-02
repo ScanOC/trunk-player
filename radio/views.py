@@ -1,6 +1,7 @@
 #import functools
 import sys
 import re
+from itertools import chain
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.http import Http404
 from django.views.generic import ListView
@@ -58,6 +59,9 @@ def TransDetailView(request, slug):
     if not query_data2:
         query_data[0].audio_file = None
         status = 'Expired'
+    restricted, new_query = restrict_talkgroups(request, query_data)
+    if not new_query:
+        raise Http404
     return render(request, template, {'object': query_data[0], 'status': status})
 
 
@@ -78,8 +82,17 @@ class TalkGroupViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-    queryset = TalkGroup.objects.filter(public=True)
+#    queryset = TalkGroup.objects.filter(public=True)
     serializer_class = TalkGroupSerializer
+    base_name = 'TalkGroup'
+
+    def get_queryset(self):
+        if settings.ACCESS_TG_RESTRICT:
+            tg = allowed_tg_list(self.request.user)
+        else:
+            tg = TalkGroup.objects.filter(public=True)
+        return tg
+
 
 
 class TransmissionView(ListView):
@@ -112,7 +125,7 @@ def Generic(request, page_name):
     query_data = WebHtml.objects.get(name=page_name)
     return render(request, template, {'html_object': query_data})
 
-def get_history_allow(user):
+def get_user_profile(user):
     if user.is_authenticated():
         user_profile = Profile.objects.get(user=user)
     else:
@@ -121,6 +134,10 @@ def get_history_allow(user):
         except User.DoesNotExist:
             raise ImproperlyConfigured('ANONYMOUS_USER is missing from User table, was "./manage.py migrations" not run?')
         user_profile = Profile.objects.get(user=anon_user)
+    return user_profile
+
+def get_history_allow(user):
+    user_profile = get_user_profile(user)
     if user_profile:
         history_minutes = user_profile.plan.history
     else:
@@ -136,6 +153,26 @@ def limit_transmission_history(request, query_data):
     return query_data
 
 
+def allowed_tg_list(user):
+    user_profile = get_user_profile(user)
+    tg_list = list()
+    for group in user_profile.talkgroup_access.all():
+       tg_list = list(chain(tg_list, group.talkgroups.all()))
+    return tg_list
+
+
+def restrict_talkgroups(request, query_data):
+    ''' Checks to make sure the user can view
+        each of the talkgroups in the query_data
+        returns ( was_restricted, new query_data )
+    '''
+    if not settings.ACCESS_TG_RESTRICT:
+        return false, query_data
+    tg_list = allowed_tg_list(request.user)
+    query_data = query_data.filter(talkgroup_info__in=tg_list)
+    return None, query_data
+    
+
 def TalkGroupFilterBase(request, filter_val, template):
     try:
         tg = TalkGroup.objects.get(alpha_tag__startswith=filter_val)
@@ -144,6 +181,7 @@ def TalkGroupFilterBase(request, filter_val, template):
     try:
         query_data = Transmission.objects.filter(talkgroup_info=tg).prefetch_related('units')
         query_data = limit_transmission_history(self.request, rc_data)
+        restrict_talkgroups(self.request, rc_data)
     except Transmission.DoesNotExist:
         raise Http404
     return render_to_response(template, {'object_list': query_data, 'filter_data': filter_val})
@@ -165,7 +203,9 @@ class ScanViewSet(generics.ListAPIView):
         else:
             tg = sl.talkgroups.all()
         rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units')
-        return limit_transmission_history(self.request, rc_data)
+        rc_data = limit_transmission_history(self.request, rc_data)
+        restricted, rc_data = restrict_talkgroups(self.request, rc_data) 
+        return rc_data
 
 
 class TalkGroupFilterViewSet(generics.ListAPIView):
@@ -180,7 +220,9 @@ class TalkGroupFilterViewSet(generics.ListAPIView):
             q |= Q(slug__iexact=stg)
         tg = TalkGroup.objects.filter(q)
         rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units')
-        return limit_transmission_history(self.request, rc_data)
+        rc_data = limit_transmission_history(self.request, rc_data)
+        restricted, rc_data = restrict_talkgroups(self.request, rc_data)
+        return rc_data
 
 
 class UnitFilterViewSet(generics.ListAPIView):
@@ -194,14 +236,24 @@ class UnitFilterViewSet(generics.ListAPIView):
             q |= Q(slug__iexact=s_unit)
         units = Unit.objects.filter(q)
         rc_data = Transmission.objects.filter(units__in=units).filter(talkgroup_info__public=True).prefetch_related('units').distinct()
-        return limit_transmission_history(self.request, rc_data)
+        rc_data = limit_transmission_history(self.request, rc_data)
+        restricted, rc_data = restrict_talkgroups(self.request, rc_data)
+        return rc_data
 
 
 class TalkGroupList(ListView):
     model = TalkGroup
     context_object_name = 'talkgroups'
+    template_name = 'radio/talkgroup_list.html'
 
-    queryset = TalkGroup.objects.filter(public=True)
+    #queryset = TalkGroup.objects.filter(public=True)
+    def get_queryset(self):
+        if settings.ACCESS_TG_RESTRICT:
+            tg = allowed_tg_list(self.request.user)
+        else:
+            tg = TalkGroup.objects.filter(public=True)
+        return tg
+
 
 
 @login_required

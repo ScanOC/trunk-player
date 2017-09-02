@@ -298,6 +298,9 @@ class TalkGroupAccess(models.Model):
     talkgroups = models.ManyToManyField(TalkGroupWithSystem)
     default_group = models.BooleanField(default=False)
 
+    class Meta:
+        verbose_name_plural = 'talk group access'
+
     def __str__(self):
         return '{}'.format(self.name)
 
