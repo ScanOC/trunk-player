@@ -167,7 +167,7 @@ def restrict_talkgroups(request, query_data):
         returns ( was_restricted, new query_data )
     '''
     if not settings.ACCESS_TG_RESTRICT:
-        return false, query_data
+        return False, query_data
     tg_list = allowed_tg_list(request.user)
     query_data = query_data.filter(talkgroup_info__in=tg_list)
     return None, query_data
