@@ -264,8 +264,6 @@ PINAX_STRIPE_PUBLIC_KEY = 'pk_test_xxxxxxxxxxxxxxxxxxxx'
 PINAX_STRIPE_INVOICE_FROM_EMAIL = 'help@example.com'
 
 ACCESS_TG_RESTRICT = False
-NEW_TG_ACCESS_GROUPS = []
-NEW_USER_TG_GROUPS = []
 
 
 # Load our local settings 

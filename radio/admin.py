@@ -112,6 +112,7 @@ class TalkGroupAccessAdminForm(forms.ModelForm):
 
 class TalkGroupAccessAdmin(admin.ModelAdmin):
     form = TalkGroupAccessAdminForm
+    list_display = ('name', 'default_group', 'default_new_talkgroups')
 
 class TranmissionUnitAdmin(admin.ModelAdmin):
     raw_id_fields = ("transmission", "unit")

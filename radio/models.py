@@ -134,6 +134,17 @@ class TalkGroup(models.Model):
         self._service_type = st
 
 
+def AddToDefaultAccessGroup(sender, instance, created, **kwargs):
+    if created:
+        new_tg = TalkGroupWithSystem.objects.get(pk=instance.pk)
+        for access_group in TalkGroupAccess.objects.filter(default_new_talkgroups=True):
+            access_group.talkgroups.add(new_tg)
+            access_group.save()
+
+
+post_save.connect(AddToDefaultAccessGroup, sender=TalkGroup)
+
+
 class TalkGroupWithSystem(TalkGroup):
     class Meta:
         proxy = True
@@ -296,7 +307,9 @@ class MenuTalkGroupList(MenuList):
 class TalkGroupAccess(models.Model):
     name = models.CharField(max_length=30, unique=True)
     talkgroups = models.ManyToManyField(TalkGroupWithSystem)
-    default_group = models.BooleanField(default=False)
+    default_group = models.BooleanField(default=False, help_text='new users get this group by default')
+    default_new_talkgroups = models.BooleanField(default=False, help_text='new talkgroups are added to this group')
+    
 
     class Meta:
         verbose_name_plural = 'talk group access'
