@@ -67,7 +67,8 @@ class ScanListAdminForm(forms.ModelForm):
         return scanlist
 
 class ScanListAdmin(admin.ModelAdmin):
-  form = ScanListAdminForm
+    form = ScanListAdminForm
+    save_as = True
 
 
 class ProfileInline(admin.StackedInline):
