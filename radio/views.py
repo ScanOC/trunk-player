@@ -155,9 +155,13 @@ def limit_transmission_history(request, query_data):
 
 def allowed_tg_list(user):
     user_profile = get_user_profile(user)
-    tg_list = list()
+    tg_list = None
     for group in user_profile.talkgroup_access.all():
-       tg_list = list(chain(tg_list, group.talkgroups.all()))
+       if tg_list is None:
+           tg_list = group.talkgroups.all()
+       else:
+           tg_list = tg_list | group.talkgroups.all()
+    tg_list = tg_list.distinct()
     return tg_list
 
 
