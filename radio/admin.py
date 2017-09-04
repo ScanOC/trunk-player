@@ -9,10 +9,14 @@ from .models import *
 class TalkGroupAdmin(admin.ModelAdmin):
     search_fields = ['alpha_tag', 'description', 'dec_id']
     list_display = ('alpha_tag', 'description', 'dec_id', 'system')
+    save_on_top = True
+
 
 class UnitAdmin(admin.ModelAdmin): 
     search_fields = ['description', 'dec_id' ]
     list_display = ('description', 'dec_id', 'system' )
+    save_on_top = True
+
 
 class TranmissionUnitInline(admin.TabularInline):
     model = TranmissionUnit
@@ -20,20 +24,25 @@ class TranmissionUnitInline(admin.TabularInline):
 
 class TransmissionAdmin(admin.ModelAdmin):
     inlines = (TranmissionUnitInline,)
+    save_on_top = True
+
 
 class SourceInline(admin.TabularInline):
     model = Source
     readonly_fields=('id',)
 
+
 class SourceAdmin(admin.ModelAdmin):
     list_display = ('id','description')
     list_display_links = ('id','description')
     #fields = ('id','description')
+    save_on_top = True
 
     def get_readonly_fields(self, request, obj=None):
             if obj: # editing an existing object
                 return self.readonly_fields + ('id',)
             return self.readonly_fields
+
 
 class ScanListAdminForm(forms.ModelForm):
     talkgroups = forms.ModelMultipleChoiceField(
@@ -66,9 +75,11 @@ class ScanListAdminForm(forms.ModelForm):
 
         return scanlist
 
+
 class ScanListAdmin(admin.ModelAdmin):
     form = ScanListAdminForm
     save_as = True
+    save_on_top = True
 
 
 class ProfileInline(admin.StackedInline):
@@ -79,6 +90,7 @@ class ProfileInline(admin.StackedInline):
 
 class UserAdmin(BaseUserAdmin):
     inlines = (ProfileInline, )
+
 
 class TalkGroupAccessAdminForm(forms.ModelForm):
     talkgroups = forms.ModelMultipleChoiceField(
@@ -114,9 +126,13 @@ class TalkGroupAccessAdminForm(forms.ModelForm):
 class TalkGroupAccessAdmin(admin.ModelAdmin):
     form = TalkGroupAccessAdminForm
     list_display = ('name', 'default_group', 'default_new_talkgroups')
+    save_on_top = True
+
 
 class TranmissionUnitAdmin(admin.ModelAdmin):
     raw_id_fields = ("transmission", "unit")
+    save_on_top = True
+
 
 admin.site.register(Transmission, TransmissionAdmin)
 admin.site.register(Unit,UnitAdmin)
