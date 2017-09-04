@@ -206,7 +206,7 @@ class ScanViewSet(generics.ListAPIView):
                raise
         else:
             tg = sl.talkgroups.all()
-        rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units')
+        rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units').prefetch_related('talkgroup_info')
         rc_data = limit_transmission_history(self.request, rc_data)
         restricted, rc_data = restrict_talkgroups(self.request, rc_data) 
         return rc_data
