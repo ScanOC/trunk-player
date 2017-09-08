@@ -23,6 +23,7 @@ from rest_framework import routers
 from radio import views
 
 router = routers.DefaultRouter()
+router.register(r'transmission', views.TransmissionViewSet)
 router.register(r'talkgroups', views.TalkGroupViewSet, base_name='talkgroups')
 router.register(r'scanlist', views.ScanListViewSet)
 router.register(r'menuscanlist', views.MenuScanListViewSet)
@@ -54,3 +55,4 @@ urlpatterns = [
     url(r"^payments/", include("pinax.stripe.urls")),
     url(r'^upgrade/$', views.upgrade, name='upgrade'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

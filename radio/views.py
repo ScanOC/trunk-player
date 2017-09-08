@@ -69,7 +69,7 @@ class TransmissionViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = Transmission.objects.all().prefetch_related('units')
+    queryset = Transmission.objects.none()
     serializer_class = TransmissionSerializer
 
 
