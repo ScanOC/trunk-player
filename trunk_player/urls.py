@@ -23,7 +23,6 @@ from rest_framework import routers
 from radio import views
 
 router = routers.DefaultRouter()
-router.register(r'transmission', views.TransmissionViewSet)
 router.register(r'talkgroups', views.TalkGroupViewSet, base_name='talkgroups')
 router.register(r'scanlist', views.ScanListViewSet)
 router.register(r'menuscanlist', views.MenuScanListViewSet)
