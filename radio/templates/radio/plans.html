@@ -21,7 +21,6 @@
 {% for plan in plans %}
 <td>${{ plan.stripe_plan.amount }} per month</td>
 {% endfor %}
-{% if verified_email %}
 <tr><th>&nbsp;</th><td>&nbsp;</td>
 
 {% for plan in plans %}
@@ -42,16 +41,13 @@
   data-email="{{ request.user.email }}" 
   data-zip-code="true">
 </script>
+{% endfor %}
 <input type="hidden" name="plan" value="{{ plan.stripe_plan.stripe_id }}">
 </form>
 </td>
 
-{% endfor %}
 
 </tr>
-{% else %}
-<tr><td colspan=5><strong>Note: You do not have a verified email address, you need to <a href="/accounts/email/">validate</a> your email before upgrading</stong></td></tr>
-{% endif %}
 </table>
 <div></div>
 <div class="plan-questions"><strong>Do I need to have a subscription to us this site?</strong> No. The site is usable to listen to live radio traffic. An upgraded plan allows you listen to radio traffic in the past.
