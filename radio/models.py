@@ -398,7 +398,7 @@ def create_profile(sender, **kwargs):
                       'New ScanOC User {}'.format(user.username),
                       'New User {} {} Username {} Email {} just registered'.format(user.first_name, user.last_name, user.username, user.email),
                       settings.SERVER_EMAIL,
-                      settings.ADMINS,
+                      [ mail for name, mail in settings.ADMINS],
                       fail_silently=False,
                      )
         except SiteOption.DoesNotExist:
