@@ -11,6 +11,7 @@ from channels import Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 
 import radio.choices as choice
 
@@ -333,18 +334,6 @@ class Profile(models.Model):
     talkgroup_access = models.ManyToManyField(TalkGroupAccess, blank=True)
 
 
-def create_profile(sender, **kwargs):
-    user = kwargs["instance"]
-    if kwargs["created"]:
-        default_plan = Plan.objects.get(pk=Plan.DEFAULT_PK)
-        up = Profile(user=user, plan=default_plan)
-        up.save()
-        for tg in TalkGroupAccess.objects.filter(default_group=True):
-            up.talkgroup_access.add(tg)
-
-
-post_save.connect(create_profile, sender=User)
-
 class WebHtml(models.Model):
     name = models.CharField(max_length=30, unique=True)
     bodytext = models.TextField()
@@ -392,3 +381,27 @@ class SiteOption(models.Model):
             return False
         else:
             return self.value
+
+
+def create_profile(sender, **kwargs):
+    user = kwargs["instance"]
+    if kwargs["created"]:
+        default_plan = Plan.objects.get(pk=Plan.DEFAULT_PK)
+        up = Profile(user=user, plan=default_plan)
+        up.save()
+        for tg in TalkGroupAccess.objects.filter(default_group=True):
+            up.talkgroup_access.add(tg)
+        try:
+            new_user_email = SiteOption.objects.get(name='SEND_ADMIN_EMAIL_ON_NEW_USER')
+            if new_user_email.value_boolean_or_string() == True:
+                send_mail(
+                      'New ScanOC User {}'.format(user.username),
+                      'New User {} {} Username {} Email {} just registered'.format(user.first_name, user.last_name, user.username, user.email),
+                      settings.SERVER_EMAIL,
+                      settings.ADMINS,
+                      fail_silently=False,
+                     )
+        except SiteOption.DoesNotExist:
+            pass
+
+post_save.connect(create_profile, sender=User)
