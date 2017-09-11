@@ -375,9 +375,9 @@ class SiteOption(models.Model):
         return self.name
 
     def value_boolean_or_string(self):
-        if self.value == 'True':
+        if self.value.lower() == 'true':
             return True
-        elif self.value == 'False':
+        elif self.value.lower() == 'false':
             return False
         else:
             return self.value
