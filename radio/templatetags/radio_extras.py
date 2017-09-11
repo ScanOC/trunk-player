@@ -4,7 +4,7 @@ from django import template
 from django.conf import settings
 from django.contrib.auth.models import User
 
-from radio.models import Profile
+from radio.models import Profile, SiteOption
 
 register = template.Library()
 
@@ -63,5 +63,7 @@ def get_setting(value):
     visable_settings = getattr(settings, 'VISABLE_SETTINGS', None)
     if value in visable_settings:
         return getattr(settings, value, False)
+    for opt in SiteOption.objects.filter(name=value, javascript_visible=True):
+        return opt.value_boolean_or_string()
     return None
     

@@ -373,3 +373,22 @@ class StripePlanMatrix(models.Model):
 
     def history_days(self):
        return int(self.radio_plan.history / 1440)
+
+
+class SiteOption(models.Model):
+    name = models.CharField(max_length=30, unique=True)
+    value = models.CharField(max_length=60)
+    javascript_visible = models.BooleanField(default=False)
+    template_visible = models.BooleanField(default=False)
+    description = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    def value_boolean_or_string(self):
+        if self.value == 'True':
+            return True
+        elif self.value == 'False':
+            return False
+        else:
+            return self.value
