@@ -395,7 +395,7 @@ def create_profile(sender, **kwargs):
             new_user_email = SiteOption.objects.get(name='SEND_ADMIN_EMAIL_ON_NEW_USER')
             if new_user_email.value_boolean_or_string() == True:
                 send_mail(
-                      'New ScanOC User {}'.format(user.username),
+                      'New {} User {}'.format(settings.SITE_TITLE, user.username),
                       'New User {} {} Username {} Email {} just registered'.format(user.first_name, user.last_name, user.username, user.email),
                       settings.SERVER_EMAIL,
                       [ mail for name, mail in settings.ADMINS],
