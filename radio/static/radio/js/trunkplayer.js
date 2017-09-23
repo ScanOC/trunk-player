@@ -204,6 +204,7 @@ function buildpage() {
       $("#anoymous_time_warn").hide();
       $("#no_trans").hide();
       if(data.count > 0) {
+      $("#foot-play-button").show();
       if ( live_update == 1 && ( data.results[0].pk != last_call || force_page_rebuild == 1 )) {
       console.log("Rebuild");
       force_page_rebuild = 0;
