@@ -201,6 +201,8 @@ function buildpage() {
       console.log(data);
       //console.log("Checking for new calls")
       //console.log("Last Call " + last_call + " New last " + data.results[0].pk)
+      $("#anoymous_time_warn").hide();
+      $("#no_trans").hide();
       if(data.count > 0) {
       if ( live_update == 1 && ( data.results[0].pk != last_call || force_page_rebuild == 1 )) {
       console.log("Rebuild");
@@ -285,6 +287,8 @@ function buildpage() {
       last_call = data.results[0].pk;
       first_load = 0;
       } else {
+        $("#no_trans").show();
+        $("#anoymous_time_warn").show();
         $('#main-data-table').html("")
       }
     });

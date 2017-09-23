@@ -7,6 +7,9 @@
   <div id="main-data-table">
 Loading Data.....
   </div>
+  <div id="no_trans" style="display: none" class=" alert alert-danger" role="alert">
+  No transmissions were returned for this page
+  </div>
   {% get_user_time user as anonymous_time %}
   {% if not user.is_authenticated and anonymous_time != 0 %}
   <div id="anoymous_time_warn" style="display: none" class=" alert alert-danger" role="alert">
