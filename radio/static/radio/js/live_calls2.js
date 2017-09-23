@@ -17,7 +17,11 @@ function start_socket() {
     if(pathArray[0] == "userscan") {
         // Build TGs from select box
         console.log("In WS connect for userscan");
-        tg_array = $('.tg-multi-select').select2("val");
+        if ($('.tg-multi-select').length) {
+            tg_array = $('.tg-multi-select').select2("val");
+        } else {
+            tg_array = null;
+        }
         console.log("TG Array is " + tg_array);
         if(tg_array) {
           ws_url =  "/ws-calls/tg/" + tg_array.join('+');
