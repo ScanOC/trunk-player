@@ -161,7 +161,11 @@ def allowed_tg_list(user):
            tg_list = group.talkgroups.all()
        else:
            tg_list = tg_list | group.talkgroups.all()
-    tg_list = tg_list.distinct()
+    if tg_list:
+        tg_list = tg_list.distinct()
+    else:
+        # Set blank talkgroup queryset
+        tg_list = TalkGroup.objects.none()
     return tg_list
 
 
