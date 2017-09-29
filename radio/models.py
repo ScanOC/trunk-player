@@ -12,6 +12,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from django.db.utils import OperationalError
 
 import radio.choices as choice
 
@@ -389,8 +390,11 @@ def create_profile(sender, **kwargs):
         default_plan = Plan.objects.get(pk=Plan.DEFAULT_PK)
         up = Profile(user=user, plan=default_plan)
         up.save()
-        for tg in TalkGroupAccess.objects.filter(default_group=True):
-            up.talkgroup_access.add(tg)
+        try:
+            for tg in TalkGroupAccess.objects.filter(default_group=True):
+                up.talkgroup_access.add(tg)
+        except OperationalError:
+            pass
         try:
             new_user_email = SiteOption.objects.get(name='SEND_ADMIN_EMAIL_ON_NEW_USER')
             if new_user_email.value_boolean_or_string() == True:
@@ -401,7 +405,7 @@ def create_profile(sender, **kwargs):
                       [ mail for name, mail in settings.ADMINS],
                       fail_silently=False,
                      )
-        except SiteOption.DoesNotExist:
+        except (SiteOption.DoesNotExist, OperationalError):
             pass
 
 post_save.connect(create_profile, sender=User)
