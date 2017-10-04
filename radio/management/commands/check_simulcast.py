@@ -53,7 +53,7 @@ def check_tg(self, options):
     
     self.stdout.write('Comparing Last Transmission {} {} to {} {} ({})'.format(tg1, time1, tg2, time2, time_diff))
     if time_diff > max_diff:
-        self.stdout.write(self.style.ERROR('Too long between simulcast transmisisons {}'.format(time_diff)))
+        self.stdout.write(self.style.ERROR('Too long between simulcast transmissions {}'.format(time_diff)))
         sys.exit(1)
     else:
         self.stdout.write(self.style.SUCCESS('Good'))
