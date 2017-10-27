@@ -1,0 +1,38 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+{% load socialaccount %}
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+{% block main-body %}
+{% get_setting 'PINAX_STRIPE_PUBLIC_KEY' as stripe_pub_key %}
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12 col-md-8 col-lg-8">
+
+<h2>Charge Failed</h2>
+
+<p>Sorry your card was declined, this is the message from the card processor</p>
+<pre>{{ error_msg }}</pre>
+<p>Return to <a href="/plans/">Plans</a> to try another card..</p>
+
+		</div>
+                <div class="col-md-4 col-lg-4">
+{% get_setting 'TWITTER_ACTIVE' as twitter_active %}
+{% if twitter_active %}
+<a class="twitter-timeline" data-height="1200" href="{% get_setting 'TWITTER_LIST_URL' %}">Alerts</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+{% endif %}
+
+                  </div>
+
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-xs-12">
+			<footer>
+				<p>&copy; Copyright 2016-2017 {% get_setting 'SITE_TITLE' %}</p>
+			</footer>
+		</div>
+	</div>
+</div>
+{% endblock %}

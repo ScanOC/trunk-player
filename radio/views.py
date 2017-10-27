@@ -400,7 +400,13 @@ def plans(request):
         except ObjectDoesNotExist:
             stripe_actions.customers.create(user=request.user)
             stripe_cust = stripe_models.Customer.objects.get(user=request.user)
-        stripe_info = stripe_actions.subscriptions.create(customer=stripe_cust, plan=plan, token=request.POST.get('stripeToken'))
+        try:
+            stripe_info = stripe_actions.subscriptions.create(customer=stripe_cust, plan=plan, token=request.POST.get('stripeToken'))
+        except stripe.CardError as e:
+            template = 'radio/charge_failed.html'
+            logger.error("Error with stripe user card{}".format(e))
+            return render(request, template, {'error_msg': e })
+
         for t in request.POST:
           logger.error("{} {}".format(t, request.POST[t]))
     else:
