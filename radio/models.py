@@ -159,6 +159,7 @@ class Transmission(models.Model):
     slug = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False) 
     start_datetime = models.DateTimeField(db_index=True)
     audio_file = models.FileField()
+    audio_file_type = models.CharField(max_length=3, default='mp3')
     audio_file_url_path = models.CharField(max_length=100, default='/')
     talkgroup = models.IntegerField()
     talkgroup_info = models.ForeignKey(TalkGroup)

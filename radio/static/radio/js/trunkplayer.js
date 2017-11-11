@@ -40,7 +40,7 @@ function update_scan_list() {
 }
 
 function start_scanner() {
-    play_clip(base_audio_url + 'point1sec', 0, 0);
+    play_clip(base_audio_url + 'point1sec.mp3', 0, 0);
     $(".stop-btn").show();
     $(".start-btn").hide();
 }
@@ -219,7 +219,7 @@ function buildpage() {
           curr_id = curr_results.pk;
 
           new_id_list.unshift(data.results[a].pk);
-          new_file_list.unshift(data.results[a].audio_url + data.results[a].audio_file);
+          new_file_list.unshift(data.results[a].audio_url + data.results[a].audio_file + "." + data.results[a].audio_file_type);
           new_tg_list.unshift(data.results[a].tg_name);
           new_tg_slug_list.unshift(data.results[a].talkgroup_info.slug);
           button_type = "btn-default";
@@ -234,7 +234,7 @@ function buildpage() {
           }
 
           new_html += '<div id="row-' + curr_id + '" class="row grad">';
-          new_html += '<div class="top-data"><button aria-label="Play" id="gl-player-action-' + curr_id + '" onclick="click_play_clip(\'' + curr_results.audio_url + curr_results.audio_file + '\', ' + curr_id + '); return false;" class="player-action glyphicon glyphicon-play" aria-hidden="false"></button><span class="talk-group ' + tg_muted + ' talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
+          new_html += '<div class="top-data"><button aria-label="Play" id="gl-player-action-' + curr_id + '" onclick="click_play_clip(\'' + curr_results.audio_url + curr_results.audio_file + '.' + curr_results.audio_file_type + '\', ' + curr_id + '); return false;" class="player-action glyphicon glyphicon-play" aria-hidden="false"></button><span class="talk-group ' + tg_muted + ' talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
           new_html += '<div class="unit-data"><span class="unit-id-1 unit-list">';
           new_unit_list = data.results[a].units.reverse();
           has_units = false;
@@ -326,12 +326,16 @@ function play_clip(audio_file, audio_id){
       }
       // Google Analytics
       ga('send', 'event', 'Transmisison', 'play', audio_id);
-      $("#jquery_jplayer_1").jPlayer("setMedia", {
-         //oga: audio_file + ".ogg",
-         //m4a: audio_file + ".m4a",
-         mp3: audio_file + ".mp3",
-       } );
-       $("#jquery_jplayer_1").jPlayer("play");
+      if(audio_file.substring(audio_file.length - 3) == "m4a") {
+        $("#jquery_jplayer_1").jPlayer("setMedia", {
+           m4a: audio_file,
+        } );
+      } else {
+        $("#jquery_jplayer_1").jPlayer("setMedia", {
+          mp3: audio_file,
+        } );
+      }
+      $("#jquery_jplayer_1").jPlayer("play");
 }
 
 function reset_play_list(audio_id){
@@ -394,7 +398,7 @@ function setup_player() {
        },
        swfPath: "https://jplayer.org/latest/dist/jplayer/",
        solution: "html,flash",
-       supplied: "mp3",
+       supplied: "mp3, m4a",
        remainingDuration: true,
        errorAlerts: true,
        warningAlerts: true,
@@ -454,7 +458,7 @@ $(document).ready(function(){
     }
     $(".stop-btn").hide();
     setup_player();
-    play_clip(base_audio_url + "point1sec", 0, 0);
+    play_clip(base_audio_url + "point1sec.mp3", 0, 0);
     first_load = 1;
     buildpage();
     unit_edit_post_setup1();
