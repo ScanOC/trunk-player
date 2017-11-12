@@ -217,9 +217,13 @@ function buildpage() {
       for (var a in data.results) {
           curr_results = data.results[a];
           curr_id = curr_results.pk;
+          file_ext = "mp3"
+          if (data.results[a].audio_file_type) {
+              file_ext = data.results[a].audio_file_type
+          }
 
           new_id_list.unshift(data.results[a].pk);
-          new_file_list.unshift(data.results[a].audio_url + data.results[a].audio_file + "." + data.results[a].audio_file_type);
+          new_file_list.unshift(data.results[a].audio_url + data.results[a].audio_file + "." + file_ext);
           new_tg_list.unshift(data.results[a].tg_name);
           new_tg_slug_list.unshift(data.results[a].talkgroup_info.slug);
           button_type = "btn-default";
