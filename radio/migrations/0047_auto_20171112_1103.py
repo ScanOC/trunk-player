@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('radio', '0045_siteoption_new_user_email'),
+        ('radio', '0046_transmission_audio_file_type'),
     ]
 
     operations = [
-        migrations.AddField(
+        migrations.AlterField(
             model_name='transmission',
             name='audio_file_type',
-            field=models.CharField(max_length=3, null=True),
+            field=models.CharField(default='mp3', max_length=3, null=True),
         ),
     ]
