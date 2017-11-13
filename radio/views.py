@@ -8,7 +8,7 @@ from django.views.generic import ListView
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login
 from django.conf import settings
@@ -63,6 +63,35 @@ def TransDetailView(request, slug):
     if not new_query:
         raise Http404
     return render(request, template, {'object': query_data[0], 'status': status})
+
+def transDownloadView(request, slug):
+    import urllib.request
+    try:
+        query_data = Transmission.objects.filter(slug=slug)
+        if not query_data:
+            raise Http404
+    except Transmission.DoesNotExist:
+        raise Http404
+    query_data2 = limit_transmission_history(request, query_data)
+    if not query_data2:
+        raise Http404  # Just raise 404 if its too old
+    restricted, new_query = restrict_talkgroups(request, query_data)
+    if not new_query:
+        raise Http404
+    trans = new_query[0]
+    if trans.audio_file_type == 'm4a':
+        audio_type = 'audio/m4a'
+    else:
+        audio_type = 'audio/mp3'
+    response = HttpResponse(content_type=audio_type)
+    start_time = timezone.localtime(trans.start_datetime).strftime('%Y%m%d_%H%M%S')
+    filename = '{}_{}.{}'.format(start_time, trans.talkgroup_info.slug, trans.audio_file_type)
+    response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+    url = 'https:{}{}.{}'.format(trans.audio_url, trans.audio_file, trans.audio_file_type)
+    req = urllib.request.Request(url)
+    with urllib.request.urlopen(req) as web_response:
+        response.write(web_response.read())
+    return response
 
 
 class TransmissionViewSet(viewsets.ModelViewSet):

@@ -25,4 +25,5 @@ def trunkplayer_js_config(user):
     else:
         js_json['user_is_authenticated'] = False
     js_json['radio_change_unit'] = user.has_perm('radio.change_unit')
+    js_json['download_audio'] = user.has_perm('radio.download_audio')
     return json.dumps(js_json)

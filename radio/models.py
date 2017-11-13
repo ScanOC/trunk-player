@@ -207,6 +207,9 @@ class Transmission(models.Model):
 
     class Meta:
         ordering = ["-pk"]
+        permissions = (
+            ('download_audio', 'Can download audio clips'),
+        )
 
 
 @receiver(post_save, sender=Transmission, dispatch_uid="send_mesg")

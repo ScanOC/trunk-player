@@ -271,6 +271,9 @@ function buildpage() {
           //if(js_config.radio_change_unit) {
           //  new_html += '<li><a data-toggle="modal" data-target="#myModalNorm"><i class="fa fa-pencil fa-fw"></i> Edit Unit ID</a></li>';
           //}
+          if(js_config.download_audio) {
+              new_html += '<li><a href="/audio_download/' + curr_results.slug + '/"><i class="fa fa-download fa-fw" aria-hidden="true"></i> Download audio file</a></li>';
+          }
           new_html += '<li><a href="/audio/' + curr_results.slug + '/"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Details</a></li>';
           //new_html += '<li class="divider"></li>';
           //new_html += '<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Flag for delete</a></li>';

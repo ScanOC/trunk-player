@@ -48,6 +48,7 @@ urlpatterns = [
     url(r'^plans/$', views.plans, name='plans'),
     url(r'^talkgroups/$', views.TalkGroupList.as_view()),
     url(r'^audio/(?P<slug>[-\w]+)/$',views.TransDetailView, name='trans'),
+    url(r'^audio_download/(?P<slug>[-\w]+)/$',views.transDownloadView, name='download'),
     url(r'^register/$', views.register, name='register'),
     url(r'^register/success/$', views.register_success),
     url(r'^unitupdate/(?P<pk>\d+)/$', views.UnitUpdateView.as_view(), name='unitupdate'),
