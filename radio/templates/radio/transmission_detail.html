@@ -79,7 +79,7 @@
                 <div class="col-xs-1"></div>
 		<div class="col-xs-2">
         {% if object.audio_file %}
-<button id="button_{{ object.pk }}" type="button" class="btn play-btn btn-success" onclick="click_play_clip('{{object.audio_url}}{{ object.audio_file }}', '{{ object.pk }}')"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Play </button>
+<button id="button_{{ object.pk }}" type="button" class="btn play-btn btn-success" onclick="click_play_clip('{{object.audio_url}}{{ object.audio_file }}.{% if audio_file_type %}{{ audio_file_type }}{% else %}mp3{% endif %}', '{{ object.pk }}')"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Play </button>
          {% endif %}
 
 </div>
