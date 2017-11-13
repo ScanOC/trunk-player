@@ -159,6 +159,7 @@ class Transmission(models.Model):
     slug = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False) 
     start_datetime = models.DateTimeField(db_index=True)
     audio_file = models.FileField()
+    audio_file_type = models.CharField(max_length=3, null=True, default='mp3')
     audio_file_url_path = models.CharField(max_length=100, default='/')
     talkgroup = models.IntegerField()
     talkgroup_info = models.ForeignKey(TalkGroup)
@@ -206,6 +207,9 @@ class Transmission(models.Model):
 
     class Meta:
         ordering = ["-pk"]
+        permissions = (
+            ('download_audio', 'Can download audio clips'),
+        )
 
 
 @receiver(post_save, sender=Transmission, dispatch_uid="send_mesg")

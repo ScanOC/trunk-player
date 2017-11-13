@@ -48,6 +48,13 @@ class Command(BaseCommand):
             default=False,
             help='Verbose output',
         )
+        parser.add_argument(
+            '--m4a',
+            action='store_true',
+            dest='m4a_file',
+            default=False,
+            help='Is an m4a file',
+        )
 
     def handle(self, *args, **options):
         add_new_trans(options)
@@ -114,6 +121,8 @@ def add_new_trans(options):
                      audio_file_url_path = web_url_opt,
                    )
     system = 0
+    if options['m4a_file']:
+        t.audio_file_type = 'm4a'
     if not vhf:
         # First try and open file with given path, if not fail back
         # to old hardcoded audio_files path
