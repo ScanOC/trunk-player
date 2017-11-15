@@ -16,8 +16,10 @@ def ws_connect(message):
             log.debug('user %s invalid ws path=%s', message.user, message['path'])
             return
     except ValueError:
-        log.debug('user %s invalid ws path=%s', message.user, message['path'])
-        return
+        # setup fake channel so the javascript does not try and reconnect
+        tg_type = 'junk'
+        label = 'junk'
+        log.debug('user %s invalid ws path=%s setting up fake channel', message.user, message['path'])
 
     log.debug('user %s connect %s=%s client=%s:%s', 
         message.user, tg_type, label, message['client'][0], message['client'][1])
