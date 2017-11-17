@@ -26,7 +26,7 @@ def delete_default_anonymous_user(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('radio', '0034_auto_20170516_1852'),
+        ('radio', '0048_auto_20171112_1144'),
     ]
 
     operations = [
