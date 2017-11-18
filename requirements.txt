@@ -12,6 +12,7 @@ defusedxml==0.5.0
 Django==1.11.7
 django-allauth==0.34.0
 django-appconf==1.0.2
+django-redis==4.8.0
 djangorestframework==3.7.3
 hyperlink==17.3.1
 idna==2.6
@@ -25,6 +26,7 @@ python3-openid==3.1.0
 pytz==2017.3
 redis==2.10.6
 requests==2.18.4
+psycopg2==2.7.3.2
 requests-oauthlib==0.8.0
 six==1.11.0
 stripe==1.75.0
