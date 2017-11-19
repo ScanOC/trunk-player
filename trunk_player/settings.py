@@ -152,8 +152,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 REST_FRAMEWORK = {
-    #'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 50
 }
 
@@ -179,38 +179,6 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
-}
-
-# Logging
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler'
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'propagate': True,
-            'level': 'INFO'
-        },
-        'django': {
-            'handlers': ['mail_admins',],
-            'propagate': True,
-            'level': 'ERROR',
-        },
-        'radio': {
-            'handlers': ['console'],
-            'propagate': False,
-            'level': 'DEBUG',
-        },
-    },
 }
 
 # How far back an anonymous user can see back in minutes
