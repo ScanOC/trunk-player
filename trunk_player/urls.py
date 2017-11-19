@@ -45,7 +45,7 @@ urlpatterns = [
     url(r'^scan/$', RedirectView.as_view(url='/scan/default/', permanent=False)),
     url(r'^userscan/$', TemplateView.as_view(template_name='radio/player_userscan.html')),
     url(r'^about/$', views.Generic, {'page_name': 'about'}, name='about'),
-    url(r'^plans/$', views.plans, name='plans'),
+    url(r'^page/(?P<page_name>.*)/$', views.Generic, name='pages'),
     url(r'^talkgroups/$', views.TalkGroupList.as_view()),
     url(r'^audio/(?P<slug>[-\w]+)/$',views.TransDetailView, name='trans'),
     url(r'^audio_download/(?P<slug>[-\w]+)/$',views.transDownloadView, name='download'),
@@ -56,4 +56,9 @@ urlpatterns = [
     url(r"^payments/", include("pinax.stripe.urls")),
     url(r'^upgrade/$', views.upgrade, name='upgrade'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if getattr(settings, 'SHOW_STRIPE_PLANS', False):
+    urlpatterns = urlpatterns + [ url(r'^plans/$', views.plans, name='plans') ]
+else:
+    urlpatterns = urlpatterns + [ url(r'^plans/$', views.Generic, {'page_name': 'plans'}, name='plans') ]
 
