@@ -182,38 +182,6 @@ CACHES = {
     }
 }
 
-# Logging
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler'
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'propagate': True,
-            'level': 'INFO'
-        },
-        'django': {
-            'handlers': ['mail_admins',],
-            'propagate': True,
-            'level': 'ERROR',
-        },
-        'radio': {
-            'handlers': ['console'],
-            'propagate': False,
-            'level': 'DEBUG',
-        },
-    },
-}
-
 # How far back an anonymous user can see back in minutes
 # 0 will disable the limit
 ANONYMOUS_TIME = 15
