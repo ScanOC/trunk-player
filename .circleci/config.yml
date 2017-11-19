@@ -55,6 +55,7 @@ jobs:
       - store_artifacts:
           path: test-reports
           destination: test-reports
+
       - deploy:
           command: |
             if [ "${CIRCLE_BRANCH}" == "scanoc" ]; then
