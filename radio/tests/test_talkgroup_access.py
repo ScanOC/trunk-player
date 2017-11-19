@@ -37,7 +37,8 @@ class TalkgroupRestictTests(TestCase):
     def test_talkgroup_exists(self):
         tg = TalkGroup.objects.get(alpha_tag = 'Test TG 1')
         self.assertEquals(str(tg), 'Test TG 1')
-            
+
+    @override_settings(ACCESS_TG_RESTRICT=False)
     def test_talkgroup_access_open(self):
         anon = User.objects.get
         response = self.client.get('/api_v1/tg/test-tg-1/')
