@@ -13,12 +13,14 @@ System Prerequisites
 * `Virtualenv`_
 * `PIP`_  Should be installed with Python 3
 * `Redis`_ 3.x.x 
+* `PostgreSQL`_ 9.x
 * `git`_
 
 .. _Python: https://www.python.org/
 .. _Virtualenv: https://virtualenv.pypa.io/en/stable/
 .. _redis: http://redis.io/
 .. _PIP: https://pypi.python.org/pypi/pip
+.. _PostgreSQL: https://www.postgresql.org/
 .. _git: https://git-scm.com/
 
 Assumptions
@@ -74,7 +76,7 @@ Using pip install all required packages from the ``requirements.txt`` file.
 Configure for first use
 =======================
 
-You will need to setup a local version of the setting.py file, create and inilize the database, and create a default admin account.
+You will need to setup a local version of the setting.py file, create and initialize the database, and create a default admin account.
 
 Local settings file
 ~~~~~~~~~~~~~~~~~~~
@@ -89,6 +91,44 @@ Make a copy of the sample local settings file
 **Important** You need to set/change the ``SECRET_KEY`` in the ``trunk_player/settings_local.py``. This value is used to protect sensitive data like passwords. If you keep the one from the project a bad actor may be able to compromise your site or worse your server. See the django project about `SECRET_KEY`_.
 
 .. _SECRET_KEY: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECRET_KEY
+
+Configure Postgres Database
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You need to create a postgres user that has full access to your database.
+
+Logged into your postgres database as an admin user
+
+Create your user (trunk_player_user, with pass CHANGE_ME)
+
+.. code-block:: console
+
+  postgres=# CREATE USER trunk_player_user WITH PASSWORD 'CHANGE_ME';
+
+Create your database named trunk_player
+
+.. code-block:: console
+
+  postgres=# CREATE DATABASE trunk_player;
+
+Allow your user full control of the new DB
+
+.. code-block:: console
+
+  postgres=# GRANT ALL PRIVILEGES ON DATABASE trunk_player TO trunkplayer_user;
+
+Configure some settings as recomended by `Django`_
+
+.. code-block:: console
+
+  ALTER ROLE trunk_player SET client_encoding TO 'utf8';
+  ALTER ROLE trunk_player SET default_transaction_isolation TO 'read committed';
+  ALTER ROLE trunk_player SET timezone TO 'UTC';
+
+.. _Django: https://docs.djangoproject.com/en/1.11/ref/databases/#postgresql-notes
+
+Edit the ``trunk_player/settings_local.py`` and configure the DATABASES to match your server/username/passwords.
+
 
 Initialize the database
 ~~~~~~~~~~~~~~~~~~~~~~~

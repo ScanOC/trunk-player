@@ -15,16 +15,23 @@ SECRET_KEY = 'gv*f9ntgqmj8fqp+=ycx)v%6*o*#k1v25*a_gmrla3y*yy@*!0'
 # Name for site
 SITE_TITLE = 'Trunk-Player'
 SITE_EMAIL = 'help@example.com'
-DEFAULT_FROM_EMAIL='Trunk-Player WebSite <scanner-web@help@example.com>'
+DEFAULT_FROM_EMAIL='Trunk-Player WebSite <scanner-web-help@example.com>'
 
 # Set this to the location of your audio files
 AUDIO_URL_BASE = '//s3.amazonaws.com/SET-TO-MY-BUCKET/'
 
-# Which settings are passed into the javascript object js_config
-JS_SETTINGS = ['SITE_TITLE', 'AUDIO_URL_BASE']
-
-# Which settings are aviable to the template tag GET_SETTING
-VISABLE_SETTINGS = ['SITE_TITLE', 'AUDIO_URL_BASE', 'GOOGLE_ANALYTICS_PROPERTY_ID', 'COLOR_CSS', 'SITE_EMAIL']
-
 # Allow TalkGroup access restrictions
 ACCESS_TG_RESTRICT = False
+
+# Postgres database setup
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'trunk_player', # Database Name
+        'USER': 'trunk_player_user', # Database User Name
+        'PASSWORD': 'fake_password', # Database User Password
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}
+
