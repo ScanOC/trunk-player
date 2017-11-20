@@ -16,6 +16,7 @@ Contents:
    config_local
    config_muti_folder_audio
    config_webpages
+   settings
 
 
 
