@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('radio', '0034_auto_20170516_1852'),
+        ('radio', '0035_add_anonymous_user'),
     ]
 
     operations = [

@@ -8,11 +8,8 @@ from django.contrib.auth.models import User
 
 
 def create_default_anonymous_user(apps, schema_editor):
-    anon = User.objects.create_user('ANONYMOUS_USER', 'anonymous_user@example.com')
-    # Make the user un usable
-    anon.set_unusable_password() 
-    anon.is_active = False
-    anon.save()
+    # Moved to post migration signal
+    pass
 
 
 def delete_default_anonymous_user(apps, schema_editor):
@@ -26,7 +23,7 @@ def delete_default_anonymous_user(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('radio', '0048_auto_20171112_1144'),
+        ('radio', '0034_auto_20170516_1852'),
     ]
 
     operations = [
