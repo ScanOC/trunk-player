@@ -5,6 +5,7 @@ from django import template
 from django.conf import settings
 
 from radio.models import SiteOption
+from radio import __fullversion__ as VERSION
 
 register = template.Library()
 
@@ -26,4 +27,5 @@ def trunkplayer_js_config(user):
         js_json['user_is_authenticated'] = False
     js_json['radio_change_unit'] = user.has_perm('radio.change_unit')
     js_json['download_audio'] = user.has_perm('radio.download_audio')
+    js_json['VERSION'] = VERSION
     return json.dumps(js_json)
