@@ -17,4 +17,4 @@ except (FileNotFoundError, CalledProcessError):
 
 __fullversion__ = '{} #{}'.format(__version__,__git_hash__)
 
-logger.error('Trunk-Player Version ' + __fullversion__)
+logger.info('Trunk-Player Version ' + __fullversion__)
