@@ -1,5 +1,10 @@
+import logging
+
 from django.utils.version import get_version
 from subprocess import check_output, CalledProcessError
+
+logger = logging.getLogger(__name__)
+
 
 VERSION = (0, 0, 3, 'beta', 1)
 
@@ -12,4 +17,4 @@ except (FileNotFoundError, CalledProcessError):
 
 __fullversion__ = '{} #{}'.format(__version__,__git_hash__)
 
-print('Trunk-Player Version ' + __fullversion__)
+logger.error('Trunk-Player Version ' + __fullversion__)
