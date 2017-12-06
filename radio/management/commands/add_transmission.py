@@ -109,8 +109,10 @@ def add_new_trans(options):
     dt = datetime.datetime.fromtimestamp(int(epoc_ts), pytz.UTC)
     #if vhf:
     #dt.replace(tzinfo=pytz.UTC)
-    
-    source = Source.objects.get(pk=source_opt)
+    try:
+        source = Source.objects.get(pk=source_opt)
+    except Source.DoesNotExist:
+        source = Source.objects.create(pk=source_opt, description='Source #{}'.format(source_opt))
 
     t = Transmission( start_datetime = dt,
                      audio_file = file_name,
@@ -139,13 +141,19 @@ def add_new_trans(options):
             system = data.get('system', 0)
             if system_opt >= 0: 
                 system = system_opt # Command line overrides json
-            t.system = System.objects.get(pk=system)
+            try:
+                t.system = System.objects.get(pk=system)
+            except System.DoesNotExist:
+                t.system = System.objects.create(pk=system, name='System #{}'.format(system))
             t.talkgroup_info = talkgroup(tg_dec, t.system)
             if source_default:
                 json_source = data.get('source', 0)
                 if(json_source > 0):
                     # No need to re add source if its still 0
-                    source = Source.objects.get(pk=data['source'])
+                    try:
+                        source = Source.objects.get(pk=data['source'])
+                    except Source.DoesNotExist:
+                        source = Source.objects.create(pk=data['source'], description='Source #{}'.format(data['source']))
                     t.source = source
             t.save()
             for unit in data['srcList']:
