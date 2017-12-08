@@ -413,3 +413,20 @@ def create_profile(sender, **kwargs):
             pass
 
 post_save.connect(create_profile, sender=User)
+
+class Incident(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(null=True, blank=True)
+    description = models.TextField(blank=True)
+    transmissions = models.ManyToManyField(Transmission, blank=True)
+    public = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:  # Dont change if already set
+            self.slug = slugify(self.name)
+        super(Incident, self).save(*args, **kwargs)
+
+

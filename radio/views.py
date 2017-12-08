@@ -245,6 +245,20 @@ class ScanViewSet(generics.ListAPIView):
         return rc_data
 
 
+class IncViewSet(generics.ListAPIView):
+    serializer_class = TransmissionSerializer
+
+    def get_queryset(self):
+        inc = self.kwargs['filter_val']
+        try:
+            rc_data = Incident.objects.get(slug__iexact=inc).transmissions.all()
+        except Incident.DoesNotExist:
+               print("Incident does not exist")
+               raise
+        restricted, rc_data = restrict_talkgroups(self.request, rc_data)
+        return rc_data
+
+
 class TalkGroupFilterViewSet(generics.ListAPIView):
     serializer_class = TransmissionSerializer
 
