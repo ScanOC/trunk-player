@@ -134,6 +134,10 @@ class TranmissionUnitAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
+class IncidentAdmin(admin.ModelAdmin):
+    raw_id_fields = ("transmissions",)
+    save_on_top = True
+
 admin.site.register(Transmission, TransmissionAdmin)
 admin.site.register(Unit,UnitAdmin)
 admin.site.register(TranmissionUnit, TranmissionUnitAdmin)
@@ -153,3 +157,4 @@ admin.site.register(StripePlanMatrix)
 admin.site.register(RepeaterSite)
 admin.site.register(Service)
 admin.site.register(SiteOption)
+admin.site.register(Incident, IncidentAdmin)
