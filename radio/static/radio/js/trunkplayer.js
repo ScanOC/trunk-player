@@ -26,6 +26,7 @@ var url_params = null;
 var pagination_older_url = null;
 var pagination_newer_url = null;
 var muted_tg = {};
+var show_limit_warning = true;
 
 var base_audio_url = js_config.AUDIO_URL_BASE;
 
@@ -82,7 +83,9 @@ function update_pagination_links() {
         pagination_html += '<button onclick="url_change(\'' + new_url + '\')">Older</button>';
         $("#anoymous_time_warn").hide();
     } else {
-        $("#anoymous_time_warn").show();
+        if(show_limit_warning) {
+            $("#anoymous_time_warn").show();
+        }
     }
     //$('#pagination').html(pagination_html);
     return pagination_html;
@@ -92,6 +95,11 @@ function update_api_url() {
     pathArray = window.location.pathname.split( '/' );
     pathArray.shift();
     console.log("url build");
+    if(pathArray[0] == "inc") {
+        show_limit_warning = false;
+    } else {
+        show_limit_warning = true;
+    }
     if(pathArray[0] == "scan2") {
       pathArray[0] = "scan";
     }
@@ -300,7 +308,9 @@ function buildpage() {
       first_load = 0;
       } else {
         $("#no_trans").show();
-        $("#anoymous_time_warn").show();
+        if(show_limit_warning) {
+            $("#anoymous_time_warn").show();
+        }
         $('#main-data-table').html("")
       }
     });
