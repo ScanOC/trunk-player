@@ -500,3 +500,12 @@ window.onfocus = function() {
     force_page_rebuild = 1;
     buildpage();
 };
+
+function play_from_start() {
+    // Play entire page from start/bottom
+    first_load = 0;
+    first_play = 0;
+    seen = [];
+    play_next();
+}
+

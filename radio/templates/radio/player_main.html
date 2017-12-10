@@ -6,7 +6,10 @@
   <div class="col-sm-12 col-md-10 col-lg-10">
   {% if inc %}
   <div>
-<p><strong>Incident</strong> : {{ inc.name }}</p>
+    <p><strong>Incident</strong> : {{ inc.name }}</p>
+  </div>
+  <div>
+    <p><a href="javascript:play_from_start()">Listen from start</a></p>
   </div>
   {% endif %}
   <div id="main-data-table">
