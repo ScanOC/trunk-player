@@ -463,3 +463,8 @@ def plans(request):
 
 
     return render(request, template, {'token': token, 'verified_email': has_verified_email, 'plans': plans} )
+
+def incident(request, inc_slug):
+    template = 'radio/player_main.html'
+    inc = get_object_or_404(Incident, slug=inc_slug)
+    return render(request, template, {'inc':inc})
