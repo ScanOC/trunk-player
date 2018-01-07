@@ -46,6 +46,13 @@ def check_anonymous(decorator):
     return decorator if not anonymous else lambda x: x
 
 
+def cityDetailView(request, slug):
+    template = 'radio/city_detail.html'
+    query_data = City.objects.get(slug=slug)
+
+    return render(request, template, {'object': query_data})
+    
+
 def TransDetailView(request, slug):
     template = 'radio/transmission_detail.html'
     status = 'Good'
