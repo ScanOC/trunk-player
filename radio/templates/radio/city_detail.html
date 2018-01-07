@@ -1,0 +1,21 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+{% block main-body %}
+<div class="container">
+	<div class="row">
+City Info : {{ object.name }}
+<iframe src="{{ object.google_maps_url }}" width="400" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-xs-12">
+			<footer>
+				<p>&copy; Copyright 2016-2017 {% get_setting 'SITE_TITLE' %}</p>
+			</footer>
+		</div>
+	</div>
+</div>
+{% endblock %}

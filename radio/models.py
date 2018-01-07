@@ -31,6 +31,20 @@ class Agency(models.Model):
         return self.short
 
 
+class City(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(null=True, blank=True)
+    url = models.URLField(max_length=400, null=True, blank=True)
+    google_maps_url = models.URLField(max_length=400, null=True, blank=True)
+    
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(City, self).save(*args, **kwargs)
+
+
 class System(models.Model):
     name = models.CharField(max_length=100)
     system_id = models.CharField(max_length=20, blank=True, null=True)
