@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Unit, StripePlanMatrix
+from .models import Unit, StripePlanMatrix, Profile
 
 class PaymentForm(forms.Form):
     #stripe_token = forms.CharField(label='stripe_token', max_length=100)
@@ -41,3 +41,12 @@ class UnitEditForm(forms.ModelForm):
         model = Unit
         fields = ['description',]
 
+
+class UserForm(forms.ModelForm):
+    username = forms.CharField(
+                       widget=forms.TextInput(attrs={'readonly':'readonly'})
+               )
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']

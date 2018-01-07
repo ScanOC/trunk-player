@@ -9,20 +9,9 @@
            <h3>User Profile</h3>
         <form method="POST">
         {% csrf_token %}
-        <table>
-        <tr>
-            <th>Username:</th><td>{{ request.user }}</td>
-        </tr>
-        <tr>
-            <th>First Name:</th><td><input type="text" value="{{ request.user.first_name }}"></td>
-        </tr>
-        <tr>
-            <th>Last Name:</th><td><input type="text" value="{{ request.user.last_name }}"</td>
-        </tr>
-        <tr>
-            <th>EMail:</th><td><input type="text" value="{{ request.user.email }}"</td>
-        </tr>
-        </table>
+        {{ profile_form.as_p }}
+        <input type="submit" value="Upate Info">
+        </form>
 	</div>
 	<hr>
 	<div class="row">
