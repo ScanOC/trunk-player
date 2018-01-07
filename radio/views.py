@@ -45,6 +45,11 @@ def check_anonymous(decorator):
     anonymous = getattr(settings, 'ALLOW_ANONYMOUS', True)
     return decorator if not anonymous else lambda x: x
 
+def userProfile(request):
+    template = 'radio/profile.html'
+
+    return render(request, template, {} )
+
 
 def cityDetailView(request, slug):
     template = 'radio/city_detail.html'
