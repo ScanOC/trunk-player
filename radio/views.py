@@ -2,7 +2,7 @@
 import sys
 import re
 from itertools import chain
-from django.shortcuts import render, get_object_or_404, render_to_response
+from django.shortcuts import render, get_object_or_404, render_to_response, redirect
 from django.http import Http404
 from django.views.generic import ListView
 from django.db.models import Q
@@ -47,8 +47,14 @@ def check_anonymous(decorator):
 
 def userProfile(request):
     template = 'radio/profile.html'
-
-    return render(request, template, {} )
+    if request.method == "POST":
+        form = UserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('user_profile')
+    else:
+        profile_form = UserForm(instance=request.user)
+        return render(request, template, {'profile_form': profile_form} )
 
 
 def cityDetailView(request, slug):
