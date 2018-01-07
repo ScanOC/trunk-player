@@ -58,6 +58,7 @@ urlpatterns = [
     url(r"^payments/", include("pinax.stripe.urls")),
     url(r'^upgrade/$', views.upgrade, name='upgrade'),
     url(r'^city/(?P<slug>[-\w]+)/$',views.cityDetailView, name='city_details'),
+    url(r'^profile/$', views.userProfile, name='user_profile'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if getattr(settings, 'SHOW_STRIPE_PLANS', False):
