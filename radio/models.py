@@ -36,6 +36,9 @@ class City(models.Model):
     slug = models.SlugField(null=True, blank=True)
     url = models.URLField(max_length=400, null=True, blank=True)
     google_maps_url = models.URLField(max_length=400, null=True, blank=True)
+    fire_service = models.ForeignKey(Agency, related_name='fire_service', null=True, blank=True, on_delete=models.CASCADE)
+    police_service = models.ForeignKey(Agency, related_name='police_service', null=True, blank=True, on_delete=models.CASCADE)
+    ems_service = models.ForeignKey(Agency, related_name='ems_service', null=True, blank=True, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.name

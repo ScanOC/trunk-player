@@ -5,11 +5,30 @@
 {% endblock %}
 {% block main-body %}
 <div class="container">
-	<div class="row">
-City Info : {{ object.name }}
-<iframe src="{{ object.google_maps_url }}" width="400" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>
-	</div>
+        <div class="col-sm-12 col-md-8 col-lg-8">
+        <div>
+        <h2>{{ object.name }}</h2>
+        {% if object.fire_service %}
+            <p><strong>Fire Service: </strong>{{ object.fire_service }}</p>
+        {% endif %}
+        {% if object.police_service %}
+            <p><strong>Police Service: </strong>{{ object.police_service }}</p>
+        {% endif %}
+        {% if object.ems_service %}
+            <p><strong>EMS Service: </strong>{{ object.ems_service }}</p>
+        {% endif %}
+       
+        </div>
+        </div>
+        <div class="col-md-4 col-lg-4">
+        <div>
+        {% if object.google_maps_url %}
+            <iframe src="{{ object.google_maps_url }}" width="400" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>
+        {% endif %}
+        </div>
+        </div>
 	<hr>
+</div>
 	<div class="row">
 		<div class="col-xs-12">
 			<footer>
