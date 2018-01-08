@@ -60,7 +60,7 @@ def userProfile(request):
 
 def cityListView(request):
     template = 'radio/city_list.html'
-    query_data = City.objects.filter(visable=True)
+    query_data = City.objects.filter(visible=True)
 
     return render(request, template, {'cities': query_data})
 
