@@ -13,6 +13,14 @@
         <input type="submit" value="Update Info">
         </form>
 	</div>
+        {% get_setting 'SHOW_STRIPE_PLANS' as show_stripe_plans %}
+        {% if show_stripe_plans %}
+        <hr>
+        <div class="row-new">
+           <h3>Current Plan</h3>
+           *{{ profile.plan }} - <a href="{% url 'plans' %}">Upgrade Plan</a>
+        </div>
+        {% endif %}
 	<hr>
 	<div class="row">
 		<div class="col-xs-12">

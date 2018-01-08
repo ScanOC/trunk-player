@@ -54,7 +54,8 @@ def userProfile(request):
             return redirect('user_profile')
     else:
         profile_form = UserForm(instance=request.user)
-        return render(request, template, {'profile_form': profile_form} )
+        profile = Profile.objects.get(user=request.user)
+        return render(request, template, {'profile_form': profile_form, 'profile': profile} )
 
 
 def cityDetailView(request, slug):
