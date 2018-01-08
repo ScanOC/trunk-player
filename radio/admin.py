@@ -138,6 +138,28 @@ class IncidentAdmin(admin.ModelAdmin):
     raw_id_fields = ("transmissions",)
     save_on_top = True
 
+class CityForms(forms.ModelForm):
+    google_maps_url = forms.CharField(max_length=1000)
+
+    class Meta:
+        model = City
+        fields = '__all__'
+
+
+    def clean_google_maps_url(self):
+        data = self.cleaned_data.get('google_maps_url', '')
+        parts = data.split('"')
+        new_url = None
+        try:
+          new_url = parts[1]
+        except IndexError:
+          return self
+        return new_url
+
+class CityAdmin(admin.ModelAdmin):
+    form = CityForms
+
+
 admin.site.register(Transmission, TransmissionAdmin)
 admin.site.register(Unit,UnitAdmin)
 admin.site.register(TranmissionUnit, TranmissionUnitAdmin)
@@ -158,4 +180,4 @@ admin.site.register(RepeaterSite)
 admin.site.register(Service)
 admin.site.register(SiteOption)
 admin.site.register(Incident, IncidentAdmin)
-admin.site.register(City)
+admin.site.register(City, CityAdmin)
