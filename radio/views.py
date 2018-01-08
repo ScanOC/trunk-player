@@ -58,6 +58,13 @@ def userProfile(request):
         return render(request, template, {'profile_form': profile_form, 'profile': profile} )
 
 
+def cityListView(request):
+    template = 'radio/city_list.html'
+    query_data = City.objects.filter(visable=True)
+
+    return render(request, template, {'cities': query_data})
+
+
 def cityDetailView(request, slug):
     template = 'radio/city_detail.html'
     query_data = City.objects.get(slug=slug)

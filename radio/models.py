@@ -39,6 +39,10 @@ class City(models.Model):
     fire_service = models.ForeignKey(Agency, related_name='fire_service', null=True, blank=True, on_delete=models.CASCADE)
     police_service = models.ForeignKey(Agency, related_name='police_service', null=True, blank=True, on_delete=models.CASCADE)
     ems_service = models.ForeignKey(Agency, related_name='ems_service', null=True, blank=True, on_delete=models.CASCADE)
+    visable = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["name"]
     
     def __str__(self):
         return self.name

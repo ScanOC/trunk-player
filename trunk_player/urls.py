@@ -57,7 +57,8 @@ urlpatterns = [
     url(r'^unitupdategood/$',  TemplateView.as_view(template_name='radio/unitupdategood.html')),
     url(r"^payments/", include("pinax.stripe.urls")),
     url(r'^upgrade/$', views.upgrade, name='upgrade'),
-    url(r'^city/(?P<slug>[-\w]+)/$',views.cityDetailView, name='city_details'),
+    url(r'^city/(?P<slug>[-\w]+)/$',views.cityDetailView, name='city_detail'),
+    url(r'^city/$',views.cityListView, name='city_list'),
     url(r'^profile/$', views.userProfile, name='user_profile'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
