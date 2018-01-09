@@ -466,7 +466,6 @@ def cancel_plan(request):
     else:
         return render(request, template, {'complete': False})
 
-@login_required
 @csrf_protect
 def plans(request):
     token = None
@@ -496,9 +495,10 @@ def plans(request):
         plans = StripePlanMatrix.objects.filter(order__lt=99).filter(active=True)
 
         # Check if users email address is verified
-        verified_email = allauth_emailaddress.objects.filter(user=request.user, primary=True, verified=True)
-        if verified_email:
-            has_verified_email = True
+        if request.user.is_authenticated():
+            verified_email = allauth_emailaddress.objects.filter(user=request.user, primary=True, verified=True)
+            if verified_email:
+                has_verified_email = True
 
 
     return render(request, template, {'token': token, 'verified_email': has_verified_email, 'plans': plans} )
