@@ -23,6 +23,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import mail_admins
 
 
 import pinax.stripe.actions as stripe_actions
@@ -452,6 +453,18 @@ def ScanDetailsList(request, name):
     if scanlist:
         query_data = scanlist.talkgroups.all()
     return render_to_response(template, {'object_list': query_data, 'scanlist': scanlist, 'request': request})
+
+
+@login_required
+@csrf_protect
+def cancel_plan(request):
+    template = 'radio/cancel.html'
+    if request.method == 'POST':
+        msg = 'User {} ({}) wants to cancel'.format(request.user.username, request.user.pk)
+        mail_admins('Cancel Subscription', msg )
+        return render(request, template, {'complete': True})
+    else:
+        return render(request, template, {'complete': False})
 
 @login_required
 @csrf_protect
