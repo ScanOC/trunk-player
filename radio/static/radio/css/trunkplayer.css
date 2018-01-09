@@ -99,5 +99,13 @@ table {
   text-decoration: line-through;
 }
 
+.user-profile-user {
+    border-radius: 25px;
+    margin: 20px;
+    border: 2px solid;
+    padding: 0px 30px 20px 20px;
+    float: left;
+}
+
 
 #preload-01 { background: url(/static/radio/img/loader.gif) no-repeat -9999px -9999px; }
