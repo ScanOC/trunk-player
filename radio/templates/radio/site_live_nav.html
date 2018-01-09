@@ -34,6 +34,12 @@
             </ul>
          </li>
          <li><a href="{% url 'about' %}">About</a></li>
+         {% if user.is_authenticated %}
+            {% get_setting 'SHOW_PROFILE_LINK' as show_profile %}
+            {% if show_profile %}
+            <li><a href="{% url 'user_profile' %}">Profile</a></li>
+            {% endif %}
+         {% endif %}
          {% if user.is_staff %}
            <li><a href="/admin/">Admin</a></li>
          {% endif %}

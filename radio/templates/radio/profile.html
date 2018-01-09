@@ -5,7 +5,8 @@
 {% endblock %}
 {% block main-body %}
 <div class="container">
-	<div class="row">
+        <div class="row-no-border row">
+        <div class="user-profile-user">
            <h3>User Profile</h3>
         <form method="POST">
         {% csrf_token %}
@@ -15,12 +16,12 @@
 	</div>
         {% get_setting 'SHOW_STRIPE_PLANS' as show_stripe_plans %}
         {% if show_stripe_plans %}
-        <hr>
-        <div class="row-new">
+        <div class="user-profile-user">
            <h3>Current Plan</h3>
            *{{ profile.plan }} - <a href="{% url 'plans' %}">Upgrade Plan</a>
         </div>
         {% endif %}
+	</div>
 	<hr>
 	<div class="row">
 		<div class="col-xs-12">
