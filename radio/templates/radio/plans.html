@@ -21,11 +21,17 @@
 {% for plan in plans %}
 <td>${{ plan.stripe_plan.amount }} per month</td>
 {% endfor %}
-<tr><th>&nbsp;</th><td>&nbsp;</td>
+
+<tr><th>&nbsp;</th><td>{% if request.user.profile.plan.name == 'Member' %}Current Plan{% endif %}&nbsp;</td>
 
 {% for plan in plans %}
 
-<td><form name="plan_{{ plan.stripe_amount }}" action="." method="POST">
+<td>{% if plan.radio_plan.pk == request.user.profile.plan.pk %}Current Plan
+{% comment %}
+<a class="btn btn-small btn-danger" href="{% url 'cancel-plan' %}">Cancel Plan</a>
+{% endcomment %}
+{% else %}
+<form name="plan_{{ plan.stripe_amount }}" action="." method="POST">
 {% csrf_token %}
 <script
   src="https://checkout.stripe.com/checkout.js" class="stripe-button"
@@ -43,6 +49,7 @@
 </script>
 <input type="hidden" name="plan" value="{{ plan.stripe_plan.stripe_id }}">
 </form>
+{% endif %}
 </td>
 {% endfor %}
 

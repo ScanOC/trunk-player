@@ -63,6 +63,7 @@ urlpatterns = [
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if getattr(settings, 'SHOW_STRIPE_PLANS', False):
+    urlpatterns = urlpatterns + [ url(r'^plans/cancel/$', views.cancel_plan, name='cancel-plan') ]
     urlpatterns = urlpatterns + [ url(r'^plans/$', views.plans, name='plans') ]
 else:
     urlpatterns = urlpatterns + [ url(r'^plans/$', views.Generic, {'page_name': 'plans'}, name='plans') ]
