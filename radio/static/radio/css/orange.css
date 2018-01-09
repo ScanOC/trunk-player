@@ -117,3 +117,8 @@ body {
     background: -moz-linear-gradient(#ffc966, #ffdb99); /* For Firefox 3.6 to 15 */
     background: linear-gradient(#ffc966, #ffdb99); /* Standard syntax */
 }
+
+.user-profile-user {
+   border-color: #ff850c;
+}
+
