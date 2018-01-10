@@ -10,7 +10,9 @@
            <h3>User Profile</h3>
         <form method="POST">
         {% csrf_token %}
-        {{ profile_form.as_p }}
+        <table class="profile-table">
+        {{ profile_form }}
+        </table>
         <input type="submit" value="Update Info">
         </form>
 	</div>

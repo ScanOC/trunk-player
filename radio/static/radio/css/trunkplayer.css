@@ -107,5 +107,9 @@ table {
     float: left;
 }
 
+.profile-table {
+    border: 0px;
+}
+
 
 #preload-01 { background: url(/static/radio/img/loader.gif) no-repeat -9999px -9999px; }
