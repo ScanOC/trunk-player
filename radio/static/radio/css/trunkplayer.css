@@ -111,5 +111,20 @@ table {
     border: 0px;
 }
 
+.user-scan {
+    font-size: 1.25em;
+    margin: 0px;
+}
+
+.user-scan-tg-list {
+    font-size: .75em;
+    margin: 0px;
+}
+
+.user-scan-link {
+    font-size: .75em;
+    margin: 0px;
+}
+
 
 #preload-01 { background: url(/static/radio/img/loader.gif) no-repeat -9999px -9999px; }
