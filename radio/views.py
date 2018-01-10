@@ -57,7 +57,8 @@ def userProfile(request):
     else:
         profile_form = UserForm(instance=request.user)
         profile = Profile.objects.get(user=request.user)
-        return render(request, template, {'profile_form': profile_form, 'profile': profile} )
+        scan_lists = ScanList.objects.filter(created_by=request.user)
+        return render(request, template, {'profile_form': profile_form, 'profile': profile, 'scan_lists': scan_lists} )
 
 
 def cityListView(request):
