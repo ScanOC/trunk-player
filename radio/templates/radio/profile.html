@@ -28,7 +28,7 @@
         <div class="user-profile-user">
            <h3>User Scan Lists</h3>
            {% for scan_list in scan_lists %}
-           <p class="user-scan"><i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ scan_list.name }} <span class="user-scan-link">{% if scan_list.public %}<i class="fa fa-globe" aria-hidden="true"></i>{% endif %} <a href="/scan/{{ scan_list.slug }}/"><i class="fa fa-link" aria-hidden="true"></i></a></p>
+           <p class="user-scan"><i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ scan_list.name }} <span class="user-scan-link">{% if scan_list.public %}<i class="fa fa-globe" aria-hidden="true" title="Global List"></i>{% endif %} <a href="/scan/{{ scan_list.slug }}/" title="Link"><i class="fa fa-link" aria-hidden="true"></i></a></p>
            <p><span class="user-scan-tg-list">[ {% for tg in scan_list.talkgroups.all %}{{ tg.alpha_tag }}, {% endfor %} ]</span></p>
            {% empty %}<p>No Active Scan Lists</p>
            {% endfor %}
