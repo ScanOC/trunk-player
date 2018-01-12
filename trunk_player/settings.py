@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'channels',
     'pinax.stripe',
-    'django_select2',
 ]
 
 MIDDLEWARE_CLASSES = [
