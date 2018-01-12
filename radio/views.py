@@ -46,6 +46,30 @@ def check_anonymous(decorator):
     anonymous = getattr(settings, 'ALLOW_ANONYMOUS', True)
     return decorator if not anonymous else lambda x: x
 
+
+@login_required
+def userScanList(request):
+    template = 'radio/userscanlist.html'
+    if request.method == "POST":
+        form = UserScanForm(request.POST)
+        if form.is_valid():
+            print('Form Valid')
+            name = form.cleaned_data['name']
+            tgs = form.cleaned_data['talkgroups']
+            print('Form Data [{}] [{}]'.format(name, tgs))
+            sl = ScanList()
+            sl.created_by = request.user
+            sl.name = name
+            sl.description = name
+            sl.save()
+            sl.talkgroups.add(*tgs)
+            return redirect('user_profile')
+        else:
+            print('Form not Valid')
+    else:
+        form = UserScanForm()
+    return render(request, template, {'form': form})
+
 @login_required
 def userProfile(request):
     template = 'radio/profile.html'
@@ -329,9 +353,15 @@ class TalkGroupList(ListView):
     #queryset = TalkGroup.objects.filter(public=True)
     def get_queryset(self):
         if settings.ACCESS_TG_RESTRICT:
-            tg = allowed_tg_list(self.request.user)
+            if self.request.GET.get('recent', None):
+                tg = allowed_tg_list(self.request.user).order_by('-recent_usage', 'last_transmission')
+            else:
+                tg = allowed_tg_list(self.request.user)
         else:
-            tg = TalkGroup.objects.filter(public=True)
+            if self.kwargs.get('recent', None):
+                tg = TalkGroup.objects.filter(public=True).order_by('-recent_usage', 'last_transmission')
+            else:
+                tg = TalkGroup.objects.filter(public=True)
         return tg
 
 

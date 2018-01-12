@@ -123,6 +123,8 @@ class TalkGroup(models.Model):
     priority = models.IntegerField(default=3, help_text='record priority used by trunk-recorder')
     _home_site = models.ForeignKey(RepeaterSite, blank=True, null=True)
     _service_type = models.ForeignKey(Service, blank=True, null=True)
+    last_transmission = models.DateTimeField()
+    recent_usage = models.IntegerField(default=0)
 
     class Meta:
         ordering = ["alpha_tag"]
@@ -133,6 +135,8 @@ class TalkGroup(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.alpha_tag)
+        if not self.last_transmission:
+            self.last_transmission = timezone.now()
         super(TalkGroup, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -239,6 +243,8 @@ def send_mesg(sender, instance, **kwargs):
     #log.debug('DATA %s', json.dumps(instance.as_dict()))
     #log.debug('DATA %s', json.dumps(instance.as_dict()))
     tg = TalkGroup.objects.get(pk=instance.talkgroup_info.pk)
+    tg.last_transmission = timezone.now()
+    tg.save()
     groups = tg.scanlist_set.all()
     for g in groups:
         Group('livecall-scan-'+g.slug, ).send({'text': json.dumps(instance.as_dict())})

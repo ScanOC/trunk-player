@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'channels',
     'pinax.stripe',
+    'django_select2',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -232,6 +233,8 @@ PINAX_STRIPE_PUBLIC_KEY = 'pk_test_xxxxxxxxxxxxxxxxxxxx'
 PINAX_STRIPE_INVOICE_FROM_EMAIL = 'help@example.com'
 
 ACCESS_TG_RESTRICT = False
+
+TALKGROUP_RECENT_LENGTH = 15 #  Minutes of history for TG recent_usage
 
 
 # Load our local settings 
