@@ -60,6 +60,8 @@ urlpatterns = [
     url(r'^city/(?P<slug>[-\w]+)/$',views.cityDetailView, name='city_detail'),
     url(r'^city/$',views.cityListView, name='city_list'),
     url(r'^profile/$', views.userProfile, name='user_profile'),
+    url(r'^select2/', include('django_select2.urls')),
+    url(r'^userscanlist/$', views.userScanList, name='user_scanlist'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if getattr(settings, 'SHOW_STRIPE_PLANS', False):
