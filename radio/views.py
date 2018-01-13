@@ -353,15 +353,11 @@ class TalkGroupList(ListView):
     #queryset = TalkGroup.objects.filter(public=True)
     def get_queryset(self):
         if settings.ACCESS_TG_RESTRICT:
-            if self.request.GET.get('recent', None):
-                tg = allowed_tg_list(self.request.user).order_by('-recent_usage', 'last_transmission')
-            else:
-                tg = allowed_tg_list(self.request.user)
+            tg = allowed_tg_list(self.request.user)
         else:
-            if self.kwargs.get('recent', None):
-                tg = TalkGroup.objects.filter(public=True).order_by('-recent_usage', 'last_transmission')
-            else:
-                tg = TalkGroup.objects.filter(public=True)
+            tg = TalkGroup.objects.filter(public=True)
+        if self.request.GET.get('recent', None):
+            tg = tg.order_by('-recent_usage', '-last_transmission')
         return tg
 
 
