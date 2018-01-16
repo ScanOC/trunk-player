@@ -109,7 +109,7 @@ def TransDetailView(request, slug):
     except Transmission.DoesNotExist:
         raise Http404
     query_data2 = limit_transmission_history(request, query_data)
-    if not query_data2:
+    if not query_data2 and not query_data[0].incident_set.filter(public=True):
         query_data[0].audio_file = None
         status = 'Expired'
     restricted, new_query = restrict_talkgroups(request, query_data)
@@ -304,7 +304,10 @@ class IncViewSet(generics.ListAPIView):
     def get_queryset(self):
         inc = self.kwargs['filter_val']
         try:
-            rc_data = Incident.objects.get(slug__iexact=inc).transmissions.all()
+            if self.request.user.is_staff:
+                rc_data = Incident.objects.get(slug__iexact=inc).transmissions.all()
+            else:
+                rc_data = Incident.objects.get(slug__iexact=inc, public=True).transmissions.all()
         except Incident.DoesNotExist:
                print("Incident does not exist")
                raise
@@ -533,5 +536,11 @@ def plans(request):
 
 def incident(request, inc_slug):
     template = 'radio/player_main.html'
-    inc = get_object_or_404(Incident, slug=inc_slug)
+    try:
+        if request.user.is_staff:
+            inc = Incident.objects.get(slug=inc_slug)
+        else:
+            inc = Incident.objects.get(slug=inc_slug, public=True)
+    except Incident.DoesNotExist:
+        raise Http404
     return render(request, template, {'inc':inc})
