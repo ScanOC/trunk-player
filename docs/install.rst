@@ -107,6 +107,11 @@ You need to create a postgres user that has full access to your database.
 
 Logged into your postgres database as an admin user
 
+.. code-block:: console
+
+  $ sudo su - postgres
+  (postgres)$ psql
+
 Create your user (trunk_player_user, with pass CHANGE_ME)
 
 .. code-block:: console
