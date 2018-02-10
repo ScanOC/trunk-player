@@ -140,6 +140,16 @@ Configure some settings as recomended by `Django`_
 
 .. _Django: https://docs.djangoproject.com/en/1.11/ref/databases/#postgresql-notes
 
+
+Exit from postgres and back to your user
+
+.. code-block:: console
+
+  postgres=# \q
+  (postgres)$ exit
+  $
+
+
 Edit the ``trunk_player/settings_local.py`` and configure the DATABASES to match your server/username/passwords.
 
 
