@@ -23,6 +23,14 @@ System Prerequisites
 .. _PostgreSQL: https://www.postgresql.org/
 .. _git: https://git-scm.com/
 
+
+Using apt-get
+
+.. code-block:: console
+
+    $ sudo apt-get install python3-dev virtualenv redis-server python3-pip postgresql libpq-dev postgresql-client postgresql-client-common git
+
+
 Assumptions
 ===========
 
@@ -115,15 +123,15 @@ Allow your user full control of the new DB
 
 .. code-block:: console
 
-  postgres=# GRANT ALL PRIVILEGES ON DATABASE trunk_player TO trunkplayer_user;
+  postgres=# GRANT ALL PRIVILEGES ON DATABASE trunk_player TO trunk_player_user;
 
 Configure some settings as recomended by `Django`_
 
 .. code-block:: console
 
-  ALTER ROLE trunk_player SET client_encoding TO 'utf8';
-  ALTER ROLE trunk_player SET default_transaction_isolation TO 'read committed';
-  ALTER ROLE trunk_player SET timezone TO 'UTC';
+  ALTER ROLE trunk_player_user SET client_encoding TO 'utf8';
+  ALTER ROLE trunk_player_user SET default_transaction_isolation TO 'read committed';
+  ALTER ROLE trunk_player_user SET timezone TO 'UTC';
 
 .. _Django: https://docs.djangoproject.com/en/1.11/ref/databases/#postgresql-notes
 
