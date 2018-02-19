@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from .models import Transmission, TalkGroup, Unit, ScanList, MenuScanList, MenuTalkGroupList
+from rest_framework.fields import CurrentUserDefault, SerializerMethodField
 
 
 class TalkGroupSerializer(serializers.HyperlinkedModelSerializer):
@@ -16,12 +17,15 @@ class UnitListField(serializers.RelatedField):
 
 class TransmissionSerializer(serializers.ModelSerializer):
     talkgroup_info = TalkGroupSerializer()
-    audio_file = serializers.StringRelatedField()
+    audio_file = SerializerMethodField()
     units = UnitListField(many=True, read_only=True)
 
     class Meta:
         model = Transmission
         fields = ('pk', 'url', 'start_datetime', 'local_start_datetime', 'audio_file', 'talkgroup', 'talkgroup_info', 'freq', 'emergency', 'units', 'play_length', 'print_play_length', 'slug', 'freq_mhz', 'tg_name', 'source', 'audio_url', 'system', 'audio_file_type')
+
+    def get_audio_file(self, obj):
+        return obj.audio_file_history_check(self.context.get('request').user)
 
 class ScanListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

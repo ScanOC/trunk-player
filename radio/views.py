@@ -154,6 +154,9 @@ class TransmissionViewSet(viewsets.ModelViewSet):
     queryset = Transmission.objects.none()
     serializer_class = TransmissionSerializer
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
 
 class ScanListViewSet(viewsets.ModelViewSet):
     queryset = ScanList.objects.all().prefetch_related('talkgroups')
@@ -234,6 +237,13 @@ def limit_transmission_history(request, query_data):
         query_data = query_data.filter(start_datetime__gt=time_threshold)
     return query_data
 
+def limit_transmission_history_six_months(request, query_data):
+    history_minutes = 259200
+    time_threshold = timezone.now() - timedelta(minutes=history_minutes)
+    query_data = query_data.filter(start_datetime__gt=time_threshold)
+    return query_data
+
+
 
 def allowed_tg_list(user):
     user_profile = get_user_profile(user)
@@ -270,7 +280,8 @@ def TalkGroupFilterBase(request, filter_val, template):
         raise Http404
     try:
         query_data = Transmission.objects.filter(talkgroup_info=tg).prefetch_related('units')
-        query_data = limit_transmission_history(self.request, rc_data)
+        #query_data = limit_transmission_history(self.request, rc_data)
+        query_data = limit_transmission_history_six_months(self.request, rc_data)
         restrict_talkgroups(self.request, rc_data)
     except Transmission.DoesNotExist:
         raise Http404
@@ -293,7 +304,8 @@ class ScanViewSet(generics.ListAPIView):
         else:
             tg = sl.talkgroups.all()
         rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units').prefetch_related('talkgroup_info')
-        rc_data = limit_transmission_history(self.request, rc_data)
+        #rc_data = limit_transmission_history(self.request, rc_data)
+        rc_data = limit_transmission_history_six_months(self.request, rc_data)
         restricted, rc_data = restrict_talkgroups(self.request, rc_data) 
         return rc_data
 
@@ -327,7 +339,8 @@ class TalkGroupFilterViewSet(generics.ListAPIView):
             q |= Q(slug__iexact=stg)
         tg = TalkGroup.objects.filter(q)
         rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units')
-        rc_data = limit_transmission_history(self.request, rc_data)
+        #rc_data = limit_transmission_history(self.request, rc_data)
+        rc_data = limit_transmission_history_six_months(self.request, rc_data)
         restricted, rc_data = restrict_talkgroups(self.request, rc_data)
         return rc_data
 
@@ -343,7 +356,8 @@ class UnitFilterViewSet(generics.ListAPIView):
             q |= Q(slug__iexact=s_unit)
         units = Unit.objects.filter(q)
         rc_data = Transmission.objects.filter(units__in=units).filter(talkgroup_info__public=True).prefetch_related('units').distinct()
-        rc_data = limit_transmission_history(self.request, rc_data)
+        #rc_data = limit_transmission_history(self.request, rc_data)
+        rc_data = limit_transmission_history_six_months(self.request, rc_data)
         restricted, rc_data = restrict_talkgroups(self.request, rc_data)
         return rc_data
 
