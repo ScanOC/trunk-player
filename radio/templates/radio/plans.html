@@ -38,7 +38,7 @@
   src="https://checkout.stripe.com/checkout.js" class="stripe-button"
   data-key="{{ stripe_pub_key }}"
   data-amount="{{ plan.stripe_amount }}"
-  data-name="ScanOC.com"
+  data-name="{% get_setting 'SITE_TITLE' %}"
   data-description="{{ plan.stripe_plan.amount }} Plan"
   data-panel-label="Subscribe"
   data-label="Subscribe ${{ plan.stripe_plan.amount }}"

@@ -41,7 +41,7 @@ Restart nginx to pick up the new configs
 
 .. code-block:: console
 
-  $ sudo system nginx restart
+  $ sudo systemctl restart nginx 
 
 
 Configure Trunk Player to use local audio files
