@@ -246,7 +246,11 @@ function buildpage() {
           }
 
           new_html += '<div id="row-' + curr_id + '" class="row grad">';
-          new_html += '<div class="top-data"><button aria-label="Play" id="gl-player-action-' + curr_id + '" onclick="click_play_clip(\'' + curr_results.audio_url + curr_results.audio_file + '.' + curr_results.audio_file_type + '\', ' + curr_id + '); return false;" class="player-action glyphicon glyphicon-play" aria-hidden="false"></button><span class="talk-group ' + tg_muted + ' talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
+          if(data.results[a].audio_file) {
+              new_html += '<div class="top-data"><button aria-label="Play" id="gl-player-action-' + curr_id + '" onclick="click_play_clip(\'' + curr_results.audio_url + curr_results.audio_file + '.' + curr_results.audio_file_type + '\', ' + curr_id + '); return false;" class="player-action glyphicon glyphicon-play" aria-hidden="false"></button><span class="talk-group ' + tg_muted + ' talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
+          } else {
+              new_html += '<div class="top-data"><button class="old-transmission glyphicon glyphicon-ban-circle" data-toggle="modal" data-target="#old-transmission-modal"></button> <span class="talk-group ' + tg_muted + ' talk-group-' + curr_results.talkgroup_info.slug + '">' + data.results[a].talkgroup_info.alpha_tag + '</span> <span class="talk-group-descr">' + curr_results.talkgroup_info.description + ' </span><span class="tran-length">' + curr_results.print_play_length + '</span><span class="tran-start-time">' + curr_results.local_start_datetime + '</span></div>';
+          }
           new_html += '<div class="unit-data"><span class="unit-id-1 unit-list">';
           new_unit_list = data.results[a].units.reverse();
           has_units = false;
@@ -268,6 +272,7 @@ function buildpage() {
             new_html  = new_html.slice(0, -2);
           }
           new_html += '</span>';
+          if(data.results[a].audio_file) {
           new_html += '<span class="tran-menu">';
           new_html += '<div class="btn-group">';
           new_html += '<a class="btn dropdown-toggle tran-menu-a" data-toggle="dropdown" href="#">';
@@ -288,6 +293,7 @@ function buildpage() {
           new_html += '</ul>';
           new_html += '</div>';
           new_html += '</span>';
+          }
           new_html += '</div>';
           new_html += '</div>';
       }

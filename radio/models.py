@@ -4,6 +4,7 @@ import uuid
 import urllib.parse
 
 from django.db import models
+from datetime import timedelta
 from django.utils import timezone
 from django.utils.text import slugify
 from django.conf import settings
@@ -224,6 +225,41 @@ class Transmission(models.Model):
             return self.talkgroup_info.common_name
         else:
             return self.talkgroup_info.alpha_tag
+
+    def is_playable(self, user):
+        """If the user can play this transmission
+        """
+        return True
+
+    def _get_user_profile(self, user):
+        if user.is_authenticated():
+            user_profile = Profile.objects.get(user=user)
+        else:
+            try:
+                anon_user = User.objects.get(username='ANONYMOUS_USER')
+            except User.DoesNotExist:
+                raise ImproperlyConfigured('ANONYMOUS_USER is missing from User table, was "./manage.py migrations" not run?')
+            user_profile = Profile.objects.get(user=anon_user)
+        return user_profile
+
+
+
+    def _get_history_allow(self,user):
+        user_profile = self._get_user_profile(user)
+        if user_profile:
+            history_minutes = user_profile.plan.history
+        else:
+            history_minutes = settings.ANONYMOUS_TIME
+        return history_minutes
+
+
+    def audio_file_history_check(self, user):
+        history_minutes = self._get_history_allow(user)
+        if history_minutes > 0:
+            time_threshold = timezone.now() - timedelta(minutes=history_minutes)
+            if self.start_datetime < time_threshold:
+                return None
+        return str(self.audio_file)
 
     @property
     def audio_url(self):
