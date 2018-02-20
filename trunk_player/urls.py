@@ -39,6 +39,7 @@ urlpatterns = [
     url(r'^api_v1/tg/(?P<filter_val>[+\w-]+)/$', views.TalkGroupFilterViewSet.as_view()),
     url(r'^api_v1/scan/(?P<filter_val>[+\w-]+)/$', views.ScanViewSet.as_view()),
     url(r'^api_v1/inc/(?P<filter_val>[+\w-]+)/$', views.IncViewSet.as_view()),
+    url(r'^api_v1/message/$', views.MessagePopUpViewSet.as_view()),
     url(r'^api_v1/', include(router.urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^scan/(?P<name>.*)/details/$', views.ScanDetailsList, name='scan_details'),

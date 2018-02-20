@@ -19,3 +19,12 @@ TG_MODE_CHOICES = (
     (TG_MODE_DIGITAL, "Digital"),
     (TG_MODE_ENCRYPTED, "Encrypted"),
 )
+
+MESG_ALL_PAGES = 'A'
+MESG_HOME_PAGE = 'H'
+
+MESG_CHOICES = (
+    (MESG_ALL_PAGES, 'All Pages'),
+    (MESG_HOME_PAGE, 'Home Page'),
+)
+

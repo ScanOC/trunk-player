@@ -18,7 +18,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
 from .models import *
 from rest_framework import viewsets, generics
-from .serializers import TransmissionSerializer, TalkGroupSerializer, ScanListSerializer, MenuScanListSerializer, MenuTalkGroupListSerializer
+from .serializers import TransmissionSerializer, TalkGroupSerializer, ScanListSerializer, MenuScanListSerializer, MenuTalkGroupListSerializer, MessageSerializer
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -325,6 +325,13 @@ class IncViewSet(generics.ListAPIView):
                raise
         restricted, rc_data = restrict_talkgroups(self.request, rc_data)
         return rc_data
+
+
+class MessagePopUpViewSet(generics.ListAPIView):
+    serializer_class = MessageSerializer
+
+    def get_queryset(self):
+        return MessagePopUp.objects.filter(active=True)
 
 
 class TalkGroupFilterViewSet(generics.ListAPIView):
