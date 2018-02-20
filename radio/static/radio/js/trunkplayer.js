@@ -190,6 +190,27 @@ function update_menu() {
 
 var last_ajax;
 
+function updatemessage() {
+    message_url = "/api_v1/message/"
+    hide_message = true
+    $.getJSON(message_url, function(data) {
+        if(data.count > 0) {
+            for (var a in data.results) {
+                curr_message = data.results[a];
+                if(data.results[a]['mesg_type'] == 'A') {
+                    hide_message = false
+                    $( "#main-message" ).html(data.results[a]['mesg_html']);
+                    $( "#main-message" ).show()
+                }
+            }
+        } 
+    });
+    if( hide_message ) {
+        $( "#main-message" ).hide()
+    }
+}
+
+
 function buildpage() {
     console.log("In build page running : " + buildpage_running + ", live_update " + live_update);
     if(buildpage_running == 1 || live_update == 0) {
@@ -205,6 +226,7 @@ function buildpage() {
         // Cancel any pending ajax calls
         last_ajax.abort();
     }
+    updatemessage();
     last_ajax = $.getJSON(api_url, function(data) {
       console.log(data);
       //console.log("Checking for new calls")
