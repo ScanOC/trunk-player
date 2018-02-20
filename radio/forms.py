@@ -3,7 +3,47 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Unit, StripePlanMatrix, Profile
+from django_select2.forms import (
+    HeavySelect2MultipleWidget, HeavySelect2Widget, ModelSelect2MultipleWidget,
+    ModelSelect2TagWidget, ModelSelect2Widget, Select2MultipleWidget,
+    Select2Widget
+)
+
+from .models import Unit, StripePlanMatrix, Profile, TalkGroup, ScanList
+
+
+class UserScanForm(forms.Form):
+    name = forms.CharField(max_length=50)
+    talkgroups = forms.ModelMultipleChoiceField(
+        widget=ModelSelect2MultipleWidget(
+            queryset=TalkGroup.objects.all(),
+            search_fields=['alpha_tag__icontains', 'common_name__icontains'],
+        ), queryset=TalkGroup.objects.all(), required=True)
+
+    def clean_name(self):
+        data = self.cleaned_data['name']
+        try:
+            ScanList.objects.get(name=data)
+        except ScanList.DoesNotExist:
+            pass
+        else:
+            raise forms.ValidationError("Scan list with same name already exists")
+
+        # Always return a value to use as the new cleaned data, even if
+        # this method didn't change it.
+        return data
+
+
+class UserScanForm2(forms.ModelForm):
+    class Meta:
+        model = ScanList
+        fields = (
+            'talkgroups',
+        )
+        widgets = {
+            'talkgroups': Select2MultipleWidget,
+
+        }
 
 class PaymentForm(forms.Form):
     #stripe_token = forms.CharField(label='stripe_token', max_length=100)

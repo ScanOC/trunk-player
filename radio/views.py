@@ -23,6 +23,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import mail_admins
 
 
 import pinax.stripe.actions as stripe_actions
@@ -45,6 +46,31 @@ def check_anonymous(decorator):
     anonymous = getattr(settings, 'ALLOW_ANONYMOUS', True)
     return decorator if not anonymous else lambda x: x
 
+
+@login_required
+def userScanList(request):
+    template = 'radio/userscanlist.html'
+    if request.method == "POST":
+        form = UserScanForm(request.POST)
+        if form.is_valid():
+            print('Form Valid')
+            name = form.cleaned_data['name']
+            tgs = form.cleaned_data['talkgroups']
+            print('Form Data [{}] [{}]'.format(name, tgs))
+            sl = ScanList()
+            sl.created_by = request.user
+            sl.name = name
+            sl.description = name
+            sl.save()
+            sl.talkgroups.add(*tgs)
+            return redirect('user_profile')
+        else:
+            print('Form not Valid')
+    else:
+        form = UserScanForm()
+    return render(request, template, {'form': form})
+
+@login_required
 def userProfile(request):
     template = 'radio/profile.html'
     if request.method == "POST":
@@ -55,7 +81,8 @@ def userProfile(request):
     else:
         profile_form = UserForm(instance=request.user)
         profile = Profile.objects.get(user=request.user)
-        return render(request, template, {'profile_form': profile_form, 'profile': profile} )
+        scan_lists = ScanList.objects.filter(created_by=request.user)
+        return render(request, template, {'profile_form': profile_form, 'profile': profile, 'scan_lists': scan_lists} )
 
 
 def cityListView(request):
@@ -82,7 +109,7 @@ def TransDetailView(request, slug):
     except Transmission.DoesNotExist:
         raise Http404
     query_data2 = limit_transmission_history(request, query_data)
-    if not query_data2:
+    if not query_data2 and not query_data[0].incident_set.filter(public=True):
         query_data[0].audio_file = None
         status = 'Expired'
     restricted, new_query = restrict_talkgroups(request, query_data)
@@ -126,6 +153,9 @@ class TransmissionViewSet(viewsets.ModelViewSet):
     """
     queryset = Transmission.objects.none()
     serializer_class = TransmissionSerializer
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
 
 class ScanListViewSet(viewsets.ModelViewSet):
@@ -207,6 +237,13 @@ def limit_transmission_history(request, query_data):
         query_data = query_data.filter(start_datetime__gt=time_threshold)
     return query_data
 
+def limit_transmission_history_six_months(request, query_data):
+    history_minutes = 259200
+    time_threshold = timezone.now() - timedelta(minutes=history_minutes)
+    query_data = query_data.filter(start_datetime__gt=time_threshold)
+    return query_data
+
+
 
 def allowed_tg_list(user):
     user_profile = get_user_profile(user)
@@ -243,7 +280,8 @@ def TalkGroupFilterBase(request, filter_val, template):
         raise Http404
     try:
         query_data = Transmission.objects.filter(talkgroup_info=tg).prefetch_related('units')
-        query_data = limit_transmission_history(self.request, rc_data)
+        #query_data = limit_transmission_history(self.request, rc_data)
+        query_data = limit_transmission_history_six_months(self.request, rc_data)
         restrict_talkgroups(self.request, rc_data)
     except Transmission.DoesNotExist:
         raise Http404
@@ -266,7 +304,8 @@ class ScanViewSet(generics.ListAPIView):
         else:
             tg = sl.talkgroups.all()
         rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units').prefetch_related('talkgroup_info')
-        rc_data = limit_transmission_history(self.request, rc_data)
+        #rc_data = limit_transmission_history(self.request, rc_data)
+        rc_data = limit_transmission_history_six_months(self.request, rc_data)
         restricted, rc_data = restrict_talkgroups(self.request, rc_data) 
         return rc_data
 
@@ -277,7 +316,10 @@ class IncViewSet(generics.ListAPIView):
     def get_queryset(self):
         inc = self.kwargs['filter_val']
         try:
-            rc_data = Incident.objects.get(slug__iexact=inc).transmissions.all()
+            if self.request.user.is_staff:
+                rc_data = Incident.objects.get(slug__iexact=inc).transmissions.all()
+            else:
+                rc_data = Incident.objects.get(slug__iexact=inc, public=True).transmissions.all()
         except Incident.DoesNotExist:
                print("Incident does not exist")
                raise
@@ -297,7 +339,8 @@ class TalkGroupFilterViewSet(generics.ListAPIView):
             q |= Q(slug__iexact=stg)
         tg = TalkGroup.objects.filter(q)
         rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units')
-        rc_data = limit_transmission_history(self.request, rc_data)
+        #rc_data = limit_transmission_history(self.request, rc_data)
+        rc_data = limit_transmission_history_six_months(self.request, rc_data)
         restricted, rc_data = restrict_talkgroups(self.request, rc_data)
         return rc_data
 
@@ -313,7 +356,8 @@ class UnitFilterViewSet(generics.ListAPIView):
             q |= Q(slug__iexact=s_unit)
         units = Unit.objects.filter(q)
         rc_data = Transmission.objects.filter(units__in=units).filter(talkgroup_info__public=True).prefetch_related('units').distinct()
-        rc_data = limit_transmission_history(self.request, rc_data)
+        #rc_data = limit_transmission_history(self.request, rc_data)
+        rc_data = limit_transmission_history_six_months(self.request, rc_data)
         restricted, rc_data = restrict_talkgroups(self.request, rc_data)
         return rc_data
 
@@ -329,6 +373,8 @@ class TalkGroupList(ListView):
             tg = allowed_tg_list(self.request.user)
         else:
             tg = TalkGroup.objects.filter(public=True)
+        if self.request.GET.get('recent', None):
+            tg = tg.order_by('-recent_usage', '-last_transmission')
         return tg
 
 
@@ -453,7 +499,18 @@ def ScanDetailsList(request, name):
         query_data = scanlist.talkgroups.all()
     return render_to_response(template, {'object_list': query_data, 'scanlist': scanlist, 'request': request})
 
+
 @login_required
+@csrf_protect
+def cancel_plan(request):
+    template = 'radio/cancel.html'
+    if request.method == 'POST':
+        msg = 'User {} ({}) wants to cancel'.format(request.user.username, request.user.pk)
+        mail_admins('Cancel Subscription', msg )
+        return render(request, template, {'complete': True})
+    else:
+        return render(request, template, {'complete': False})
+
 @csrf_protect
 def plans(request):
     token = None
@@ -483,14 +540,21 @@ def plans(request):
         plans = StripePlanMatrix.objects.filter(order__lt=99).filter(active=True)
 
         # Check if users email address is verified
-        verified_email = allauth_emailaddress.objects.filter(user=request.user, primary=True, verified=True)
-        if verified_email:
-            has_verified_email = True
+        if request.user.is_authenticated():
+            verified_email = allauth_emailaddress.objects.filter(user=request.user, primary=True, verified=True)
+            if verified_email:
+                has_verified_email = True
 
 
     return render(request, template, {'token': token, 'verified_email': has_verified_email, 'plans': plans} )
 
 def incident(request, inc_slug):
     template = 'radio/player_main.html'
-    inc = get_object_or_404(Incident, slug=inc_slug)
+    try:
+        if request.user.is_staff:
+            inc = Incident.objects.get(slug=inc_slug)
+        else:
+            inc = Incident.objects.get(slug=inc_slug, public=True)
+    except Incident.DoesNotExist:
+        raise Http404
     return render(request, template, {'inc':inc})

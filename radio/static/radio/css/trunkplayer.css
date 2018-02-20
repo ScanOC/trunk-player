@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
 body {
   padding-top: 70px;
   padding-bottom: 70px;
   font-size: 16px;
   background: #F7F7F7;
+  font-family: 'Roboto', sans-serif;
 }
 
 .navbar-footer {
@@ -29,7 +31,7 @@ table {
 }
 .talk-group {
    font-size: 18px;
-   cursor: pointer;
+   /* cursor: pointer; */
 }
 .talk-group-descr {
    font-size: 14px;
@@ -97,6 +99,43 @@ table {
 
 .mute-mute {
   text-decoration: line-through;
+}
+
+.user-profile-user {
+    border-radius: 25px;
+    margin: 20px;
+    border: 2px solid;
+    padding: 0px 30px 20px 20px;
+    float: left;
+}
+
+.profile-table {
+    border: 0px;
+}
+
+.user-scan {
+    font-size: 1.25em;
+    margin: 0px;
+}
+
+.user-scan-tg-list {
+    font-size: .75em;
+    margin: 0px;
+}
+
+.user-scan-link {
+    font-size: .75em;
+    margin: 0px;
+}
+
+.old-transmission {
+    padding-right: 5px;
+    cursor: pointer;
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    overflow: hidden;
+    outline: none;
 }
 
 

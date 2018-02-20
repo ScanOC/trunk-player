@@ -21,11 +21,18 @@
 {% for plan in plans %}
 <td>${{ plan.stripe_plan.amount }} per month</td>
 {% endfor %}
-<tr><th>&nbsp;</th><td>&nbsp;</td>
+
+{% if user.is_authenticated %}
+<tr><th>&nbsp;</th><td>{% if request.user.profile.plan.name == 'Member' %}Current Plan{% endif %}&nbsp;</td>
 
 {% for plan in plans %}
 
-<td><form name="plan_{{ plan.stripe_amount }}" action="." method="POST">
+<td>{% if plan.radio_plan.pk == request.user.profile.plan.pk %}Current Plan
+{% comment %}
+<a class="btn btn-small btn-danger" href="{% url 'cancel-plan' %}">Cancel Plan</a>
+{% endcomment %}
+{% else %}
+<form name="plan_{{ plan.stripe_amount }}" action="." method="POST">
 {% csrf_token %}
 <script
   src="https://checkout.stripe.com/checkout.js" class="stripe-button"
@@ -43,11 +50,16 @@
 </script>
 <input type="hidden" name="plan" value="{{ plan.stripe_plan.stripe_id }}">
 </form>
+{% endif %}
 </td>
 {% endfor %}
 
 
 </tr>
+{% else %}
+<tr><td colspan="4"><a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login/Create an Account to Subscribe</a>
+</td></tr>
+{% endif %}
 </table>
 <div></div>
 <div class="plan-questions"><strong>Do I need to have a subscription to us this site?</strong> No. The site is usable to listen to live radio traffic. An upgraded plan allows you listen to radio traffic in the past.

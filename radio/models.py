@@ -4,6 +4,7 @@ import uuid
 import urllib.parse
 
 from django.db import models
+from datetime import timedelta
 from django.utils import timezone
 from django.utils.text import slugify
 from django.conf import settings
@@ -123,6 +124,8 @@ class TalkGroup(models.Model):
     priority = models.IntegerField(default=3, help_text='record priority used by trunk-recorder')
     _home_site = models.ForeignKey(RepeaterSite, blank=True, null=True)
     _service_type = models.ForeignKey(Service, blank=True, null=True)
+    last_transmission = models.DateTimeField()
+    recent_usage = models.IntegerField(default=0)
 
     class Meta:
         ordering = ["alpha_tag"]
@@ -133,6 +136,8 @@ class TalkGroup(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.alpha_tag)
+        if not self.last_transmission:
+            self.last_transmission = timezone.now()
         super(TalkGroup, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -179,6 +184,7 @@ class TalkGroupWithSystem(TalkGroup):
 class Transmission(models.Model):
     slug = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False) 
     start_datetime = models.DateTimeField(db_index=True)
+    end_datetime = models.DateTimeField(null=True, blank=True)
     audio_file = models.FileField()
     audio_file_type = models.CharField(max_length=3, null=True, default='mp3')
     audio_file_url_path = models.CharField(max_length=100, default='/')
@@ -221,6 +227,41 @@ class Transmission(models.Model):
         else:
             return self.talkgroup_info.alpha_tag
 
+    def is_playable(self, user):
+        """If the user can play this transmission
+        """
+        return True
+
+    def _get_user_profile(self, user):
+        if user.is_authenticated():
+            user_profile = Profile.objects.get(user=user)
+        else:
+            try:
+                anon_user = User.objects.get(username='ANONYMOUS_USER')
+            except User.DoesNotExist:
+                raise ImproperlyConfigured('ANONYMOUS_USER is missing from User table, was "./manage.py migrations" not run?')
+            user_profile = Profile.objects.get(user=anon_user)
+        return user_profile
+
+
+
+    def _get_history_allow(self,user):
+        user_profile = self._get_user_profile(user)
+        if user_profile:
+            history_minutes = user_profile.plan.history
+        else:
+            history_minutes = settings.ANONYMOUS_TIME
+        return history_minutes
+
+
+    def audio_file_history_check(self, user):
+        history_minutes = self._get_history_allow(user)
+        if history_minutes > 0:
+            time_threshold = timezone.now() - timedelta(minutes=history_minutes)
+            if self.start_datetime < time_threshold:
+                return None
+        return str(self.audio_file)
+
     @property
     def audio_url(self):
         base_path = settings.AUDIO_URL_BASE
@@ -239,6 +280,8 @@ def send_mesg(sender, instance, **kwargs):
     #log.debug('DATA %s', json.dumps(instance.as_dict()))
     #log.debug('DATA %s', json.dumps(instance.as_dict()))
     tg = TalkGroup.objects.get(pk=instance.talkgroup_info.pk)
+    tg.last_transmission = timezone.now()
+    tg.save()
     groups = tg.scanlist_set.all()
     for g in groups:
         Group('livecall-scan-'+g.slug, ).send({'text': json.dumps(instance.as_dict())})

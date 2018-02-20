@@ -138,6 +138,12 @@ def add_new_trans(options):
                 t.emergency = True
             count = 0
             t.play_length = data.get('play_length',0)
+            start_ts = data.get('start_time', 0)
+            end_ts = data.get('stop_time', 0)
+            if t.play_length == 0 and start_ts > 0 and end_ts > 0:
+                t.play_length = end_ts - start_ts
+            if end_ts:
+                t.end_datetime = datetime.datetime.fromtimestamp(end_ts, pytz.UTC)
             system = data.get('system', 0)
             if system_opt >= 0: 
                 system = system_opt # Command line overrides json
