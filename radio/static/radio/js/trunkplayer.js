@@ -56,7 +56,6 @@ function stop_scanner() {
 }
 
 function mute_click(tg) {
-    console.log("User click on Mute for TG " + tg)
     if (muted_tg[tg]) {
         muted_tg[tg] = false;
         $('.mute-tg-' + tg).removeClass('mute-mute ');
@@ -94,7 +93,6 @@ function update_api_url() {
     url_params = document.location.search;
     pathArray = window.location.pathname.split( '/' );
     pathArray.shift();
-    console.log("url build");
     if(pathArray[0] == "inc") {
         show_limit_warning = false;
     } else {
@@ -105,11 +103,9 @@ function update_api_url() {
     }
     if(pathArray[0] == "userscan") {
         // Build TGs from select box
-        console.log("In userscan url build");
         tg_array = $('.tg-multi-select').select2("val");
         if(tg_array) {
           api_url = base_api_url + "tg/" + tg_array.join('+');
-          console.log("New API url " + api_url);
         } else {
           api_url = null;
         }
@@ -118,7 +114,6 @@ function update_api_url() {
     }
     if(api_url && url_params) {
         api_url = api_url + url_params;
-        console.log("URL End " + url_params);
     }
     //start_socket(); // reconnect with new talkgroups
 }
@@ -189,9 +184,39 @@ function update_menu() {
 }
 
 var last_ajax;
+var last_message;
+
+function updatemessage() {
+    message_url = "/api_v1/message/"
+    hide_message = true
+    $.getJSON(message_url, function(data) {
+        if(data.count > 0) {
+            for (var a in data.results) {
+                curr_message = data.results[a];
+                if(data.results[a]['mesg_type'] == 'A') {
+                    new_msge_data = data.results[a]['mesg_html']
+                    if(last_message != new_msge_data) {
+                        hide_message = false
+                        $( "#main-message" ).html(data.results[a]['mesg_html']);
+                        last_message = new_msge_data;
+                    $("#main-message" ).show()
+                    } 
+                    /* Make sure its visable even if its not new */
+                }
+            }
+        } else {
+           last_message = ""
+           $( "#main-message" ).hide()
+        }
+    })
+    .fail(function() {
+        last_message = ""
+        $( "#main-message" ).hide()
+    });
+}
+
 
 function buildpage() {
-    console.log("In build page running : " + buildpage_running + ", live_update " + live_update);
     if(buildpage_running == 1 || live_update == 0) {
        return false;
     }
@@ -205,8 +230,8 @@ function buildpage() {
         // Cancel any pending ajax calls
         last_ajax.abort();
     }
+    //updatemessage();
     last_ajax = $.getJSON(api_url, function(data) {
-      console.log(data);
       //console.log("Checking for new calls")
       //console.log("Last Call " + last_call + " New last " + data.results[0].pk)
       $("#anoymous_time_warn").hide();
@@ -214,7 +239,6 @@ function buildpage() {
       if(data.count > 0) {
       $("#foot-play-button").show();
       if ( live_update == 1 && ( data.results[0].pk != last_call || force_page_rebuild == 1 )) {
-      console.log("Rebuild");
       force_page_rebuild = 0;
       var new_html = '';
       new_id_list = [];
@@ -236,12 +260,10 @@ function buildpage() {
           new_tg_slug_list.unshift(data.results[a].talkgroup_info.slug);
           button_type = "btn-default";
           if(currently_playing == data.results[a].pk) {
-              console.log("Match on " + currently_playing)
               button_type = "active-trans"
           }
           tg_muted="";
           if (muted_tg[data.results[a].talkgroup_info.slug]) {
-            console.log("Found muted TG " + data.results[a].talkgroup_info.slug)
             tg_muted="mute-mute ";
           }
 
@@ -332,13 +354,11 @@ function click_play_clip(audio_file, audio_id){
 }
 
 function play_clip(audio_file, audio_id){
-      console.log("Play clip " + audio_file)     
       //$(".play-btn").removeClass('active-trans');
       currently_playing=audio_id;
       if(audio_id == 0) {
         //$("#button_start_scanner").removeClass('btn-default').addClass('btn-success ');
       } else {
-	console.log("Trying to set button");
         //$("#button_" + audio_id).removeClass('btn-default').addClass('btn-success ');
         $(".active-trans").removeClass("active-trans");
         $("#row-" + audio_id).addClass('active-trans ');
@@ -404,7 +424,6 @@ function play_next() {
 function setup_player() {
       $("#jquery_jplayer_1").jPlayer({
        ready: function () {
-        console.log("Setting up jPlayer");
        },
        ended: function() {
            active_play=1;
@@ -481,6 +500,9 @@ $(document).ready(function(){
     }
     $(".stop-btn").hide();
     setup_player();
+    //updatemessage();
+    updatemessage()
+    setInterval(updatemessage, 30000);
     play_clip(base_audio_url + "point1sec.mp3", 0, 0);
     first_load = 1;
     buildpage();

@@ -494,3 +494,10 @@ class Incident(models.Model):
         super(Incident, self).save(*args, **kwargs)
 
 
+class MessagePopUp(models.Model):
+    mesg_type = models.CharField(max_length=1, choices=choice.MESG_CHOICES, unique=True)
+    mesg_html = models.TextField()
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.mesg_html

@@ -159,6 +159,9 @@ class CityForms(forms.ModelForm):
 class CityAdmin(admin.ModelAdmin):
     form = CityForms
 
+class MessagePopUpAdmin(admin.ModelAdmin):
+    list_display = ('mesg_type', 'mesg_html', 'active')
+
 
 admin.site.register(Transmission, TransmissionAdmin)
 admin.site.register(Unit,UnitAdmin)
@@ -181,3 +184,4 @@ admin.site.register(Service)
 admin.site.register(SiteOption)
 admin.site.register(Incident, IncidentAdmin)
 admin.site.register(City, CityAdmin)
+admin.site.register(MessagePopUp, MessagePopUpAdmin)
