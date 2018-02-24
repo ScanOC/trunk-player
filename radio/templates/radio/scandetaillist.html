@@ -6,6 +6,8 @@
 {% block main-body %}
 <div class="container">
 	<div class="row">
+        <div id="main-message" style="display: none" class=" alert alert-danger" role="alert">
+        </div>
 <h2>TalkGroups in Scan List {% if scanlist %}<a href="/scan/{{ scanlist.name }}/">{{ scanlist.description }}</a>{% else %}Default/All{% endif %}</h2>
 <table>
 <thead>

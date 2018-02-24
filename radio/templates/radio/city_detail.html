@@ -6,6 +6,8 @@
 {% block main-body %}
 <div class="container">
         <div class="col-sm-12 col-md-8 col-lg-8">
+        <div id="main-message" style="display: none" class=" alert alert-danger" role="alert">
+        </div>
         <div>
         <h2>{{ object.name }}</h2>
         {% if object.fire_service %}

@@ -189,6 +189,7 @@ function update_menu() {
 }
 
 var last_ajax;
+var last_message;
 
 function updatemessage() {
     message_url = "/api_v1/message/"
@@ -198,16 +199,26 @@ function updatemessage() {
             for (var a in data.results) {
                 curr_message = data.results[a];
                 if(data.results[a]['mesg_type'] == 'A') {
-                    hide_message = false
-                    $( "#main-message" ).html(data.results[a]['mesg_html']);
-                    $( "#main-message" ).show()
+                    new_msge_data = data.results[a]['mesg_html']
+                    if(last_message != new_msge_data) {
+                        console.log('Display Message')
+                        hide_message = false
+                        $( "#main-message" ).html(data.results[a]['mesg_html']);
+                        last_message = new_msge_data;
+                    $("#main-message" ).show()
+                    } 
+                    /* Make sure its visable even if its not new */
                 }
             }
-        } 
-    });
-    if( hide_message ) {
+        } else {
+           last_message = ""
+           $( "#main-message" ).hide()
+        }
+    })
+    .fail(function() {
+        last_message = ""
         $( "#main-message" ).hide()
-    }
+    });
 }
 
 
@@ -226,7 +237,7 @@ function buildpage() {
         // Cancel any pending ajax calls
         last_ajax.abort();
     }
-    updatemessage();
+    //updatemessage();
     last_ajax = $.getJSON(api_url, function(data) {
       console.log(data);
       //console.log("Checking for new calls")
@@ -503,6 +514,9 @@ $(document).ready(function(){
     }
     $(".stop-btn").hide();
     setup_player();
+    //updatemessage();
+    updatemessage()
+    setInterval(updatemessage, 30000);
     play_clip(base_audio_url + "point1sec.mp3", 0, 0);
     first_load = 1;
     buildpage();
