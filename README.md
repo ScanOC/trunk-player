@@ -11,6 +11,9 @@ Python Django web frontend for playing recorded radio transmisisons. The audio f
 ## Support
  There is a google groups mailing list [Trunk Player](https://groups.google.com/forum/#!forum/trunk-player)
 
+## Using with Unitrunker/EDACS Systems
+Check out https://github.com/MaxwellDPS/Unibridge for using Trunk-Player with unitrunker
+
 ## License
  - Trunk Player is licensed under the [MIT License](License.txt)
 
