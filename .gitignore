@@ -20,3 +20,4 @@ local_override/*
 local_override/static/*
 !/local_override/static/.static_misc
 trunk_player/trunk_player.nginx
+trunk_player/nginx.conf

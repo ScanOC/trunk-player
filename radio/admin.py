@@ -23,7 +23,8 @@ class TranmissionUnitInline(admin.TabularInline):
     extra = 0 # how many rows to show
 
 class TransmissionAdmin(admin.ModelAdmin):
-    inlines = (TranmissionUnitInline,)
+    #inlines = (TranmissionUnitInline,)
+    raw_id_fields = ('talkgroup_info', 'units', 'source', 'system')
     save_on_top = True
 
 
@@ -165,7 +166,7 @@ class MessagePopUpAdmin(admin.ModelAdmin):
 
 admin.site.register(Transmission, TransmissionAdmin)
 admin.site.register(Unit,UnitAdmin)
-admin.site.register(TranmissionUnit, TranmissionUnitAdmin)
+#admin.site.register(TranmissionUnit, TranmissionUnitAdmin)
 admin.site.register(TalkGroup, TalkGroupAdmin)
 admin.site.register(TalkGroupAccess, TalkGroupAccessAdmin)
 admin.site.register(ScanList, ScanListAdmin)
