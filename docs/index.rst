@@ -17,6 +17,7 @@ Contents:
    config_muti_folder_audio
    config_webpages
    settings
+   supervisor
 
 
 
