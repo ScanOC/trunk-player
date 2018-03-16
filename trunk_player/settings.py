@@ -184,7 +184,7 @@ CACHES = {
 
 # How far back an anonymous user can see back in minutes
 # 0 will disable the limit
-ANONYMOUS_TIME = 15
+ANONYMOUS_TIME = 43200 # 1 Month (60min * 24hours * 30days)
 
 # This Agency must exist in radio.Agency 
 RADIO_DEFAULT_UNIT_AGENCY = 0
