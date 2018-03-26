@@ -523,6 +523,7 @@ def plans(request):
     token = None
     has_verified_email = False
     plans = None
+    default_plan = None
     if request.method == 'POST':
         template = 'radio/subscribed.html'
         token = request.POST.get('stripeToken')
@@ -545,6 +546,7 @@ def plans(request):
     else:
         template = 'radio/plans.html'
         plans = StripePlanMatrix.objects.filter(order__lt=99).filter(active=True)
+        default_plan = Plan.objects.get(pk=Plan.DEFAULT_PK)
 
         # Check if users email address is verified
         if request.user.is_authenticated():
@@ -553,7 +555,7 @@ def plans(request):
                 has_verified_email = True
 
 
-    return render(request, template, {'token': token, 'verified_email': has_verified_email, 'plans': plans} )
+    return render(request, template, {'token': token, 'verified_email': has_verified_email, 'plans': plans, 'default_plan': default_plan} )
 
 def incident(request, inc_slug):
     template = 'radio/player_main.html'
