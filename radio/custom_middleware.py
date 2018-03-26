@@ -17,3 +17,8 @@ class ExtendUserSession(object):
             # Extend the session every day
             if request.session.get_expiry_date() < now + timedelta(days=( EXTENDED_SESSION_DAYS - 1)):
                 request.session.set_expiry(EXTENDED_SESSION_DAYS * 86400) 
+            # Update last login atleast every hour
+            if request.user.last_login < now - timedelta(hours=1):
+                request.user.last_login = now
+                request.user.save()
+                
