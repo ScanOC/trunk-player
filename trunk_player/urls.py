@@ -63,6 +63,7 @@ urlpatterns = [
     url(r'^profile/$', views.userProfile, name='user_profile'),
     url(r'^select2/', include('django_select2.urls')),
     url(r'^userscanlist/$', views.userScanList, name='user_scanlist'),
+    url(r'^agency/$', views.agencyList, name='agency_list'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if getattr(settings, 'SHOW_STRIPE_PLANS', False):
