@@ -1,0 +1,29 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+{% block main-body %}
+<div class="container">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+        <div id="main-message" style="display: none" class=" alert alert-danger" role="alert">
+        </div>
+        <div>
+        <h2>Agency List</h2>
+        {% for a in agency %}
+            <p>{{ a.name }} ** {{ a.short }}</p>
+        {% endfor %}
+       
+        </div>
+        </div>
+	<hr>
+</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<footer>
+				<p>&copy; Copyright 2016-2018 {% get_setting 'SITE_TITLE' %}</p>
+			</footer>
+		</div>
+	</div>
+</div>
+{% endblock %}

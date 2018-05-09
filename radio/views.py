@@ -84,6 +84,12 @@ def userProfile(request):
         scan_lists = ScanList.objects.filter(created_by=request.user)
         return render(request, template, {'profile_form': profile_form, 'profile': profile, 'scan_lists': scan_lists} )
 
+def agencyList(request):
+    template = 'radio/agency_list.html'
+    query_data = Agency.objects.exclude(short='_DEF_').order_by('name')
+
+    return render(request, template, {'agency': query_data})
+
 
 def cityListView(request):
     template = 'radio/city_list.html'
