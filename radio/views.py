@@ -497,6 +497,22 @@ class UnitUpdateView(PermissionRequiredMixin, UpdateView):
     success_url = '/unitupdategood/'
     permission_required = ('radio.change_unit')
 
+    def form_valid(self, form):
+        try:
+            update_unit_email = SiteOption.objects.get(name='SEND_ADMIN_EMAIL_ON_UNIT_NAME')
+            if update_unit_email.value_boolean_or_string() == True:
+                Unit = form.save()
+                send_mail(
+                  'Unit ID Change',
+                  'User {} updated unit ID {} Now {}'.format(self.request.user, Unit.dec_id, Unit.description),
+                  settings.SERVER_EMAIL,
+                  [ mail for name, mail in settings.ADMINS],
+                  fail_silently=False,
+                )
+        except SiteOption.DoesNotExist:
+            pass
+        return super().form_valid(form)
+
 
 def ScanDetailsList(request, name):
     template = 'radio/scandetaillist.html'
