@@ -208,7 +208,13 @@ class Transmission(models.Model):
         return timezone.localtime(self.start_datetime).strftime('%H:%M:%S %m/%d/%Y')
 
     def as_dict(self):
-        return {'start_datetime': str(self.start_datetime), 'audio_file': str(self.audio_file), 'talkgroup_desc': self.talkgroup_info.alpha_tag}
+        return {'start_datetime': str(self.start_datetime), 
+                'audio_file': str(self.audio_file), 
+                'talkgroup_desc': str(self.talkgroup_info.alpha_tag),
+                'talkgroup_dec_id' : str(self.talkgroup_info.dec_id),
+                'audio_url': str("{}{}.{}".format(settings.AUDIO_URL_BASE, self.audio_file, self.audio_file_type)),
+               }
+
 
     def print_play_length(self):
         m, s = divmod(int(self.play_length), 60)
@@ -278,7 +284,7 @@ class Transmission(models.Model):
 def send_mesg(sender, instance, **kwargs):
     #log.debug('Hit post save()')
     #log.debug('DATA %s', json.dumps(instance.as_dict()))
-    #log.debug('DATA %s', json.dumps(instance.as_dict()))
+    #log.error('DATA %s', json.dumps(instance.as_dict()))
     tg = TalkGroup.objects.get(pk=instance.talkgroup_info.pk)
     tg.last_transmission = timezone.now()
     tg.save()
