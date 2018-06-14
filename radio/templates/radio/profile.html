@@ -22,7 +22,7 @@
         {% if show_stripe_plans %}
         <div class="user-profile-user">
            <h3>Current Plan</h3>
-           *{{ profile.plan }} - <a href="{% url 'plans' %}">Upgrade Plan</a>
+           *{{ profile.plan }} - <a href="{% url 'plans' %}">Upgrade Plan</a> - <a href="{% url 'cancel-plan' %}">Cancel Plan</a>
         </div>
         {% endif %}
         {% get_setting 'ENABLE_USER_SCAN_LISTS' as enable_user_scan_list %}
