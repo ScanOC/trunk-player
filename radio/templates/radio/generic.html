@@ -4,7 +4,10 @@
 {% block main-nav %}
 {% include "radio/site_live_nav.html" %}
 {% endblock %}
+
 {% block main-body %}
+{% get_setting 'OPEN_SITE' as open_site %}
+{% get_setting 'ALLOW_GOOGLE_SIGNIN' as allow_google %}
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12 col-md-8 col-lg-8">
@@ -18,7 +21,7 @@
 {% if form.errors %}
 <p></p>
 <div class="alert alert-danger">
-Your username and password didn't match. Please try again. If you have an account you can <a href="{% url 'account_reset_password' %}">recover your password</a>. Or create a <a href="{% url 'register' %}{% if next %}?next={{ next}}{% endif %}">new account</a>.
+Your username and password didn't match. Please try again. If you have an account you can <a href="{% url 'account_reset_password' %}">recover your password</a>. {% if open_site %} Or create a <a href="{% url 'register' %}{% if next %}?next={{ next}}{% endif %}">new account</a>. {% else %}WELL{% endif %}
 </div>
 {% endif %}
 
@@ -46,9 +49,10 @@ Your username and password didn't match. Please try again. If you have an accoun
 </table>
 
 <input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" /> <big> OR <a href="{% provider_login_url "google" %}"><img src="/static/radio/img/btn_google_signin_dark_normal_web.png"></a> </big>
+<input type="hidden" name="next" value="{{ next }}" />{% if allow_google %} <big> OR <a href="{% provider_login_url "google" %}"><img src="/static/radio/img/btn_google_signin_dark_normal_web.png"></a> </big>{% endif %}
 </form>
 <hr>
+{% if open_site %}
 <h2>Create a free account</h2>
 <!-- <form method="post" action="{% url 'register' %}"> -->
 <form method="post" action="/accounts/signup/">
@@ -61,6 +65,7 @@ Your username and password didn't match. Please try again. If you have an accoun
 </table>
 <input type="submit" value="Register" />
 </form>
+{% endif %}
 
 
 
