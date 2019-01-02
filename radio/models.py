@@ -54,7 +54,7 @@ class City(models.Model):
 
 
 class System(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, db_index=True, unique=True)
     system_id = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
@@ -62,7 +62,7 @@ class System(models.Model):
 
 
 class Source(models.Model):
-    description = models.CharField(max_length=100)
+    description = models.CharField(max_length=100, db_index=True, unique=True)
 
     class Meta:
         ordering = ["pk"]
@@ -278,6 +278,11 @@ class Transmission(models.Model):
         permissions = (
             ('download_audio', 'Can download audio clips'),
         )
+
+    def save(self, *args, **kwargs):
+        file_name = str(self.audio_file)
+        self.audio_file = file_name.replace('+', '%2B')
+        super(Transmission, self).save(*args, **kwargs)
 
 
 @receiver(post_save, sender=Transmission, dispatch_uid="send_mesg")

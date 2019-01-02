@@ -8,10 +8,12 @@
 <div class="container">
         <div class="row">
 <div class="col-xs-12">
+{% get_setting 'OPEN_SITE' as open_site %}
+{% get_setting 'ALLOW_GOOGLE_SIGNIN' as allow_google %}
 {% if form.errors %}
 <p></p>
 <div class="alert alert-danger">
-Your username and password didn't match. Please try again. If you have an account you can <a href="{% url 'account_reset_password' %}">recover your password</a>. Or create a <a href="{% url 'register' %}{% if next %}?next={{ next}}{% endif %}">new account</a>.
+Your username and password didn't match. Please try again. If you have an account you can <a href="{% url 'account_reset_password' %}">recover your password</a>.{% if open_site %} Or create a <a href="{% url 'register' %}{% if next %}?next={{ next}}{% endif %}">new account</a>.{% endif %}
 </div>
 {% endif %}
 
@@ -38,14 +40,15 @@ Your username and password didn't match. Please try again. If you have an accoun
 </table>
 
 <input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" /> <big> OR <a href="{% provider_login_url "google" %}"><img src="/static/radio/img/btn_google_signin_dark_normal_web.png"></a> OR </big> <a href="{% url 'register' %}{% if next %}?next={{ next}}{% endif %}">Create an account</a>
+<input type="hidden" name="next" value="{{ next }}" /> <big> {% if allow_google %}OR <a href="{% provider_login_url "google" %}"><img src="/static/radio/img/btn_google_signin_dark_normal_web.png"></a>{% endif %} OR {% if open_site %}</big> <a href="{% url 'register' %}{% if next %}?next={{ next}}{% endif %}">Create an account</a>{% endif %}
 </form>
+{% if open_site %}
 <h2>Help</h2>
 <p>If you have any questions or comments you can email us at <a href="mailto:{% get_setting 'SITE_EMAIL' %}">{% get_setting 'SITE_EMAIL' %}</a>.</p>
-
+{% endif %}
 {# Assumes you setup the password_reset view in your URLconf #}
 <!-- <p><a href="{% url 'password_reset' %}">Lost password?</a></p> -->
-<p><a href="{% url 'register' %}{% if next %}?next={{ next}}{% endif %}">Create an account</a></p>
+{% if open_site %}<p><a href="{% url 'register' %}{% if next %}?next={{ next}}{% endif %}">Create an account</a></p>{% endif %}
 <p><a href="{% url 'account_reset_password' %}">Forgot my password</a></p>
 </div>
 </div>
