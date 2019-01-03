@@ -280,8 +280,9 @@ class Transmission(models.Model):
         )
 
     def save(self, *args, **kwargs):
-        file_name = str(self.audio_file)
-        self.audio_file = file_name.replace('+', '%2B')
+        if settings.FIX_AUDIO_NAME:
+            file_name = str(self.audio_file)
+            self.audio_file = file_name.replace('+', '%2B')
         super(Transmission, self).save(*args, **kwargs)
 
 
