@@ -285,6 +285,11 @@ class Transmission(models.Model):
         if settings.FIX_AUDIO_NAME:
             file_name = str(self.audio_file)
             self.audio_file = file_name.replace('+', '%2B')
+        if self.talkgroup_info.play_source is not None and \
+               self.talkgroup_info.play_source != self.source:
+           self.from_default_source = False
+        else:
+           self.from_default_source = True
         super(Transmission, self).save(*args, **kwargs)
 
 
