@@ -74,6 +74,12 @@
                 <div class="col-xs-6">{{ object.from_default_source }}</div>
                 <div class="col-xs-4"></div>
         </div>
+        <div class="row">
+                <div class="col-xs-1"></div>
+                <div class="col-xs-2"><strong>Has Audio</strong></div>
+                <div class="col-xs-6">{{ object.has_audio }}</div>
+                <div class="col-xs-4"></div>
+        </div>
 	{% if user.is_staff %}
         {% if object.audio_file %}
 	<div class="row">

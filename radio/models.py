@@ -198,6 +198,7 @@ class Transmission(models.Model):
     source = models.ForeignKey(Source, default=0)
     system = models.ForeignKey(System, default=0)
     from_default_source = models.BooleanField(default=True)
+    has_audio = models.BooleanField(default=True)
 
     def __str__(self):
         return '{} {}'.format(self.talkgroup, self.start_datetime)

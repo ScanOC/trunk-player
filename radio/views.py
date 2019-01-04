@@ -634,6 +634,7 @@ def import_transmission(request):
         freq = request_data.get('freq') # This should be depricated
         audio_file_type = request_data.get('audio_file_type')
         audio_file_play_length = request_data.get('audio_file_play_length', play_length)
+        has_audio = request_data.get('has_audio', True)
 
         t = Transmission( start_datetime = start_dt,
                      end_datetime = end_dt,
@@ -647,6 +648,7 @@ def import_transmission(request):
                      audio_file_url_path = audio_file_url_path,
                      audio_file_type = audio_file_type,
                      play_length = audio_file_play_length,
+                     has_audio = has_audio,
                    )
         t.save()
 
