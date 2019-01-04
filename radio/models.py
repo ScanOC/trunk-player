@@ -126,6 +126,7 @@ class TalkGroup(models.Model):
     _service_type = models.ForeignKey(Service, blank=True, null=True)
     last_transmission = models.DateTimeField()
     recent_usage = models.IntegerField(default=0)
+    play_source = models.ForeignKey(Source, blank=True, null=True, help_text='default record source for playback')
 
     class Meta:
         ordering = ["alpha_tag"]
@@ -196,6 +197,7 @@ class Transmission(models.Model):
     play_length = models.FloatField(default=0.0)
     source = models.ForeignKey(Source, default=0)
     system = models.ForeignKey(System, default=0)
+    from_default_source = models.BooleanField(default=True)
 
     def __str__(self):
         return '{} {}'.format(self.talkgroup, self.start_datetime)
