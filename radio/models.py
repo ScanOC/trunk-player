@@ -286,6 +286,9 @@ def send_mesg(sender, instance, **kwargs):
     for g in groups:
         Group('livecall-scan-'+g.slug, ).send({'text': json.dumps(instance.as_dict())})
     Group('livecall-tg-' + tg.slug, ).send({'text': json.dumps(instance.as_dict())})
+    # Send notification to default group all the time
+    Group('livecall-scan-default').send({'text': json.dumps(instance.as_dict())})
+
 
 
     #def save(self, *args, **kwargs):
