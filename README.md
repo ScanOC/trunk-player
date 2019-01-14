@@ -7,6 +7,8 @@ Python Django web frontend for playing recorded radio transmisisons. The audio f
 
 ## Build and Install
   Documents are at Read the Docs [http://trunk-player.readthedocs.io/](http://trunk-player.readthedocs.io/)
+  
+  Checkout some install notes in the WIKI also https://github.com/ScanOC/trunk-player/wiki/dan-install-notes
 
 ## Support
  There is a google groups mailing list [Trunk Player](https://groups.google.com/forum/#!forum/trunk-player)

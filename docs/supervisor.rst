@@ -19,6 +19,8 @@ Copy ``trunk_player/supervisor.conf.sample`` to ``trunk_player/supervisor.conf``
 
 Edit the ``/home/radio/trunk-player`` entries in ``trunk_player/supervisor.conf`` to match your install directory.
 
+Also, Edit the ``user=radio`` entries in ``trunk_player/supervisor.conf`` to match your desired user.  Keep in mind this user must have read/write permissions to your installation directory.
+
 Enable the config
 =================
 

@@ -12,6 +12,9 @@ ALLOWED_HOSTS = []
 # to create one.
 SECRET_KEY = 'gv*f9ntgqmj8fqp+=ycx)v%6*o*#k1v25*a_gmrla3y*yy@*!0'
 
+# Added line to prevent CSRF verification errors with Django
+SECURE_PROXY_SSL_HEADER = ()
+
 # Name for site
 SITE_TITLE = 'Trunk-Player'
 SITE_EMAIL = 'help@example.com'
