@@ -19,10 +19,11 @@ class TransmissionSerializer(serializers.ModelSerializer):
     talkgroup_info = TalkGroupSerializer()
     audio_file = SerializerMethodField()
     units = UnitListField(many=True, read_only=True)
+    source_description = serializers.ReadOnlyField(source='source.description')
 
     class Meta:
         model = Transmission
-        fields = ('pk', 'url', 'start_datetime', 'local_start_datetime', 'audio_file', 'talkgroup', 'talkgroup_info', 'freq', 'emergency', 'units', 'play_length', 'print_play_length', 'slug', 'freq_mhz', 'tg_name', 'source', 'audio_url', 'system', 'audio_file_type')
+        fields = ('pk', 'url', 'start_datetime', 'local_start_datetime', 'audio_file', 'talkgroup', 'talkgroup_info', 'freq', 'emergency', 'units', 'play_length', 'print_play_length', 'slug', 'freq_mhz', 'tg_name', 'source_description', 'audio_url', 'system', 'audio_file_type', 'from_default_source')
 
     def get_audio_file(self, obj):
         return obj.audio_file_history_check(self.context.get('request').user)
