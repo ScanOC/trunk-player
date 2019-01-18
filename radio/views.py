@@ -635,6 +635,12 @@ def import_transmission(request):
         audio_file_type = request_data.get('audio_file_type')
         audio_file_play_length = request_data.get('audio_file_play_length', play_length)
         has_audio = request_data.get('has_audio', True)
+        recorder_pc_str = request_data.get('recorder_pc', None)
+        recorder_device = request_data.get('recorder_device', None)
+        if recorder_pc_str is not None:
+            recorder_pc, created = RecorderPC.objects.get_or_create(hostname=recorder_pc_str)
+        else:
+            recorder_pc = None
 
         t = Transmission( start_datetime = start_dt,
                      end_datetime = end_dt,
@@ -649,6 +655,8 @@ def import_transmission(request):
                      audio_file_type = audio_file_type,
                      play_length = audio_file_play_length,
                      has_audio = has_audio,
+                     recorder_pc = recorder_pc,
+                     recorder_device = recorder_device,
                    )
         t.save()
 

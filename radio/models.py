@@ -174,13 +174,13 @@ def AddToDefaultAccessGroup(sender, instance, created, **kwargs):
 post_save.connect(AddToDefaultAccessGroup, sender=TalkGroup)
 
 class RecorderPC(models.Model):
-    hostname = models.CharField(max_length=20, db_index=True)
+    hostname = models.CharField(max_length=20, db_index=True, unique=True)
     description = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         if self.description:
             return self.description
-        self.hostname
+        return self.hostname
 
 
 class TalkGroupWithSystem(TalkGroup):
@@ -208,7 +208,7 @@ class Transmission(models.Model):
     system = models.ForeignKey(System, default=0)
     from_default_source = models.BooleanField(default=True)
     has_audio = models.BooleanField(default=True)
-    recorder_pc = models.ForeignKey(RecorderPC, null=True)
+    recorder_pc = models.ForeignKey(RecorderPC, null=True, blank=True)
     recorder_device = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
