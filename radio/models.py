@@ -92,6 +92,8 @@ class Unit(models.Model):
     def save(self, *args, **kwargs):
         if self.description:
             self.slug = slugify(self.description)
+        else:
+            self.slug = slugify(self.dec_id)
         super(Unit, self).save(*args, **kwargs)
 
 
