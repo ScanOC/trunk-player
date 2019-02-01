@@ -149,6 +149,11 @@ def transDownloadView(request, slug):
     filename = '{}_{}.{}'.format(start_time, trans.talkgroup_info.slug, trans.audio_file_type)
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
     url = 'https:{}{}.{}'.format(trans.audio_url, trans.audio_file, trans.audio_file_type)
+    if trans.audio_url[:2] != '//':
+        url = 'http:'
+        if request.is_secure():
+            url = 'https:'
+        url += '//{}/{}{}.{}'.format(request.get_host(), trans.audio_url, trans.audio_file, trans.audio_file_type)
     req = urllib.request.Request(url)
     with urllib.request.urlopen(req) as web_response:
         response.write(web_response.read())
