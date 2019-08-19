@@ -57,5 +57,8 @@ def export_tg_file(self, options):
             home_site = ''
             if(t.home_site):
                 home_site = t.home_site
-            tg_file.write("{},{},{},{},{},{},{},{}\n".format(t.dec_id,hex_val,t.mode,alpha,description,service_type,home_site,t.priority))
+            systemid = ''
+            if(t.system_id):
+                systemid = t.system_id
+            tg_file.write("{},{},{},{},{},{},{},{},{}\n".format(t.dec_id,hex_val,t.mode,alpha,description,service_type,home_site,systemid,t.priority))
 

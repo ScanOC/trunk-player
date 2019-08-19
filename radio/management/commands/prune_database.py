@@ -44,7 +44,7 @@ def purge_trans(options):
         days_opt = 0
         days_default = True
 
-    t = Transmission.objects.filter(start_datetime__lt=datetime.now() - timedelta(days=days_opt))
+    t = Transmission.objects.filter(start_datetime__lt=datetime.now(tz=timezone.utc) - timedelta(days=days_opt))
     print('Pruning %s transmissions older than %s days.' % (t.count(), days_opt))
     t.delete()
     print('Pruning complete')
