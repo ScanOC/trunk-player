@@ -23,3 +23,5 @@ trunk_player/trunk_player.nginx
 trunk_player/nginx.conf
 trunk_player/supervisor.conf
 daphne.lock
+*.log*
+running.pid

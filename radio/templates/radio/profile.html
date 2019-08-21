@@ -22,7 +22,7 @@
         {% if show_stripe_plans %}
         <div class="user-profile-user">
            <h3>Current Plan</h3>
-           *{{ profile.plan }} - <a href="{% url 'plans' %}">Upgrade Plan</a>
+           *{{ profile.plan }} - <a href="{% url 'plans' %}">Upgrade Plan</a> - <a href="{% url 'cancel-plan' %}">Cancel Plan</a>
         </div>
         {% endif %}
         {% get_setting 'ENABLE_USER_SCAN_LISTS' as enable_user_scan_list %}
@@ -41,7 +41,7 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<footer>
-				<p>&copy; Copyright 2016-2018 {% get_setting 'SITE_TITLE' %}</p>
+				<p>&copy; {% get_setting 'COPYRIGHT_NOTICE' %} {% get_setting 'SITE_TITLE' %}</p>
 			</footer>
 		</div>
 	</div>

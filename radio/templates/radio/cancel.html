@@ -13,7 +13,7 @@
 {% if complete %}
 <p>Your subscription is now canceled<p>
 {% else %}
-<p>Sorry to see you go...<form method="post">{% csrf_token %}<input type="submit" class="btn" value='Confirm'></form></p>
+<p>Sorry to see you go...<form method="post">{% csrf_token %}<input type="submit" class="btn" value='Confirm Cancel'></form></p>
 {% endif %}
 		</div>
                 <div class="col-md-4 col-lg-4">
@@ -29,7 +29,7 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<footer>
-				<p>&copy; Copyright 2016-2018 {% get_setting 'SITE_TITLE' %}</p>
+				<p>&copy; {% get_setting 'COPYRIGHT_NOTICE' %} {% get_setting 'SITE_TITLE' %}</p>
 			</footer>
 		</div>
 	</div>

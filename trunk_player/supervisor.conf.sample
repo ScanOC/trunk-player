@@ -1,4 +1,6 @@
 # supervisor.conf
+## Ensure you edit directory paths and user= varibles in this file to your installation path and user.
+
 [group:trunkplayer]
 programs=trunkplayer_asgi_daphne, trunkplayer_asgi_workers, trunkplayer_add_transmission_workers
 priority=999

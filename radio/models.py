@@ -54,7 +54,7 @@ class City(models.Model):
 
 
 class System(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, db_index=True, unique=True)
     system_id = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
@@ -62,7 +62,7 @@ class System(models.Model):
 
 
 class Source(models.Model):
-    description = models.CharField(max_length=100)
+    description = models.CharField(max_length=100, db_index=True, unique=True)
 
     class Meta:
         ordering = ["pk"]
@@ -92,6 +92,8 @@ class Unit(models.Model):
     def save(self, *args, **kwargs):
         if self.description:
             self.slug = slugify(self.description)
+        else:
+            self.slug = slugify(self.dec_id)
         super(Unit, self).save(*args, **kwargs)
 
 
@@ -126,6 +128,7 @@ class TalkGroup(models.Model):
     _service_type = models.ForeignKey(Service, blank=True, null=True)
     last_transmission = models.DateTimeField()
     recent_usage = models.IntegerField(default=0)
+    play_source = models.ForeignKey(Source, blank=True, null=True, help_text='default record source for playback')
 
     class Meta:
         ordering = ["alpha_tag"]
@@ -196,6 +199,8 @@ class Transmission(models.Model):
     play_length = models.FloatField(default=0.0)
     source = models.ForeignKey(Source, default=0)
     system = models.ForeignKey(System, default=0)
+    from_default_source = models.BooleanField(default=True)
+    has_audio = models.BooleanField(default=True)
 
     def __str__(self):
         return '{} {}'.format(self.talkgroup, self.start_datetime)
@@ -208,7 +213,13 @@ class Transmission(models.Model):
         return timezone.localtime(self.start_datetime).strftime('%H:%M:%S %m/%d/%Y')
 
     def as_dict(self):
-        return {'start_datetime': str(self.start_datetime), 'audio_file': str(self.audio_file), 'talkgroup_desc': self.talkgroup_info.alpha_tag}
+        return {'start_datetime': str(self.start_datetime), 
+                'audio_file': str(self.audio_file), 
+                'talkgroup_desc': str(self.talkgroup_info.alpha_tag),
+                'talkgroup_dec_id' : str(self.talkgroup_info.dec_id),
+                'audio_url': str("{}{}.{}".format(settings.AUDIO_URL_BASE, self.audio_file, self.audio_file_type)),
+               }
+
 
     def print_play_length(self):
         m, s = divmod(int(self.play_length), 60)
@@ -273,12 +284,23 @@ class Transmission(models.Model):
             ('download_audio', 'Can download audio clips'),
         )
 
+    def save(self, *args, **kwargs):
+        if settings.FIX_AUDIO_NAME:
+            file_name = str(self.audio_file)
+            self.audio_file = file_name.replace('+', '%2B')
+        if self.talkgroup_info.play_source is not None and \
+               self.talkgroup_info.play_source != self.source:
+           self.from_default_source = False
+        else:
+           self.from_default_source = True
+        super(Transmission, self).save(*args, **kwargs)
+
 
 @receiver(post_save, sender=Transmission, dispatch_uid="send_mesg")
 def send_mesg(sender, instance, **kwargs):
     #log.debug('Hit post save()')
     #log.debug('DATA %s', json.dumps(instance.as_dict()))
-    #log.debug('DATA %s', json.dumps(instance.as_dict()))
+    #log.error('DATA %s', json.dumps(instance.as_dict()))
     tg = TalkGroup.objects.get(pk=instance.talkgroup_info.pk)
     tg.last_transmission = timezone.now()
     tg.save()
@@ -286,6 +308,9 @@ def send_mesg(sender, instance, **kwargs):
     for g in groups:
         Group('livecall-scan-'+g.slug, ).send({'text': json.dumps(instance.as_dict())})
     Group('livecall-tg-' + tg.slug, ).send({'text': json.dumps(instance.as_dict())})
+    # Send notification to default group all the time
+    Group('livecall-scan-default').send({'text': json.dumps(instance.as_dict())})
+
 
 
     #def save(self, *args, **kwargs):

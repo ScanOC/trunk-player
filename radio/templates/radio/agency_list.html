@@ -9,9 +9,9 @@
         <div id="main-message" style="display: none" class=" alert alert-danger" role="alert">
         </div>
         <div>
-        <h2>City List</h2>
-        {% for city in cities %}
-            <p><a href="{% url 'city_detail' city.slug %}">{{ city }}</a></p>
+        <h2>Agency List</h2>
+        {% for a in agency %}
+            <p>{{ a.name }} ** {{ a.short }}</p>
         {% endfor %}
        
         </div>
@@ -21,7 +21,7 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<footer>
-				<p>&copy; {% get_setting 'COPYRIGHT_NOTICE' %} {% get_setting 'SITE_TITLE' %}</p>
+				<p>&copy; Copyright 2016-2018 {% get_setting 'SITE_TITLE' %}</p>
 			</footer>
 		</div>
 	</div>

@@ -1,12 +1,14 @@
 #import functools
 import sys
 import re
+import json
+import pytz
 from itertools import chain
 from django.shortcuts import render, get_object_or_404, render_to_response, redirect
 from django.http import Http404
 from django.views.generic import ListView
 from django.db.models import Q
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
@@ -84,6 +86,12 @@ def userProfile(request):
         scan_lists = ScanList.objects.filter(created_by=request.user)
         return render(request, template, {'profile_form': profile_form, 'profile': profile, 'scan_lists': scan_lists} )
 
+def agencyList(request):
+    template = 'radio/agency_list.html'
+    query_data = Agency.objects.exclude(short='_DEF_').order_by('name')
+
+    return render(request, template, {'agency': query_data})
+
 
 def cityListView(request):
     template = 'radio/city_list.html'
@@ -141,6 +149,11 @@ def transDownloadView(request, slug):
     filename = '{}_{}.{}'.format(start_time, trans.talkgroup_info.slug, trans.audio_file_type)
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
     url = 'https:{}{}.{}'.format(trans.audio_url, trans.audio_file, trans.audio_file_type)
+    if trans.audio_url[:2] != '//':
+        url = 'http:'
+        if request.is_secure():
+            url = 'https:'
+        url += '//{}/{}{}.{}'.format(request.get_host(), trans.audio_url, trans.audio_file, trans.audio_file_type)
     req = urllib.request.Request(url)
     with urllib.request.urlopen(req) as web_response:
         response.write(web_response.read())
@@ -491,6 +504,22 @@ class UnitUpdateView(PermissionRequiredMixin, UpdateView):
     success_url = '/unitupdategood/'
     permission_required = ('radio.change_unit')
 
+    def form_valid(self, form):
+        try:
+            update_unit_email = SiteOption.objects.get(name='SEND_ADMIN_EMAIL_ON_UNIT_NAME')
+            if update_unit_email.value_boolean_or_string() == True:
+                Unit = form.save()
+                send_mail(
+                  'Unit ID Change',
+                  'User {} updated unit ID {} Now {}'.format(self.request.user, Unit.dec_id, Unit.description),
+                  settings.SERVER_EMAIL,
+                  [ mail for name, mail in settings.ADMINS],
+                  fail_silently=False,
+                )
+        except SiteOption.DoesNotExist:
+            pass
+        return super().form_valid(form)
+
 
 def ScanDetailsList(request, name):
     template = 'radio/scandetaillist.html'
@@ -567,3 +596,78 @@ def incident(request, inc_slug):
     except Incident.DoesNotExist:
         raise Http404
     return render(request, template, {'inc':inc})
+
+
+@csrf_exempt
+def import_transmission(request):
+    if request.method == "POST":
+        settings_auth_token = getattr(settings, 'ADD_TRANS_AUTH_TOKEN', None)
+        if settings_auth_token == '7cf5857c61284': # Check is default is still set
+            return HttpResponse('Unauthorized, default ADD_TRANS_AUTH_TOKEN still set.', status=401)
+        body_unicode = request.body.decode('utf-8')
+        request_data = json.loads(body_unicode)
+        auth_token = request_data.get('auth_token')
+        if auth_token != settings_auth_token:
+            return HttpResponse('Unauthorized, check auth_token', status=401)
+        # System
+        system_name = request_data.get('system')
+        if system_name is None:
+            return HttpResponse('system is missing', status=400)
+        system, created = System.objects.get_or_create(name=system_name)
+        # Source
+        source_name = request_data.get('source')
+        if source_name is None:
+            return HttpResponse('source is missing', status=400)
+        source, created = Source.objects.get_or_create(description=source_name)
+        # TalkGroup
+        tg_dec = request_data.get('talkgroup')
+        if tg_dec is None:
+            return HttpResponse('talkgroup is missing', status=400)
+        try:
+            tg = TalkGroup.objects.get(dec_id=tg_dec, system=system)
+        except TalkGroup.DoesNotExist:
+            name = '#{}'.format(tg_dec)
+            tg = TalkGroup.objects.create(dec_id=tg_dec, system=system, alpha_tag=name, description='TalkGroup {}'.format(name))
+        # Transmission start
+        epoc_ts = request_data.get('start_time')
+        start_dt = datetime.fromtimestamp(int(epoc_ts), pytz.UTC)
+        epoc_end_ts = request_data.get('stop_time')
+        end_dt = datetime.fromtimestamp(int(epoc_end_ts), pytz.UTC)
+        play_length = epoc_end_ts - epoc_ts
+        audio_filename = request_data.get('audio_filename')
+        audio_file_url_path = request_data.get('audio_file_url_path')
+        freq = request_data.get('freq') # This should be depricated
+        audio_file_type = request_data.get('audio_file_type')
+        audio_file_play_length = request_data.get('audio_file_play_length', play_length)
+        has_audio = request_data.get('has_audio', True)
+
+        t = Transmission( start_datetime = start_dt,
+                     end_datetime = end_dt,
+                     audio_file = audio_filename,
+                     talkgroup = tg_dec,
+                     talkgroup_info = tg,
+                     freq = int(float(freq)),
+                     emergency = False,
+                     source = source,
+                     system = system,
+                     audio_file_url_path = audio_file_url_path,
+                     audio_file_type = audio_file_type,
+                     play_length = audio_file_play_length,
+                     has_audio = has_audio,
+                   )
+        t.save()
+
+        # Units
+        count = 0
+        for unit in request_data.get('srcList'):
+                try:
+                    trans_unit = unit['src']
+                except TypeError:
+                    trans_unit = unit
+                u,created = Unit.objects.get_or_create(dec_id=trans_unit,system=t.system)
+                tu = TranmissionUnit.objects.create(transmission=t, unit=u, order=count)
+                count=count+1
+
+        return HttpResponse("Transmission added [{}]".format(t.pk))
+    else:
+        return HttpResponse(status=405)

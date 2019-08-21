@@ -21,6 +21,7 @@ from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 from rest_framework import routers
 from radio import views
+from django.contrib.auth.decorators import login_required
 
 router = routers.DefaultRouter()
 router.register(r'transmission', views.TransmissionViewSet)
@@ -43,26 +44,54 @@ urlpatterns = [
     url(r'^api_v1/', include(router.urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^scan/(?P<name>.*)/details/$', views.ScanDetailsList, name='scan_details'),
-    url(r'^(tg|scan|unit)/(.*)/$',TemplateView.as_view(template_name='radio/player_main.html')),
+]
+
+if settings.OPEN_SITE:
+    urlpatterns += [url(r'^(tg|scan|unit)/(.*)/$',TemplateView.as_view(template_name='radio/player_main.html')),]
+else:
+    urlpatterns += [url(r'^(tg|scan|unit)/(.*)/$',login_required(TemplateView.as_view(template_name='radio/player_main.html'))),]
+
+urlpatterns += [
     url(r'^inc/(.*)/$',views.incident, name='incident'),
     url(r'^scan/$', RedirectView.as_view(url='/scan/default/', permanent=False)),
-    url(r'^userscan/$', TemplateView.as_view(template_name='radio/player_userscan.html')),
+]
+
+if settings.OPEN_SITE:
+    urlpatterns += [url(r'^userscan/$', TemplateView.as_view(template_name='radio/player_userscan.html')),]
+else:
+    urlpatterns += [url(r'^userscan/$', login_required(TemplateView.as_view(template_name='radio/player_userscan.html'))),]
+
+urlpatterns += [
     url(r'^about/$', views.Generic, {'page_name': 'about'}, name='about'),
     url(r'^page/(?P<page_name>.*)/$', views.Generic, name='pages'),
     url(r'^talkgroups/$', views.TalkGroupList.as_view()),
     url(r'^audio/(?P<slug>[-\w]+)/$',views.TransDetailView, name='trans'),
-    url(r'^audio_download/(?P<slug>[-\w]+)/$',views.transDownloadView, name='download'),
-    url(r'^register/$', views.register, name='register'),
-    url(r'^register/success/$', views.register_success),
+    url(r'^audio_download/(?P<slug>[-\w]+)/$',views.transDownloadView, name='download'), 
+]
+
+if settings.OPEN_SITE:
+    urlpatterns += [url(r'^register/$', views.register, name='register'),]
+    urlpatterns += [url(r'^register/success/$', views.register_success),]
+else:
+    urlpatterns += [url(r'^register/$', views.Generic, {'page_name': 'index'}, name='register'),]
+
+urlpatterns += [
     url(r'^unitupdate/(?P<pk>\d+)/$', views.UnitUpdateView.as_view(), name='unitupdate'),
     url(r'^unitupdategood/$',  TemplateView.as_view(template_name='radio/unitupdategood.html')),
-    url(r"^payments/", include("pinax.stripe.urls")),
-    url(r'^upgrade/$', views.upgrade, name='upgrade'),
+]
+
+if settings.OPEN_SITE:
+    urlpatterns += [url(r"^payments/", include("pinax.stripe.urls")),]
+    urlpatterns += [url(r'^upgrade/$', views.upgrade, name='upgrade'),]
+
+urlpatterns += [
     url(r'^city/(?P<slug>[-\w]+)/$',views.cityDetailView, name='city_detail'),
     url(r'^city/$',views.cityListView, name='city_list'),
     url(r'^profile/$', views.userProfile, name='user_profile'),
     url(r'^select2/', include('django_select2.urls')),
     url(r'^userscanlist/$', views.userScanList, name='user_scanlist'),
+    url(r'^agency/$', views.agencyList, name='agency_list'),
+    url(r'^api_v2/import_transmission/$', views.import_transmission, name='import_transmission'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if getattr(settings, 'SHOW_STRIPE_PLANS', False):
