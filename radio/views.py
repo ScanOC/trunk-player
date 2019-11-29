@@ -300,6 +300,7 @@ class ScanViewSet(generics.ListAPIView):
     serializer_class = TransmissionSerializer
 
     def get_queryset(self):
+        
         scanlist = self.kwargs['filter_val']
         try:
             sl = ScanList.objects.get(slug__iexact=scanlist)
@@ -312,6 +313,12 @@ class ScanViewSet(generics.ListAPIView):
         else:
             tg = sl.talkgroups.all()
         rc_data = Transmission.objects.filter(talkgroup_info__in=tg).prefetch_related('units').prefetch_related('talkgroup_info')
+        record_site = self.request.query_params.get('record-site')
+        if record_site:
+            source = Source.objects.get(description=record_site)
+            rc_data = rc_data.filter(source=source)
+        if self.request.query_params.get('source') == 'default':
+            rc_data = rc_data.filter(from_default_source=True)
         #rc_data = limit_transmission_history(self.request, rc_data)
         rc_data = limit_transmission_history_six_months(self.request, rc_data)
         restricted, rc_data = restrict_talkgroups(self.request, rc_data) 
@@ -623,6 +630,10 @@ def import_transmission(request):
         except TalkGroup.DoesNotExist:
             name = '#{}'.format(tg_dec)
             tg = TalkGroup.objects.create(dec_id=tg_dec, system=system, alpha_tag=name, description='TalkGroup {}'.format(name))
+        if getattr(settings, 'AUTO_SET_DEFAULT_TG_SOURCE'):
+            if not tg.play_source:
+                tg.play_source = source
+                tg.save()
         # Transmission start
         epoc_ts = request_data.get('start_time')
         start_dt = datetime.fromtimestamp(int(epoc_ts), pytz.UTC)
