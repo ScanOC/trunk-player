@@ -25,7 +25,7 @@ from django.contrib.auth.decorators import login_required
 
 router = routers.DefaultRouter()
 router.register(r'transmission', views.TransmissionViewSet)
-router.register(r'talkgroups', views.TalkGroupViewSet, base_name='talkgroups')
+router.register(r'talkgroups', views.TalkGroupViewSet, basename='talkgroups')
 router.register(r'scanlist', views.ScanListViewSet)
 router.register(r'menuscanlist', views.MenuScanListViewSet)
 router.register(r'menutalkgrouplist', views.MenuTalkGroupListViewSet)
