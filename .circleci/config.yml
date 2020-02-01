@@ -8,8 +8,8 @@ jobs:
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: circleci/python:3.6.1
-      - image: postgres:9.5
+      - image: circleci/python:3.7
+      - image: postgres:11
         environment:
             POSTGRES_USER: circleci
             POSTGRES_DB: circle_test
