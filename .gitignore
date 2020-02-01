@@ -4,6 +4,7 @@
 nohup.out
 _build/
 env/
+venv/
 /static/
 audio_files/*/*
 audio_files/*.mp3
