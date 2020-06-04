@@ -32,4 +32,5 @@ six==1.11.0
 stripe==1.75.0
 tinys3==0.1.12
 txaio==2.8.2
-zope.interface==4.4.3
+zope.interface==5.0.0
+
