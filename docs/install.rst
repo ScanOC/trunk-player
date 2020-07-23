@@ -189,15 +189,15 @@ Using the ``manage.py`` command agian
 
   (Trunk Player)$ ./manage.py runserver
 
-This will start the server up listening on the local loopback address on port ``8000``. Start your web browser and go to `http://localhost:8000`_. You should seen the main page
+This will start the server up listening on the local loopback address on port ``80``. Start your web browser and go to `http://localhost:80`_. You should seen the main page
 Visit ``/admin/`` to log into the admin area.
 
-.. _`http://localhost:8000`: http://localhost:8000
+.. _`http://localhost:80`: http://localhost:80
 
 If you are running this on a remote server you need to have the web server us its' public IP adress so you can connect.
 
 .. code-block:: console
 
-   (Trunk Player)$ ./manage.py runserver 0.0.0.0:8000
+   (Trunk Player)$ ./manage.py runserver 0.0.0.0:80
 
-This will run the server also on port 8000 but will be accessible via the servers IP address or dns name on port ``8000`` also.
+This will run the server also on port 80 but will be accessible via the servers IP address or dns name on port ``80`` also.
