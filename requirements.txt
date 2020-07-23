@@ -6,3 +6,5 @@ oauthlib
 pytz
 requests
 psycopg2-binary
+django_select2
+django_redis
