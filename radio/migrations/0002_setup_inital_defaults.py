@@ -19,6 +19,14 @@ def create_default_agency(apps, schema_editor):
     agency = apps.get_model('radio', 'Agency')
     agency.objects.create(name='Default', short='_DEF_')
 
+def create_default_system(apps, schema_editor):
+    system = apps.get_model('radio', 'System')
+    system.objects.create(name='Default')
+
+def create_default_source(apps, schema_editor):
+    source = apps.get_model('radio', 'Source')
+    source.objects.create(description='Source')
+
 def create_default_html(apps, schema_editor):
     index_html = """<h1>Welcome to Trunk-Player</h1>
 <p>
@@ -77,6 +85,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(create_default_system),
+        migrations.RunPython(create_default_source),
         migrations.RunPython(create_default_plan),
         migrations.RunPython(create_default_agency),
         migrations.RunPython(create_default_html),

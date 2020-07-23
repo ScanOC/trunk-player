@@ -221,7 +221,7 @@ def Generic(request, page_name):
     return render(request, template, {'html_object': query_data})
 
 def get_user_profile(user):
-    if user.is_authenticated():
+    if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
     else:
         try:
@@ -575,7 +575,7 @@ def plans(request):
         default_plan = Plan.objects.get(pk=Plan.DEFAULT_PK)
 
         # Check if users email address is verified
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             verified_email = allauth_emailaddress.objects.filter(user=request.user, primary=True, verified=True)
             if verified_email:
                 has_verified_email = True

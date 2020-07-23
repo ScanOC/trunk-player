@@ -242,7 +242,7 @@ class Transmission(models.Model):
         return True
 
     def _get_user_profile(self, user):
-        if user.is_authenticated():
+        if user.is_authenticated:
             user_profile = Profile.objects.get(user=user)
         else:
             try:
