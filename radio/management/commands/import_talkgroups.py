@@ -24,7 +24,7 @@ class Command(BaseCommand):
             dest='truncate',
             action='store_true',
             help='Truncat any data that would not fit into the DB',
-            default=False,
+            default=True,
        )
 
     def handle(self, *args, **options):
@@ -64,9 +64,20 @@ def import_tg_file(self, options):
                     if len(row[4]) > description_max_length:
                       row[4] = row[4][:description_max_length]
                       self.stdout.write("Truncating description from line ({}) TG {}".format(line_number, row[3]))
-                obj, create = TalkGroup.objects.update_or_create(dec_id=row[0], system=system, defaults={'mode': row[2], 'alpha_tag': row[3], 'description': row[4], 'priority': row[7]})
-                obj.service_type = row[5]
+                #print('LEN ' + str(len(row)))
+                priority = 3
+                try:
+                    priority = row[6]
+                except IndexError:
+                    pass
+                try:
+                    priority = int(priority)
+                except ValueError:
+                    priority = 3
+                obj, create = TalkGroup.objects.update_or_create(dec_id=row[0], system=system, defaults={'mode': row[2], 'alpha_tag': row[3], 'description': row[4], 'priority': priority})
+                obj.service_type = row[5][:20]
                 obj.save()
             except (IntegrityError, IndexError):
-                print("Skipping {}".format(row[3]))
+                pass
+                #print("Skipping {}".format(row[3]))
 
