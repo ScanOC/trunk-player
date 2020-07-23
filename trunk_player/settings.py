@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'local_override',
-    'radio.apps.RadioConfig',
+    'radio',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
