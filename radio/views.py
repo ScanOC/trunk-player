@@ -4,7 +4,7 @@ import re
 import json
 import pytz
 from itertools import chain
-from django.shortcuts import render, get_object_or_404, render_to_response, redirect
+from django.shortcuts import render, get_object_or_404, redirect, render
 from django.http import Http404
 from django.views.generic import ListView
 from django.db.models import Q
@@ -28,9 +28,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import mail_admins
 
 
-import pinax.stripe.actions as stripe_actions
-import pinax.stripe.models as stripe_models
-import stripe
 from allauth.account.models import EmailAddress as allauth_emailaddress
 from pprint import pprint
 from django.contrib import messages
@@ -200,12 +197,12 @@ class TransmissionView(ListView):
 
 def ScanListFilter(request, filter_val):
     template = 'radio/transmission.html'
-    return render_to_response(template, {'filter_data': filter_val, 'api_url': '/api_v1/ScanList'})
+    return render(request, template, {'filter_data': filter_val, 'api_url': '/api_v1/ScanList'})
 
 
 def TalkGroupFilterNew(request, filter_val):
     template = 'radio/transmission_play.html'
-    return render_to_response(template, {'filter_data': filter_val})
+    return render(request, template, {'filter_data': filter_val})
 
 
 def TalkGroupFilterjq(request, filter_val):
@@ -298,7 +295,7 @@ def TalkGroupFilterBase(request, filter_val, template):
         restrict_talkgroups(self.request, rc_data)
     except Transmission.DoesNotExist:
         raise Http404
-    return render_to_response(template, {'object_list': query_data, 'filter_data': filter_val})
+    return render(request, template, {'object_list': query_data, 'filter_data': filter_val})
 
 
 class ScanViewSet(generics.ListAPIView):
@@ -533,7 +530,7 @@ def ScanDetailsList(request, name):
             raise Http404
     if scanlist:
         query_data = scanlist.talkgroups.all()
-    return render_to_response(template, {'object_list': query_data, 'scanlist': scanlist, 'request': request})
+    return render(request, template, {'object_list': query_data, 'scanlist': scanlist, 'request': request})
 
 
 @login_required

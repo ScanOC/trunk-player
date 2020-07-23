@@ -45,25 +45,21 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    #'allauth.socialaccount.providers.facebook',
-    #'allauth.socialaccount.providers.instagram',
     'rest_framework',
-    'channels',
-    'pinax.stripe',
-    'django_select2',
+    #'channels',
 ]
 
-MIDDLEWARE_CLASSES = [
+
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'radio.custom_middleware.ExtendUserSession',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'trunk_player.urls'
 
@@ -187,7 +183,7 @@ CACHES = {
 ANONYMOUS_TIME = 43200 # 1 Month (60min * 24hours * 30days)
 
 # This Agency must exist in radio.Agency 
-RADIO_DEFAULT_UNIT_AGENCY = 0
+RADIO_DEFAULT_UNIT_AGENCY = 1
 
 SITE_ID = 1
 

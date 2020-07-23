@@ -11,7 +11,7 @@ class ExtendUserSession(object):
     """
     def process_request(self, request):
         # Only extend the session for auth'd users
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             now = timezone.now()
 
             # Extend the session every day

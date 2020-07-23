@@ -20,6 +20,6 @@ class RadioConfig(AppConfig):
     name = 'radio'
 
 
-    def ready(self):
-        post_migrate.connect(default_data_setup, sender=self)
-        import_module("radio.receivers")
+    #def ready(self):
+    #    post_migrate.connect(default_data_setup, sender=self)
+    #    import_module("radio.receivers")
