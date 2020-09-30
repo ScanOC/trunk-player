@@ -4,7 +4,7 @@ import settings
 class RedisQueue(object):
     """Simple Queue with Redis Backend"""
     def __init__(self, name, namespace='tp', **redis_kwargs):
-       """Defaults to reading REDIS_URL from environ, or channel REDIS URL from settings_local.py"""
+       """Defaults to reading channel REDIS URL from settings_local.py"""
        channel_redis_url = settings.CHANNEL_LAYERS['default']['CONFIG']['hosts'][0]
        self.__db= redis.Redis.from_url(channel_redis_url, **redis_kwargs)
        self.key = '%s:%s' %(namespace, name)
