@@ -1,5 +1,6 @@
 import redis
-import settings
+from django.conf import settings
+
 
 class RedisQueue(object):
     """Simple Queue with Redis Backend"""
