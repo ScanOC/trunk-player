@@ -2,6 +2,7 @@
 if [[ "$MIGRATE_DB" -eq 1 ]]
 then
     echo "MIGRATE_DB Enabled"
+    python utility/trunk-player/db_check_create.py
     python manage.py migrate
 fi
 python manage.py collectstatic --noinput
