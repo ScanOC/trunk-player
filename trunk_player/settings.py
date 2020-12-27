@@ -241,6 +241,7 @@ ADD_TRANS_AUTH_TOKEN = '7cf5857c61284' # Token to allow adding transmissions
 OPEN_SITE = True # If False new users cannot sign up
 ALLOW_GOOGLE_SIGNIN = True
 FIX_AUDIO_NAME = False
+TRANS_DATETIME_FORMAT = os.environ.get("TRANS_DATETIME_FORMAT", '%H:%M:%S %m/%d/%Y')
 
 # Load our local settings 
 try:
