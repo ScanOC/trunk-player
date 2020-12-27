@@ -210,7 +210,7 @@ class Transmission(models.Model):
 
     @property
     def local_start_datetime(self):
-        return timezone.localtime(self.start_datetime).strftime('%H:%M:%S %m/%d/%Y')
+        return timezone.localtime(self.start_datetime).strftime(settings.TRANS_DATETIME_FORMAT)
 
     def as_dict(self):
         return {'start_datetime': str(self.start_datetime), 
