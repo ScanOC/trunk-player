@@ -20,12 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '$)ntjbvj=my84lgkn8(vr13f#pz4uu&ai_mhp=ys9imph%cgeq'
+SECRET_KEY = os.environ.get("SECRET_KEY", '%2%xjx4c3obf_xa8hsdbd@ci+8!4)@x16_!auo*h(%*p_z(g')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="*").split(" ")
 
 LOGIN_URL = '/login/'
 
@@ -91,8 +91,12 @@ WSGI_APPLICATION = 'trunk_player.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER": os.environ.get("SQL_USER", "user"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
 
@@ -137,8 +141,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Honor the 'X-Forwarded-Proto' header for request.is_secure()
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+if os.environ.get('FORCE_SECURE', 0) == 1:
+  # Honor the 'X-Forwarded-Proto' header for request.is_secure()
+  SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Static files (CSS, JavaScript, Images)
@@ -166,7 +171,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "asgi_redis.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+            "hosts": [os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')],
         },
         "ROUTING": "radio.routing.channel_routing",
     },
@@ -218,7 +223,7 @@ PINAX_STRIPE_SECRET_KEY = '0'
 PINAX_STRIPE_PUBLIC_KEY = '0'
 
 # Set this to the location of your audio files
-AUDIO_URL_BASE = '//s3.amazonaws.com/SET-TO-MY-BUCKET/'
+AUDIO_URL_BASE = os.environ.get("AUDIO_URL_BASE", '//s3.amazonaws.com/SET-TO-MY-BUCKET/')
 
 # Which settings are passed into the javascript object js_config
 JS_SETTINGS = ['SITE_TITLE', 'AUDIO_URL_BASE']
@@ -236,10 +241,10 @@ ACCESS_TG_RESTRICT = False
 
 TALKGROUP_RECENT_LENGTH = 15 #  Minutes of history for TG recent_usage
 
-ADD_TRANS_AUTH_TOKEN = '7cf5857c61284' # Token to allow adding transmissions
+ADD_TRANS_AUTH_TOKEN = os.environ.get("ADD_TRANS_AUTH_TOKEN", '7cf5857c61284') # Token to allow adding transmissions
 
-OPEN_SITE = True # If False new users cannot sign up
-ALLOW_GOOGLE_SIGNIN = True
+OPEN_SITE = False # If False new users cannot sign up
+ALLOW_GOOGLE_SIGNIN = False
 FIX_AUDIO_NAME = False
 
 # Load our local settings 
@@ -249,5 +254,6 @@ except NameError:
     try:
         from trunk_player.settings_local import *
     except ImportError:
-        print("Failed to open settings_local.py")
+        pass
+        # print("Failed to open settings_local.py")
 
