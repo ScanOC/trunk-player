@@ -15,7 +15,6 @@ django-appconf==1.0.2
 django-redis==4.8.0
 django-select2==6.0.1
 djangorestframework<3.12
-hyperlink==17.3.1
 idna==2.8
 incremental==17.5.0
 jsonfield<2.0.0
@@ -31,6 +30,5 @@ requests-oauthlib==0.8.0
 six==1.11.0
 stripe==1.75.0
 tinys3==0.1.12
-txaio==2.8.2
 zope.interface==5.0.0
 
