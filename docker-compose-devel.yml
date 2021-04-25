@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=password1234
+
+  app:
+    build:
+      context: .
+    ports:
+      - "8008:80"
+    volumes:
+      - .:/app/trunkplayer
+    # command: 
+    # entrypoint: sh -c "python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DEBUG=1
+      - SQL_ENGINE=django.db.backends.postgresql_psycopg2
+      - SQL_DATABASE=tr
+      - SQL_USER=postgres
+      - SQL_PASSWORD=password1234
+      - SQL_HOST=db
+      - MIGRATE_DB=1
+    depends_on:
+      - db
+
