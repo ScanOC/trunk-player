@@ -1,7 +1,7 @@
 asgi-redis==1.4.3
 asgiref==1.1.2
 attrs
-autobahn==17.10.1
+autobahn==20.12.3
 Automat==0.6.0
 certifi==2018.11.29
 channels==1.1.8
