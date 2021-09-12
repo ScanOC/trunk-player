@@ -15,5 +15,5 @@ echo "daphne"
 ./manage.py runworker > runworker2.log 2>&1 &
 ./manage.py runworker > runworker3.log 2>&1 &
 ./manage.py runworker > runworker4.log 2>&1 &
-daphne trunk_player.asgi:channel_layer --port 7055 --bind 127.0.0.1 
+daphne trunk_player.asgi:channel_layer --port 7055 --bind 127.0.0.1 --access-log /var/log/trunk-player/daphne_main.log --ping-interval 3 --ping-timeout 12 --proxy-headers
 #exec "$@"
