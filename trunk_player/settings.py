@@ -84,7 +84,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'trunk_player.wsgi.application'
-
+ASGI_APPLICATION = "trunk_player.asgi.channel_layer"
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
