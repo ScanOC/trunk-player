@@ -4,7 +4,7 @@ import re
 import json
 import pytz
 from itertools import chain
-from django.shortcuts import render, get_object_or_404, render_to_response, redirect
+from django.shortcuts import render, redirect
 from django.http import Http404
 from django.views.generic import ListView
 from django.db.models import Q
@@ -28,9 +28,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import mail_admins
 
 
-import pinax.stripe.actions as stripe_actions
-import pinax.stripe.models as stripe_models
-import stripe
+
 from allauth.account.models import EmailAddress as allauth_emailaddress
 from pprint import pprint
 from django.contrib import messages
@@ -200,12 +198,12 @@ class TransmissionView(ListView):
 
 def ScanListFilter(request, filter_val):
     template = 'radio/transmission.html'
-    return render_to_response(template, {'filter_data': filter_val, 'api_url': '/api_v1/ScanList'})
+    return render(request, template, {'filter_data': filter_val, 'api_url': '/api_v1/ScanList'})
 
 
 def TalkGroupFilterNew(request, filter_val):
     template = 'radio/transmission_play.html'
-    return render_to_response(template, {'filter_data': filter_val})
+    return render(request, template, {'filter_data': filter_val})
 
 
 def TalkGroupFilterjq(request, filter_val):
@@ -298,7 +296,7 @@ def TalkGroupFilterBase(request, filter_val, template):
         restrict_talkgroups(self.request, rc_data)
     except Transmission.DoesNotExist:
         raise Http404
-    return render_to_response(template, {'object_list': query_data, 'filter_data': filter_val})
+    return render(request, template, {'object_list': query_data, 'filter_data': filter_val})
 
 
 class ScanViewSet(generics.ListAPIView):
@@ -414,9 +412,9 @@ def upgrade(request):
         try:
             plan = form.cleaned_data.get('plan_type')
             card_name = form.cleaned_data.get('cardholder_name')
-            stripe_cust = stripe_models.Customer.objects.get(user=request.user)
+            stripe_cust = None
             logger.error('Change plan to {} for customer {} Card Name {}'.format(plan, stripe_cust, card_name))
-            stripe_info = stripe_actions.subscriptions.create(customer=stripe_cust, plan=plan, token=request.POST.get('stripeToken'))
+            stripe_info = None
         except stripe.InvalidRequestError as e:
             messages.error(request, "Error with stripe {}".format(e))
             logger.error("Error with stripe {}".format(e))
@@ -464,7 +462,7 @@ def register(request):
             new_user = authenticate(username=username, password=password)
             if new_user is not None:
                 if new_user.is_active:
-                    stripe_actions.customers.create(user=new_user)
+                    #stripe_actions.customers.create(user=new_user)
                     login(request, new_user)
                     return HttpResponseRedirect('/scan/default/')
                 else:
@@ -533,7 +531,7 @@ def ScanDetailsList(request, name):
             raise Http404
     if scanlist:
         query_data = scanlist.talkgroups.all()
-    return render_to_response(template, {'object_list': query_data, 'scanlist': scanlist, 'request': request})
+    return render(request, template, {'object_list': query_data, 'scanlist': scanlist, 'request': request})
 
 
 @login_required
@@ -559,13 +557,13 @@ def plans(request):
         plan = request.POST.get('plan')
         # See if this user already has a stripe account
         try:
-            stripe_cust = stripe_models.Customer.objects.get(user=request.user)
+            stripe_cust = None
         except ObjectDoesNotExist:
-            stripe_actions.customers.create(user=request.user)
-            stripe_cust = stripe_models.Customer.objects.get(user=request.user)
+            #stripe_actions.customers.create(user=request.user)
+            stripe_cust = None
         try:
-            stripe_info = stripe_actions.subscriptions.create(customer=stripe_cust, plan=plan, token=request.POST.get('stripeToken'))
-        except stripe.CardError as e:
+            stripe_info = None #stripe_actions.subscriptions.create(customer=stripe_cust, plan=plan, token=request.POST.get('stripeToken'))
+        except Exception as e: #stripe.CardError as e:
             template = 'radio/charge_failed.html'
             logger.error("Error with stripe user card{}".format(e))
             return render(request, template, {'error_msg': e })

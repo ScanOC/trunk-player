@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pinax_stripe', '0007_auto_20170108_1202'),
+        #('pinax_stripe', '0007_auto_20170108_1202'),
         ('radio', '0037_add_default_plan_html'),
     ]
 
@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=30, unique=True)),
                 ('radio_plan', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='radio.Plan')),
-                ('stripe_plan', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='pinax_stripe.Plan')),
+                #('stripe_plan', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='pinax_stripe.Plan')),
             ],
         ),
     ]
