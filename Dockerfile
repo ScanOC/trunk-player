@@ -14,6 +14,7 @@ ENV PYTHONUNBUFFERED 1
 ADD requirements.txt /app/trunkplayer
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
+RUN mkdir -p /var/log/trunk-player/
 
 # copy project
 #COPY . .
