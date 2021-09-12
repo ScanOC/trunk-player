@@ -10,7 +10,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 
 from radio.consumers import RadioConsumer
 
-application = ProtocolTypeRouter({
+channel_layer = ProtocolTypeRouter({
     "http": django_asgi_app,
 
     # WebSocket chat handler
