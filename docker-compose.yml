@@ -9,20 +9,39 @@ services:
   app:
     build:
       context: .
+    #image: maxwelldps/trunk-player:latest
     ports:
       - "80:80"
     volumes:
-      - .:/app/trunkplayer
-    # command: 
-    # entrypoint: sh -c "python manage.py runserver 0.0.0.0:8000"
+      #- .:/app/trunkplayer
+      - audio:/app/trunkplayer/audio_files
     environment:
-      - DEBUG=0
+      - DEBUG=True
       - SQL_ENGINE=django.db.backends.postgresql_psycopg2
       - SQL_DATABASE=tr
       - SQL_USER=postgres
       - SQL_PASSWORD=password1234
       - SQL_HOST=db
       - MIGRATE_DB=1
+      - SECRET_KEY="%2%xjx4c3obf_xa8hsdbd@ci+8!4)@x16_!auo*h(%*p_z(g"
+      - DJANGO_ALLOWED_HOSTS=*
+      - TZ=America/Chicago
+      - FORCE_SECURE=False
+      - ANONYMOUS_TIME=0
+      - SITE_TITLE=TESTING
+      - SITE_EMAIL=no@no.io
+      - AUDIO_URL_BASE=/audio/
+      - ALLOW_ANONYMOUS=False
+      - ACCESS_TG_RESTRICT=False
+      - TALKGROUP_RECENT_LENGTH=0
+      - OPEN_SITE=False
+      - ALLOW_GOOGLE_SIGNIN=False
+      - FIX_AUDIO_NAME=False
+      - TRANS_DATETIME_FORMAT=%H:%M:%S %m/%d/%Y
+      - GOOGLE_ANALYTICS_PROPERTY_ID=0
+
     depends_on:
       - db
 
+volumes: 
+  audio:
