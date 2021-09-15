@@ -212,11 +212,11 @@ class Transmission(models.Model):
 
     def as_dict(self):
         return {'start_datetime': str(self.start_datetime), 
-                'audio_file': str(self.audio_file), 
-                'talkgroup_desc': str(self.talkgroup_info.alpha_tag),
+                #'audio_file': str(self.audio_file), 
+                #'talkgroup_desc': str(self.talkgroup_info.alpha_tag),
                 'talkgroup_slug': self.talkgroup_info.slug,
                 'talkgroup_dec_id' : str(self.talkgroup_info.dec_id),
-                'audio_url': str("{}{}.{}".format(settings.AUDIO_URL_BASE, self.audio_file, self.audio_file_type))
+                #'audio_url': str("{}{}.{}".format(settings.AUDIO_URL_BASE, self.audio_file, self.audio_file_type))
                }
 
 
