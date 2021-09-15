@@ -212,10 +212,11 @@ class Transmission(models.Model):
 
     def as_dict(self):
         return {'start_datetime': str(self.start_datetime), 
-                'audio_file': str(self.audio_file), 
-                'talkgroup_desc': str(self.talkgroup_info.alpha_tag),
+                #'audio_file': str(self.audio_file), 
+                #'talkgroup_desc': str(self.talkgroup_info.alpha_tag),
+                'talkgroup_slug': self.talkgroup_info.slug,
                 'talkgroup_dec_id' : str(self.talkgroup_info.dec_id),
-                'audio_url': str("{}{}.{}".format(settings.AUDIO_URL_BASE, self.audio_file, self.audio_file_type)),
+                #'audio_url': str("{}{}.{}".format(settings.AUDIO_URL_BASE, self.audio_file, self.audio_file_type))
                }
 
 
@@ -305,13 +306,30 @@ def send_mesg(sender, instance, **kwargs):
     tg.last_transmission = timezone.now()
     tg.save()
     groups = tg.scanlist_set.all()
-    for g in groups:        
-        async_to_sync(channel_layer.group_send)('livecall-scan-'+g.slug, {'text': json.dumps(instance.as_dict())})
 
-    async_to_sync(channel_layer.group_send)('livecall-tg-' + tg.slug, {'text': json.dumps(instance.as_dict())})
+    payload = instance.as_dict()
+    payload["scan-groups"] = [g.slug for g in groups]
+    # for g in groups:        
+    #     async_to_sync(channel_layer.group_send)(
+    #     'livecall-scan-'+g.slug, {
+    #         'type':'radio_message',
+    #         'text': json.dumps(payload)
+    #     })
 
+
+    # async_to_sync(channel_layer.group_send)(
+    #     'livecall-tg-' + tg.slug, {
+    #         'type':'radio_message',
+    #         'text': json.dumps(payload)
+    #     })
+
+    
     # Send notification to default group all the time
-    async_to_sync(channel_layer.group_send)('livecall-scan-default', {'text': json.dumps(instance.as_dict())})
+    async_to_sync(channel_layer.group_send)(
+        'livecall-scan-default', {
+            'type':'radio_message',
+            'text': json.dumps(payload)
+        })
 
 
     #def save(self, *args, **kwargs):
