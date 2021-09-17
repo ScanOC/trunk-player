@@ -71,7 +71,7 @@ class ScanListAdminForm(forms.ModelForm):
             scanlist.save()
 
         if scanlist.pk:
-            scanlist.talkgroups = self.cleaned_data['talkgroups']
+            scanlist.talkgroups.set(self.cleaned_data['talkgroups'])
             self.save_m2m()
 
         return scanlist
@@ -119,7 +119,7 @@ class TalkGroupAccessAdminForm(forms.ModelForm):
             tglist.save()
 
         if tglist.pk:
-            tglist.talkgroups = self.cleaned_data['talkgroups']
+            tglist.talkgroups.set(self.cleaned_data['talkgroups'])
             self.save_m2m()
 
         return tglist
@@ -179,7 +179,6 @@ admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(System)
 admin.site.register(WebHtml)
-admin.site.register(StripePlanMatrix)
 admin.site.register(RepeaterSite)
 admin.site.register(Service)
 admin.site.register(SiteOption)
