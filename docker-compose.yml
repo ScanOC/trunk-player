@@ -4,6 +4,8 @@ services:
   db:
     image: postgres
     environment:
+      - POSTGRES_DB=tr
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password1234
 
   app:
@@ -11,7 +13,8 @@ services:
       context: .
     #image: maxwelldps/trunk-player:latest
     ports:
-      - "80:80"
+      - 80:80
+      - 8443:443
     volumes:
       #- .:/app/trunkplayer
       - audio:/app/trunkplayer/audio_files
@@ -22,6 +25,7 @@ services:
       - SQL_USER=postgres
       - SQL_PASSWORD=password1234
       - SQL_HOST=db
+      - REDIS_URL=redis://127.0.0.1:6379
       - MIGRATE_DB=1
       - SECRET_KEY="%2%xjx4c3obf_xa8hsdbd@ci+8!4)@x16_!auo*h(%*p_z(g"
       - DJANGO_ALLOWED_HOSTS=*
@@ -39,6 +43,7 @@ services:
       - FIX_AUDIO_NAME=False
       - TRANS_DATETIME_FORMAT=%H:%M:%S %m/%d/%Y
       - GOOGLE_ANALYTICS_PROPERTY_ID=0
+      - USE_RAW_ID_FIELDS=True
 
     depends_on:
       - db

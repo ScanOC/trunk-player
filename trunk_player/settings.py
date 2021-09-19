@@ -145,7 +145,6 @@ if os.getenv("FORCE_SECURE", 'False').lower() in ('true', '1', 't'):
   # Honor the 'X-Forwarded-Proto' header for request.is_secure()
   SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
@@ -246,6 +245,8 @@ OPEN_SITE = os.getenv("OPEN_SITE", 'False').lower() in ('true', '1', 't') # If F
 ALLOW_GOOGLE_SIGNIN = os.getenv("ALLOW_GOOGLE_SIGNIN", 'False').lower() in ('true', '1', 't')
 FIX_AUDIO_NAME = os.getenv("FIX_AUDIO_NAME", 'False').lower() in ('true', '1', 't')
 TRANS_DATETIME_FORMAT = os.environ.get("TRANS_DATETIME_FORMAT", '%H:%M:%S %m/%d/%Y')
+
+USE_RAW_ID_FIELDS = os.getenv("USE_RAW_ID_FIELDS", 'False').lower() in ('true', '1', 't')
 
 # Load our local settings 
 try:
