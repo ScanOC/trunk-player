@@ -43,7 +43,7 @@ services:
       - FIX_AUDIO_NAME=False
       - TRANS_DATETIME_FORMAT=%H:%M:%S %m/%d/%Y
       - GOOGLE_ANALYTICS_PROPERTY_ID=0
-      - USE_RAW_ID_FIELDS=True
+      - USE_RAW_ID_FIELDS=False
 
     depends_on:
       - db
