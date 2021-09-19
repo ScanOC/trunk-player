@@ -1,8 +1,10 @@
+from os import scandir
 from django.contrib import admin
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from .models import *
 
@@ -82,6 +84,9 @@ class ScanListAdmin(admin.ModelAdmin):
     save_as = True
     save_on_top = True
 
+class ScanListRawAdmin(admin.ModelAdmin):
+    autocomplete_fields= ('talkgroups',)    
+
 
 class ProfileInline(admin.StackedInline):
     model = Profile
@@ -129,6 +134,8 @@ class TalkGroupAccessAdmin(admin.ModelAdmin):
     list_display = ('name', 'default_group', 'default_new_talkgroups')
     save_on_top = True
 
+class TalkGroupAccessRawAdmin(admin.ModelAdmin):
+    autocomplete_fields= ('talkgroups',)   
 
 class TranmissionUnitAdmin(admin.ModelAdmin):
     raw_id_fields = ("transmission", "unit")
@@ -168,8 +175,13 @@ admin.site.register(Transmission, TransmissionAdmin)
 admin.site.register(Unit,UnitAdmin)
 #admin.site.register(TranmissionUnit, TranmissionUnitAdmin)
 admin.site.register(TalkGroup, TalkGroupAdmin)
-admin.site.register(TalkGroupAccess, TalkGroupAccessAdmin)
-admin.site.register(ScanList, ScanListAdmin)
+
+if not settings.USE_RAW_ID_FIELDS:
+    admin.site.register(ScanList, ScanListAdmin)
+    admin.site.register(TalkGroupAccess, TalkGroupAccessAdmin)
+else:
+    admin.site.register(ScanList, ScanListRawAdmin)
+    admin.site.register(TalkGroupAccess, TalkGroupAccessRawAdmin)
 admin.site.register(MenuScanList)
 admin.site.register(MenuTalkGroupList)
 admin.site.register(Source, SourceAdmin)

@@ -246,17 +246,7 @@ SITE_ID
 
 [D] ID of this site
 
-PINAX_STRIPE_SECRET_KEY
-=======================
+USE_RAW_ID_FIELDS
+=================
 
-[D3] If using payment plans, stripe key
-
-PINAX_STRIPE_PUBLIC_KEY
-=======================
-
-[D3] If using payment plans, stripe key
-
-PINAX_STRIPE_INVOICE_FROM_EMAIL
-===============================
-
-[D3] If using payment plans, email the invoice will be sent from
+[D] For very large systems, the admin page may load better with raw id fields
