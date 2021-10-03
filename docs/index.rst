@@ -9,7 +9,7 @@ Welcome to Trunk Player's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
    install
    configure
@@ -19,6 +19,10 @@ Contents:
    settings
    supervisor
 
+Upgrades
+========
+.. toctree::
+   upgrade/upgrade-0.1.2.rst
 
 
 Indices and tables
