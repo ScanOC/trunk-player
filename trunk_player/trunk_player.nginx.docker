@@ -20,8 +20,18 @@ upstream trunkplayer {
 
 server {
     listen         80 default_server;
+    listen         443 ssl default_server;
     server_name    _
     charset     utf-8;
+
+    ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
+    ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+    ssl_ecdh_curve secp384r1;
+    ssl_session_cache shared:SSL:10m;
 
     client_max_body_size 75M;   # adjust to taste
 

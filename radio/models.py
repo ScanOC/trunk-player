@@ -8,7 +8,7 @@ from datetime import timedelta
 from django.utils import timezone
 from django.utils.text import slugify
 from django.conf import settings
-from channels import Group
+from asgiref.sync import async_to_sync
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
@@ -16,8 +16,6 @@ from django.core.mail import send_mail
 from django.db.utils import OperationalError
 
 import radio.choices as choice
-
-from pinax.stripe.models import Plan as pinax_Plan
 
 log = logging.getLogger(__name__)
 
@@ -73,11 +71,11 @@ class Source(models.Model):
 class Unit(models.Model):
     dec_id = models.IntegerField()
     description = models.CharField(max_length=100, blank=True, null=True)
-    agency = models.ForeignKey(Agency, default=settings.RADIO_DEFAULT_UNIT_AGENCY)
+    agency = models.ForeignKey(Agency, default=settings.RADIO_DEFAULT_UNIT_AGENCY, on_delete=models.CASCADE)
     #agency = models.ForeignKey(Agency, default=2)
     type = models.CharField(max_length=1, choices=choice.RADIO_TYPE_CHOICES, default=choice.RADIO_TYPE_MOBILE)
     number = models.IntegerField(default=1)
-    system = models.ForeignKey(System, default=0)
+    system = models.ForeignKey(System, default=0, on_delete=models.CASCADE)
     slug = models.SlugField(null=True, blank=True)
 
     class Meta:
@@ -121,14 +119,14 @@ class TalkGroup(models.Model):
     slug = models.SlugField(null=True)
     public = models.BooleanField(default=True)
     comments = models.CharField(max_length=100, blank=True, null=True)
-    system = models.ForeignKey(System, default=0)
+    system = models.ForeignKey(System, default=0, on_delete=models.CASCADE)
     mode = models.CharField(max_length=1, choices=choice.TG_MODE_CHOICES, default=choice.TG_MODE_DIGITAL, help_text='mode used by trunk-recorder')
     priority = models.IntegerField(default=3, help_text='record priority used by trunk-recorder')
-    _home_site = models.ForeignKey(RepeaterSite, blank=True, null=True)
-    _service_type = models.ForeignKey(Service, blank=True, null=True)
+    _home_site = models.ForeignKey(RepeaterSite, blank=True, null=True, on_delete=models.CASCADE)
+    _service_type = models.ForeignKey(Service, blank=True, null=True, on_delete=models.CASCADE)
     last_transmission = models.DateTimeField()
     recent_usage = models.IntegerField(default=0)
-    play_source = models.ForeignKey(Source, blank=True, null=True, help_text='default record source for playback')
+    play_source = models.ForeignKey(Source, blank=True, null=True, help_text='default record source for playback', on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["alpha_tag"]
@@ -192,13 +190,13 @@ class Transmission(models.Model):
     audio_file_type = models.CharField(max_length=3, null=True, default='mp3')
     audio_file_url_path = models.CharField(max_length=100, default='/')
     talkgroup = models.IntegerField()
-    talkgroup_info = models.ForeignKey(TalkGroup)
+    talkgroup_info = models.ForeignKey(TalkGroup, on_delete=models.CASCADE)
     freq = models.IntegerField()
     emergency = models.BooleanField(default=False)
     units = models.ManyToManyField(Unit, through='TranmissionUnit')
     play_length = models.FloatField(default=0.0)
-    source = models.ForeignKey(Source, default=0)
-    system = models.ForeignKey(System, default=0)
+    source = models.ForeignKey(Source, default=0, on_delete=models.CASCADE)
+    system = models.ForeignKey(System, default=0, on_delete=models.CASCADE)
     from_default_source = models.BooleanField(default=True)
     has_audio = models.BooleanField(default=True)
 
@@ -214,10 +212,11 @@ class Transmission(models.Model):
 
     def as_dict(self):
         return {'start_datetime': str(self.start_datetime), 
-                'audio_file': str(self.audio_file), 
-                'talkgroup_desc': str(self.talkgroup_info.alpha_tag),
+                #'audio_file': str(self.audio_file), 
+                #'talkgroup_desc': str(self.talkgroup_info.alpha_tag),
+                'talkgroup_slug': self.talkgroup_info.slug,
                 'talkgroup_dec_id' : str(self.talkgroup_info.dec_id),
-                'audio_url': str("{}{}.{}".format(settings.AUDIO_URL_BASE, self.audio_file, self.audio_file_type)),
+                #'audio_url': str("{}{}.{}".format(settings.AUDIO_URL_BASE, self.audio_file, self.audio_file_type))
                }
 
 
@@ -244,7 +243,7 @@ class Transmission(models.Model):
         return True
 
     def _get_user_profile(self, user):
-        if user.is_authenticated():
+        if user.is_authenticated:
             user_profile = Profile.objects.get(user=user)
         else:
             try:
@@ -298,6 +297,8 @@ class Transmission(models.Model):
 
 @receiver(post_save, sender=Transmission, dispatch_uid="send_mesg")
 def send_mesg(sender, instance, **kwargs):
+    from channels.layers import get_channel_layer
+    channel_layer = get_channel_layer()
     #log.debug('Hit post save()')
     #log.debug('DATA %s', json.dumps(instance.as_dict()))
     #log.error('DATA %s', json.dumps(instance.as_dict()))
@@ -305,12 +306,30 @@ def send_mesg(sender, instance, **kwargs):
     tg.last_transmission = timezone.now()
     tg.save()
     groups = tg.scanlist_set.all()
-    for g in groups:
-        Group('livecall-scan-'+g.slug, ).send({'text': json.dumps(instance.as_dict())})
-    Group('livecall-tg-' + tg.slug, ).send({'text': json.dumps(instance.as_dict())})
-    # Send notification to default group all the time
-    Group('livecall-scan-default').send({'text': json.dumps(instance.as_dict())})
 
+    payload = instance.as_dict()
+    payload["scan-groups"] = [g.slug for g in groups]
+    # for g in groups:        
+    #     async_to_sync(channel_layer.group_send)(
+    #     'livecall-scan-'+g.slug, {
+    #         'type':'radio_message',
+    #         'text': json.dumps(payload)
+    #     })
+
+
+    # async_to_sync(channel_layer.group_send)(
+    #     'livecall-tg-' + tg.slug, {
+    #         'type':'radio_message',
+    #         'text': json.dumps(payload)
+    #     })
+
+    
+    # Send notification to default group all the time
+    async_to_sync(channel_layer.group_send)(
+        'livecall-scan-default', {
+            'type':'radio_message',
+            'text': json.dumps(payload)
+        })
 
 
     #def save(self, *args, **kwargs):
@@ -334,7 +353,7 @@ class TranmissionUnit(models.Model):
         return '{} on {}'.format(self.unit,self.transmission)
 
 class ScanList(models.Model):
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     public = models.BooleanField(default=False)
     name = models.CharField(max_length=30, unique=True)
     description = models.CharField(max_length=100)
@@ -377,7 +396,7 @@ class MenuList(models.Model):
         return self.name.slug
 
 class MenuScanList(MenuList):
-    name = models.ForeignKey(ScanList)
+    name = models.ForeignKey(ScanList, on_delete=models.CASCADE)
 
     @property
     def scan_name(self):
@@ -389,7 +408,7 @@ class MenuScanList(MenuList):
 
 
 class MenuTalkGroupList(MenuList):
-    name = models.ForeignKey(TalkGroupWithSystem)
+    name = models.ForeignKey(TalkGroupWithSystem, on_delete=models.CASCADE)
 
     @property
     def tg_name(self):
@@ -424,7 +443,7 @@ class Plan(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    plan = models.ForeignKey(Plan, default=Plan.DEFAULT_PK)
+    plan = models.ForeignKey(Plan, default=Plan.DEFAULT_PK, on_delete=models.CASCADE)
     talkgroup_access = models.ManyToManyField(TalkGroupAccess, blank=True)
 
 
@@ -438,8 +457,7 @@ class WebHtml(models.Model):
 
 class StripePlanMatrix(models.Model):
     name = models.CharField(max_length=30, unique=True)
-    stripe_plan = models.ForeignKey(pinax_Plan)
-    radio_plan = models.ForeignKey(Plan)
+    radio_plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
     order = models.IntegerField(default=99)
 

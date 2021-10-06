@@ -93,7 +93,7 @@ Now start atleast 1 runworker
 
 .. code-block:: console
 
-  $ ./manage.py runworker
+  $ ./manage.py runworker livecall-scan-default
 
 Adding new transmissions
 ========================

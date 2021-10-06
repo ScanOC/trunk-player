@@ -18,7 +18,7 @@ def settings_anonymous_time():
 def get_user_time(user):
     print("Template TAG USER {}".format(user))
     history = {}
-    if user.is_authenticated():
+    if user.is_authenticated:
         print("I am logged in")
         user_profile = Profile.objects.get(user=user)
     else:

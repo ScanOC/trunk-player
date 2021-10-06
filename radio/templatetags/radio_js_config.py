@@ -21,7 +21,7 @@ def trunkplayer_js_config(user):
     for opt in SiteOption.objects.filter(javascript_visible=True):
         js_json[opt.name] = opt.value_boolean_or_string()
     js_json['user_is_staff'] = user.is_staff
-    if user.is_authenticated():
+    if user.is_authenticated:
         js_json['user_is_authenticated'] = True
     else:
         js_json['user_is_authenticated'] = False

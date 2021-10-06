@@ -11,13 +11,13 @@ user=radio
 redirect_stderr=true
 stdout_logfile=/home/radio/trunk-player/logs/daphne.log
 directory=/home/radio/trunk-player
-command=/home/radio/trunk-player/env/bin/daphne -u daphne trunk_player.asgi:channel_layer --port 7055 --bind 127.0.0.1
+command=/home/radio/trunk-player/env/bin/daphne -u daphne trunk_player.asgi:channel_layer --port 7055 --bind 127.0.0.1 --access-log /var/log/trunk-player/daphne_main.log --ping-interval 3 --ping-timeout 12 --proxy-headers
 
 [program:trunkplayer_asgi_workers]
 user=radio
 redirect_stderr=true
 stdout_logfile=/home/radio/trunk-player/logs/runworker_%(process_num)02d.log
-command=/home/radio/trunk-player/env/bin/python /home/radio/trunk-player/manage.py runworker
+command=/home/radio/trunk-player/env/bin/python /home/radio/trunk-player/manage.py runworker livecall-scan-default
 process_name=asgi_worker%(process_num)s
 stopasgroup=true
 numprocs=4

@@ -23,11 +23,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get("SECRET_KEY", '%2%xjx4c3obf_xa8hsdbd@ci+8!4)@x16_!auo*h(%*p_z(g')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(os.environ.get("DEBUG", default=0))
+DEBUG = os.getenv("DEBUG", 'False').lower() in ('true', '1', 't')
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="*").split(" ")
 
 LOGIN_URL = '/login/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # Application definition
 
@@ -49,18 +51,16 @@ INSTALLED_APPS = [
     #'allauth.socialaccount.providers.instagram',
     'rest_framework',
     'channels',
-    'pinax.stripe',
+    #'pinax.stripe',
     'django_select2',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'radio.custom_middleware.ExtendUserSession',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -84,7 +84,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'trunk_player.wsgi.application'
-
+ASGI_APPLICATION = "trunk_player.asgi.channel_layer"
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
@@ -133,7 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/Los_Angeles'
+TIME_ZONE = str(os.getenv("TZ", 'America/Los_Angeles'))
 
 USE_I18N = True
 
@@ -141,10 +141,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-if os.environ.get('FORCE_SECURE', 0) == 1:
+if os.getenv("FORCE_SECURE", 'False').lower() in ('true', '1', 't'):
   # Honor the 'X-Forwarded-Proto' header for request.is_secure()
   SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
@@ -169,11 +168,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "audio_files")
 # Channel settings
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')],
-        },
-        "ROUTING": "radio.routing.channel_routing",
+        }
     },
 }
 
@@ -189,7 +187,7 @@ CACHES = {
 
 # How far back an anonymous user can see back in minutes
 # 0 will disable the limit
-ANONYMOUS_TIME = 43200 # 1 Month (60min * 24hours * 30days)
+ANONYMOUS_TIME = int(os.environ.get("ANONYMOUS_TIME", '43200')) # 1 Month (60min * 24hours * 30days)
 
 # This Agency must exist in radio.Agency 
 RADIO_DEFAULT_UNIT_AGENCY = 0
@@ -211,13 +209,13 @@ AMAZON_AD_LINK_ID = '366e01afa07db536277fa926bed3cb27'
 AMAZON_AD_EMPHASIZE_CATEGORIES = '15684181,13900871,172282,3760901,16310091,229534'
 AMAZON_AD_FALL_BACK_SEARCH = ['fire extinguisher', 'first aid',]
 
-GOOGLE_ANALYTICS_PROPERTY_ID = '0'
+GOOGLE_ANALYTICS_PROPERTY_ID = os.environ.get("GOOGLE_ANALYTICS_PROPERTY_ID", '0')
 
 TWITTER_ACTIVE = False
 TWITTER_LIST_URL = None
 
-SITE_TITLE = 'Trunk-Player'
-SITE_EMAIL = 'help@example.com'
+SITE_TITLE = os.environ.get("SITE_TITLE", 'Trunk-Player')
+SITE_EMAIL = os.environ.get("SITE_EMAIL", 'help@example.com')
 
 PINAX_STRIPE_SECRET_KEY = '0'
 PINAX_STRIPE_PUBLIC_KEY = '0'
@@ -231,22 +229,24 @@ JS_SETTINGS = ['SITE_TITLE', 'AUDIO_URL_BASE']
 # Which settings are aviable to the template tag GET_SETTING
 VISABLE_SETTINGS = ['SITE_TITLE', 'AUDIO_URL_BASE', 'GOOGLE_ANALYTICS_PROPERTY_ID', 'COLOR_CSS', 'SITE_EMAIL', 'PINAX_STRIPE_PUBLIC_KEY', 'TWITTER_ACTIVE', 'TWITTER_LIST_URL', 'SHOW_STRIPE_PLANS', 'OPEN_SITE', 'ALLOW_GOOGLE_SIGNIN']
 
-ALLOW_ANONYMOUS = False
+ALLOW_ANONYMOUS = os.getenv("ALLOW_ANONYMOUS", 'False').lower() in ('true', '1', 't')
 
 PINAX_STRIPE_SECRET_KEY = 'sk_test_xxxxxxxxxxxxxxxxxxxx'
 PINAX_STRIPE_PUBLIC_KEY = 'pk_test_xxxxxxxxxxxxxxxxxxxx'
 PINAX_STRIPE_INVOICE_FROM_EMAIL = 'help@example.com'
 
-ACCESS_TG_RESTRICT = False
+ACCESS_TG_RESTRICT = os.getenv("ACCESS_TG_RESTRICT", 'False').lower() in ('true', '1', 't')
 
-TALKGROUP_RECENT_LENGTH = 15 #  Minutes of history for TG recent_usage
+TALKGROUP_RECENT_LENGTH = int(os.getenv("TALKGROUP_RECENT_LENGTH", '15')) #  Minutes of history for TG recent_usage
 
 ADD_TRANS_AUTH_TOKEN = os.environ.get("ADD_TRANS_AUTH_TOKEN", '7cf5857c61284') # Token to allow adding transmissions
 
-OPEN_SITE = False # If False new users cannot sign up
-ALLOW_GOOGLE_SIGNIN = False
-FIX_AUDIO_NAME = False
+OPEN_SITE = os.getenv("OPEN_SITE", 'False').lower() in ('true', '1', 't') # If False new users cannot sign up
+ALLOW_GOOGLE_SIGNIN = os.getenv("ALLOW_GOOGLE_SIGNIN", 'False').lower() in ('true', '1', 't')
+FIX_AUDIO_NAME = os.getenv("FIX_AUDIO_NAME", 'False').lower() in ('true', '1', 't')
 TRANS_DATETIME_FORMAT = os.environ.get("TRANS_DATETIME_FORMAT", '%H:%M:%S %m/%d/%Y')
+
+USE_RAW_ID_FIELDS = os.getenv("USE_RAW_ID_FIELDS", 'False').lower() in ('true', '1', 't')
 
 # Load our local settings 
 try:
