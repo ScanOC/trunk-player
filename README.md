@@ -1,7 +1,7 @@
 Trunk Player
 ============
 
-### Version 0.1.2
+### Version 0.1.3
 
 Python Django web frontend for playing recorded radio transmisisons. The audio files are recorded using [Trunk Recoder](https://github.com/robotastic/trunk-recorder).
 
