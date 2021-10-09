@@ -144,6 +144,7 @@ def add_new_trans(options):
                 t.play_length = end_ts - start_ts
             if end_ts:
                 t.end_datetime = datetime.datetime.fromtimestamp(end_ts, pytz.UTC)
+            t.start_datetime = datetime.datetime.fromtimestamp(start_ts, pytz.UTC)
             system = data.get('system', 0)
             if system_opt >= 0: 
                 system = system_opt # Command line overrides json
