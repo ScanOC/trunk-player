@@ -81,4 +81,4 @@ If using supervisor do the following
 You Did It!
 ===========
 
-You have upgraded trunk player to 0.1.2! If you run into any issues open an issue at https://github.com/ScanOC/trunk-player/issues
+You have upgraded trunk player to 0.1.3! If you run into any issues open an issue at https://github.com/ScanOC/trunk-player/issues
