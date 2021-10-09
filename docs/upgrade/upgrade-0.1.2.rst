@@ -212,6 +212,7 @@ Log into your postgres database as an admin user and restore the database, assui
   (postgres)$ psql
 
 Drop the Database; and recreate 
+
 .. code-block:: console
 
   postgres=# DROP DATABASE trunk_player;
@@ -219,6 +220,7 @@ Drop the Database; and recreate
   postgres=#\q;
 
 Restore Database
+
 .. code-block:: console
 
   (postgres)$ psql trunk_player < /home/radio/tunk_player.bak.sql
