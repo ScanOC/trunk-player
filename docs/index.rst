@@ -23,6 +23,7 @@ Upgrades
 ========
 .. toctree::
    upgrade/upgrade-0.1.2.rst
+   upgrade/upgrade-0.1.3.rst
 
 
 Indices and tables
