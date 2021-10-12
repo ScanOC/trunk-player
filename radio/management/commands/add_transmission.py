@@ -76,12 +76,15 @@ def add_new_trans(options):
     system_opt = options['system']
     web_url_opt = options['web_url']
     verbose = options['verbose']
+
     if verbose:
         print('You passed in {}'.format(options['json_name']))
+
     source_default = False
     if source_opt == -1:
         source_opt = 0
         source_default = True
+
     if vhf:
         tg_dec = file_name.split('_', 1)[0]
         # 90002_cnf_20160903_015052.mp3
@@ -99,16 +102,21 @@ def add_new_trans(options):
     else:
         tg_dec = file_name.split('-', 1)[0]
         epoc_ts = file_name.split('-', 2)[1].split('_', 1)[0]
+
     if verbose:
         print("TalkGroup", tg_dec)
+
     if vhf:
         freq = 0
     else:
-        freq = file_name.split('_', 2)[1]
+        try:
+            freq = file_name.split('_', 2)[1]
+            int(freq)
+        except:
+            freq = file_name.split('_', 2)[1].split("-")[0]
 
     dt = datetime.datetime.fromtimestamp(int(epoc_ts), pytz.UTC)
-    #if vhf:
-    #dt.replace(tzinfo=pytz.UTC)
+
     try:
         source = Source.objects.get(pk=source_opt)
     except Source.DoesNotExist:
@@ -122,37 +130,53 @@ def add_new_trans(options):
                      source = source,
                      audio_file_url_path = web_url_opt,
                    )
+
     system = 0
-    if options['m4a_file']:
-        t.audio_file_type = 'm4a'
+
+    if options['m4a_file']: t.audio_file_type = 'm4a'
+
     if not vhf:
         # First try and open file with given path, if not fail back
         # to old hardcoded audio_files path
         json_file = '{}.json'.format(full_file_name)
         if not os.path.exists(json_file):
             json_file = 'audio_files/{}.json'.format(file_name)
+
         with open(json_file) as data_file:
             data = json.load(data_file)
+
         if data:
-            if data['emergency']:
-                t.emergency = True
+            if data['emergency']: t.emergency = True
             count = 0
+
+            try:
+                t.freq = int(data.get('freq',0))
+                t.talkgroup = data.get('talkgroup',0)
+            except Exception as e: 
+                print(str(e))
+
             t.play_length = data.get('play_length',0)
             start_ts = data.get('start_time', 0)
             end_ts = data.get('stop_time', 0)
+
             if t.play_length == 0 and start_ts > 0 and end_ts > 0:
                 t.play_length = end_ts - start_ts
+
             if end_ts:
                 t.end_datetime = datetime.datetime.fromtimestamp(end_ts, pytz.UTC)
+
             t.start_datetime = datetime.datetime.fromtimestamp(start_ts, pytz.UTC)
             system = data.get('system', 0)
+
             if system_opt >= 0: 
                 system = system_opt # Command line overrides json
             try:
-                t.system = System.objects.get(pk=system)
+                t.system = System.objects.get(pk=system)                
             except System.DoesNotExist:
                 t.system = System.objects.create(pk=system, name='System #{}'.format(system))
+
             t.talkgroup_info = talkgroup(tg_dec, t.system)
+
             if source_default:
                 json_source = data.get('source', 0)
                 if(json_source > 0):
@@ -162,7 +186,9 @@ def add_new_trans(options):
                     except Source.DoesNotExist:
                         source = Source.objects.create(pk=data['source'], description='Source #{}'.format(data['source']))
                     t.source = source
+
             t.save()
+
             for unit in data['srcList']:
                 try:
                     trans_unit = unit['src']
