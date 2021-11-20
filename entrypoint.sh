@@ -1,4 +1,10 @@
 #!/bin/bash
+
+if [ -n "$1" ]; then
+  exec "$@"
+  exit 0
+fi
+
 if [[ "$MIGRATE_DB" -eq 1 ]]
 then
     echo "MIGRATE_DB Enabled"
