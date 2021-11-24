@@ -25,4 +25,4 @@ Check out https://github.com/MaxwellDPS/Unibridge for using Trunk-Player with un
  - The code still has a lot of work. If you have issues or question feel free to post in the google group.
 
 ## Discuss
- - Join our [gitter](https://gitter.im/TrunkPlayer/Lobby)
+ [![Gitter](https://badges.gitter.im/TrunkPlayer/Lobby.svg)](https://gitter.im/TrunkPlayer/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
