@@ -31,7 +31,7 @@ class Command(BaseCommand):
             dest='rr',
             action='store_true',
             help='Import in Radio Refrence Format',
-            default=True,
+            default=False,
        )
 
     def handle(self, *args, **options):
