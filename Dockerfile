@@ -9,6 +9,7 @@ WORKDIR /app/trunkplayer
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
 # install dependencies
 ADD requirements.txt /app/trunkplayer
