@@ -81,7 +81,7 @@ urlpatterns += [
 ]
 
 if settings.OPEN_SITE:
-    urlpatterns += [url(r"^payments/", include("pinax.stripe.urls")),]
+    #urlpatterns += [url(r"^payments/", include("pinax.stripe.urls")),]
     urlpatterns += [url(r'^upgrade/$', views.upgrade, name='upgrade'),]
 
 urlpatterns += [
