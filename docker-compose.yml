@@ -38,7 +38,7 @@ services:
       - ALLOW_ANONYMOUS=False
       - ACCESS_TG_RESTRICT=False
       - TALKGROUP_RECENT_LENGTH=0
-      - OPEN_SITE=True
+      - OPEN_SITE=False
       - ALLOW_GOOGLE_SIGNIN=False
       - FIX_AUDIO_NAME=False
       - TRANS_DATETIME_FORMAT=%H:%M:%S %m/%d/%Y
