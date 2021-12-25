@@ -1,17 +1,36 @@
 # supervisor.conf
 ## Ensure you edit directory paths and user= varibles in this file to your installation path and user.
+## Typical user is: radio
+## Typical installation is: /home/radio/trunk-player/
+
+# Logging:
+## It is advisable to modify all stdout_logfile's to /var/log/trunk-player/ versus the defaults below.
+## You can then set logrotate settings accordingly rather having one expansively huge file. 
+##    mkdir -p /var/log/trunk-player;chown radio:radio /var/log/trunk-player;chmod 755 /var/log/trunk-player
+
+# trunkplayer_asgi_workers note:
+## Set numprocs under program:trunkplayer_asgi_workers to a value higher than 4 for large sites/systems. 
+##    For high activity systems, a value of 10 or more is a sane starting value. Try to not exceed two 
+##    or three workers per CPU unless you enjoy watching your CPU's do work under high activity. 
+
+# trunkplayer_asgi_daphne note:
+##    Do not set trunkplayer_asgi_daphne to have more than one process. 
+
+# trunkplayer_add_transmission_workers note:
+## Depending on system configuration, this particular worker can sometimes be disabled.
+## Most configurations utilize SSH/SCP/rsync currently. This may change in the future! 
+
 
 [group:trunkplayer]
 programs=trunkplayer_asgi_daphne, trunkplayer_asgi_workers, trunkplayer_add_transmission_workers
 priority=999
-
 
 [program:trunkplayer_asgi_daphne]
 user=radio
 redirect_stderr=true
 stdout_logfile=/home/radio/trunk-player/logs/daphne.log
 directory=/home/radio/trunk-player
-command=/home/radio/trunk-player/env/bin/daphne -u daphne trunk_player.asgi:channel_layer --port 7055 --bind 127.0.0.1 --access-log /var/log/trunk-player/daphne_main.log --ping-interval 3 --ping-timeout 12 --proxy-headers
+command=/home/radio/trunk-player/env/bin/daphne -u daphne trunk_player.asgi:channel_layer --port 7055 --bind 0.0.0.0 --access-log /var/log/trunk-player/daphne_main.log --ping-interval 3 --ping-timeout 12 --proxy-headers
 
 [program:trunkplayer_asgi_workers]
 user=radio
