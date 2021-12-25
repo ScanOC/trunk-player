@@ -26,7 +26,8 @@ js_config = {{ js_config|safe }}
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/jplayer/jquery.jplayer.js"></script> 
 <script src="https://use.fontawesome.com/c792248a2e.js"></script>
-{% if request.user.is_authenticated %}
+{% get_setting 'OPEN_SITE' as open_site %}
+{% if request.user.is_authenticated or open_site %}
 <script src="/static/radio/js/trunkplayer.js?ver=0.8"></script>
 <script src="/static/radio/js/reconnecting-websocket.min.js"></script>
 <script src="/static/radio/js/live_calls2.js?ver=0.5"></script>
