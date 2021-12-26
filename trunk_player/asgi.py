@@ -1,5 +1,5 @@
 import os
-from django.conf.urls import url
+from django.urls import re_path
 from django.core.asgi import get_asgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "trunk_player.settings")
@@ -16,9 +16,9 @@ channel_layer = ProtocolTypeRouter({
     # WebSocket chat handler
     "websocket": AuthMiddlewareStack(
         URLRouter([
-            url(r"^ws-calls/(?P<tg_type>[^/]+)/(?P<label>[^/]+)", RadioConsumer.as_asgi()),
-            url(r"^ws-calls/(?P<tg_type>[^/]+)/$", RadioConsumer.as_asgi()),
-            url(r"^ws-calls/$", RadioConsumer.as_asgi())
+            re_path(r"^ws-calls/(?P<tg_type>[^/]+)/(?P<label>[^/]+)", RadioConsumer.as_asgi()),
+            re_path(r"^ws-calls/(?P<tg_type>[^/]+)/$", RadioConsumer.as_asgi()),
+            re_path(r"^ws-calls/$", RadioConsumer.as_asgi())
         ])
     ),
 })
