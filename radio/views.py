@@ -125,38 +125,43 @@ def TransDetailView(request, slug):
     return render(request, template, {'object': query_data[0], 'status': status})
 
 def transDownloadView(request, slug):
-    import urllib.request
+    import requests
     try:
         query_data = Transmission.objects.filter(slug=slug)
         if not query_data:
             raise Http404
     except Transmission.DoesNotExist:
         raise Http404
+
     query_data2 = limit_transmission_history(request, query_data)
-    if not query_data2:
-        raise Http404  # Just raise 404 if its too old
+    if not query_data2: raise Http404  # Just raise 404 if its too old
+
     restricted, new_query = restrict_talkgroups(request, query_data)
-    if not new_query:
-        raise Http404
+    if not new_query: raise Http404
+
     trans = new_query[0]
     if trans.audio_file_type == 'm4a':
         audio_type = 'audio/m4a'
     else:
         audio_type = 'audio/mp3'
+
     response = HttpResponse(content_type=audio_type)
     start_time = timezone.localtime(trans.start_datetime).strftime('%Y%m%d_%H%M%S')
+
     filename = '{}_{}.{}'.format(start_time, trans.talkgroup_info.slug, trans.audio_file_type)
+
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+
     url = 'https:{}{}.{}'.format(trans.audio_url, trans.audio_file, trans.audio_file_type)
     if trans.audio_url[:2] != '//':
         url = 'http:'
         if request.is_secure():
             url = 'https:'
         url += '//{}/{}{}.{}'.format(request.get_host(), trans.audio_url, trans.audio_file, trans.audio_file_type)
-    req = urllib.request.Request(url)
-    gcontext = ssl.SSLContext()
-    with urllib.request.urlopen(req, context=gcontext) as web_response:
-        response.write(web_response.read())
+
+    data = requests.get(url, verify=False)
+    response.write(data.content)
+
     return response
 
 
