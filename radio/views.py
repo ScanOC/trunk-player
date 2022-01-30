@@ -1,4 +1,5 @@
 #import functools
+import ssl
 import sys
 import re
 import json
@@ -153,7 +154,8 @@ def transDownloadView(request, slug):
             url = 'https:'
         url += '//{}/{}{}.{}'.format(request.get_host(), trans.audio_url, trans.audio_file, trans.audio_file_type)
     req = urllib.request.Request(url)
-    with urllib.request.urlopen(req) as web_response:
+    gcontext = ssl.SSLContext()
+    with urllib.request.urlopen(req, context=gcontext) as web_response:
         response.write(web_response.read())
     return response
 
