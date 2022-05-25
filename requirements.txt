@@ -33,7 +33,7 @@ psycopg2-binary==2.9.1
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.20
-PyJWT==2.1.0
+PyJWT==2.4.0
 pyOpenSSL==20.0.1
 python3-openid==3.2.0
 pytz==2021.1
