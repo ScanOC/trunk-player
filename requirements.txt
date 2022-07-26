@@ -6,7 +6,7 @@ autobahn
 Automat==20.2.0
 certifi==2021.5.30
 cffi==1.14.6
-channels==3.0.4
+channels==3.0.5
 channels-redis==3.3.0
 chardet==4.0.0
 charset-normalizer==2.0.4
