@@ -165,12 +165,17 @@ REST_FRAMEWORK = {
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "audio_files")
 
+REDIS_HOST = "127.0.0.1"
+REDIS_PORT = "6379"
+REDIS_URL = "redis://" + REDIS_HOST + ":" + REDIS_PORT
+REDIS_DB = "1"
+
 # Channel settings
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')],
+            "hosts": [os.environ.get('REDIS_URL', REDIS_URL)],
         }
     },
 }
@@ -178,7 +183,7 @@ CHANNEL_LAYERS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": REDIS_URL + "/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -189,7 +194,7 @@ CACHES = {
 # 0 will disable the limit
 ANONYMOUS_TIME = int(os.environ.get("ANONYMOUS_TIME", '43200')) # 1 Month (60min * 24hours * 30days)
 
-# This Agency must exist in radio.Agency 
+# This Agency must exist in radio.Agency
 RADIO_DEFAULT_UNIT_AGENCY = 0
 
 SITE_ID = 1
@@ -248,7 +253,7 @@ TRANS_DATETIME_FORMAT = os.environ.get("TRANS_DATETIME_FORMAT", '%H:%M:%S %m/%d/
 
 USE_RAW_ID_FIELDS = os.getenv("USE_RAW_ID_FIELDS", 'False').lower() in ('true', '1', 't')
 
-# Load our local settings 
+# Load our local settings
 try:
     LOCAL_SETTINGS
 except NameError:
@@ -257,4 +262,3 @@ except NameError:
     except ImportError:
         pass
         # print("Failed to open settings_local.py")
-
