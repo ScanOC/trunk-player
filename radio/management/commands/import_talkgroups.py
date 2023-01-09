@@ -33,6 +33,13 @@ class Command(BaseCommand):
             help='Import in Radio Refrence Format',
             default=False,
        )
+        parser.add_argument(
+            '--update',
+            dest='update',
+            action='store_true',
+            help='Update existing records in the database',
+            default=False,
+       )
 
     def handle(self, *args, **options):
         import_tg_file(self, options)
@@ -44,6 +51,7 @@ def import_tg_file(self, options):
     system_id = options['system']
     truncate = options['truncate']
     rrFormat = options['rr']
+    update = options['update']
     try:
         system = System.objects.get(pk=system_id)
     except System.DoesNotExist:
@@ -84,6 +92,12 @@ def import_tg_file(self, options):
                     except ValueError:
                         priority = 3
                     obj, create = TalkGroup.objects.update_or_create(dec_id=row[0], system=system, defaults={'mode': row[2], 'alpha_tag': row[3], 'description': row[4], 'priority': priority})
+                    if not create and options['update']:
+                      obj.mode = row[2]
+                      obj.alpha_tag = row[3]
+                      obj.description = row[4]
+                      obj.priority = priority
+                      obj.save()
                     obj.service_type = row[5][:20]
                     obj.save()
                 except (IntegrityError, IndexError):
@@ -106,6 +120,12 @@ def import_tg_file(self, options):
                     #print('LEN ' + str(len(row)))
                     priority = 3
                     obj, create = TalkGroup.objects.update_or_create(dec_id=row[0], system=system, defaults={'mode': row[3], 'alpha_tag': row[2], 'description': row[4], 'priority': priority})
+                    if not create and options['update']:
+                      obj.mode = row[2]
+                      obj.alpha_tag = row[3]
+                      obj.description = row[4]
+                      obj.priority = priority
+                      obj.save()
                     obj.service_type = row[5][:20]
                     obj.save()
                 except (IntegrityError, IndexError, ValueError):

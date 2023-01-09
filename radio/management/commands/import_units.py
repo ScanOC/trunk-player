@@ -11,21 +11,14 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('file')
-        parser.add_argument(
-            '--update',
-            dest='update',
-            action='store_true',
-            help='Update existing records',
-            default=False,
-       )
-
+        parser.add_argument('--update', action='store_true', help='Update the units if they already exist')
     def handle(self, *args, **options):
-        import_unit_file(options)
+        f_name = options['file']
+        update = options['update']
+        import_unit_file(f_name, update=update)
 
-
-def import_unit_file(options):
+def import_unit_file(file_name, update=False):
     line = 0
-    file_name = options['file']
     with open(file_name) as f:
         line += 1
         units = csv.reader(f, delimiter=',', quotechar='"')
@@ -40,28 +33,16 @@ def import_unit_file(options):
             except System.DoesNotExist:
                 print("Error, System in line {} does not exist, skipping".format(line))
                 continue
-            try_update = True
             try:
-                Unit(dec_id=row[0], description=row[1], agency=agency, type=row[3], number=row[4], system=system, slug=row[6]).save()
-                try_update = False
-            except IntegrityError:
-                if not options['update']:
-                    print("Already In DB Skipping {} line {}".format(row[1], line))
-            except IndexError:
-                print('Error with data in line {}'.format(line))
-
-            if try_update and options['update']:
-                try:
-                    existing_unit = Unit.objects.get(dec_id=row[0], system=system)
-                except Unit.DoesNotExist:
-                     print('Error with data in line {}'.format(line))
-                try:
-                    existing_unit.description=row[1]
-                    existing_unit.agency=agency
-                    existing_unit.type=row[3]
-                    existing_unit.number=row[4]
-                    existing_unit.slug=row[6]
-                except IndexError:
-                    print('Error with data in line {}'.format(line))
-                existing_unit.save()
-
+                unit, created = Unit.objects.get_or_create(dec_id=row[0], defaults={'description': row[1], 'agency': agency, 'type': row[3], 'number': row[4], 'system': system, 'slug': row[6]})
+                if not created and update:
+                    # Update the unit if it already exists and update flag is set
+                    unit.description = row[1]
+                    unit.agency = agency
+                    unit.type = row[3]
+                    unit.number = row[4]
+                    unit.system = system
+                    unit.slug = row[6]
+                    unit.save()
+            except (IntegrityError, IndexError):
+                print("Already In DB Skipping {} line {}".format(row[1], line))
