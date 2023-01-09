@@ -24,16 +24,22 @@ class Command(BaseCommand):
             dest='truncate',
             action='store_true',
             help='Truncat any data that would not fit into the DB',
+            default=True,
+       )
+        parser.add_argument(
+            '--rr',
+            dest='rr',
+            action='store_true',
+            help='Import in Radio Refrence Format',
             default=False,
        )
         parser.add_argument(
             '--update',
             dest='update',
             action='store_true',
-            help='Update existing records instead of adding them',
+            help='Update existing records in the database',
             default=False,
-   )
-
+       )
 
     def handle(self, *args, **options):
         import_tg_file(self, options)
@@ -44,6 +50,8 @@ def import_tg_file(self, options):
     file_name = options['file']
     system_id = options['system']
     truncate = options['truncate']
+    rrFormat = options['rr']
+    update = options['update']
     try:
         system = System.objects.get(pk=system_id)
     except System.DoesNotExist:
@@ -59,27 +67,67 @@ def import_tg_file(self, options):
     with open(file_name) as tg_file:
         tg_info = csv.reader(tg_file, delimiter=',', quotechar='"')
         line_number = 0
-        for row in tg_info:
-            line_number+=1
-            try:
-                if truncate:
-                    if len(row[2]) > mode_max_length:
-                      row[2] = row[2][:mode_max_length]
-                      self.stdout.write("Truncating mode from line ({}) TG {}".format(line_number, row[3]))
-                    if len(row[3]) > alpha_tag_max_length:
-                      row[3] = row[3][:alpha_tag_max_length]
-                      self.stdout.write("Truncating alpha_tag from line ({}) TG {}".format(line_number, row[3]))
-                    if len(row[4]) > description_max_length:
-                      row[4] = row[4][:description_max_length]
-                      self.stdout.write("Truncating description from line ({}) TG {}".format(line_number, row[3]))
-                    if options['update']:
-                        TalkGroup.objects.filter(dec_id=row[0], system=system).update(mode=row[2], alpha_tag=row[3], description=row[4], priority=priority, service_type=row[5][:20])
-                    else:
-                        TalkGroup.objects.update_or_create(dec_id=row[0], system=system, defaults={'mode': row[2], 'alpha_tag': row[3], 'description': row[4], 'priority': priority})
-                        obj.service_type = row[5][:20]
-                        obj.save()
-                obj, create = TalkGroup.objects.update_or_create(dec_id=row[0], system=system, defaults={'mode': row[2], 'alpha_tag': row[3], 'description': row[4], 'priority': row[7]})
-                obj.service_type = row[5]
-                obj.save()
-            except (IntegrityError, IndexError):
-                print("Skipping {}".format(row[3]))
+        if not rrFormat:
+            for row in tg_info:
+                line_number+=1
+                try:
+                    if truncate:
+                        if len(row[2]) > mode_max_length:
+                            row[2] = row[2][:mode_max_length]
+                            self.stdout.write("Truncating mode from line ({}) TG {}".format(line_number, row[3]))
+                        if len(row[3]) > alpha_tag_max_length:
+                            row[3] = row[3][:alpha_tag_max_length]
+                            self.stdout.write("Truncating alpha_tag from line ({}) TG {}".format(line_number, row[3]))
+                        if len(row[4]) > description_max_length:
+                            row[4] = row[4][:description_max_length]
+                            self.stdout.write("Truncating description from line ({}) TG {}".format(line_number, row[3]))
+                    #print('LEN ' + str(len(row)))
+                    priority = 3
+                    try:
+                        priority = row[7]
+                    except IndexError:
+                        pass
+                    try:
+                        priority = int(priority)
+                    except ValueError:
+                        priority = 3
+                    obj, create = TalkGroup.objects.update_or_create(dec_id=row[0], system=system, defaults={'mode': row[2], 'alpha_tag': row[3], 'description': row[4], 'priority': priority})
+                    if not create and options['update']:
+                      obj.mode = row[2]
+                      obj.alpha_tag = row[3]
+                      obj.description = row[4]
+                      obj.priority = priority
+                      obj.save()
+                    obj.service_type = row[5][:20]
+                    obj.save()
+                except (IntegrityError, IndexError):
+                    pass
+                    #print("Skipping {}".format(row[3]))
+        else:
+            for row in tg_info:
+                line_number+=1
+                try:
+                    if truncate:
+                        if len(row[3]) > mode_max_length:
+                            row[3] = row[3][:mode_max_length]
+                            self.stdout.write("Truncating mode from line ({}) TG {}".format(line_number, row[2]))
+                        if len(row[2]) > alpha_tag_max_length:
+                            row[2] = row[2][:alpha_tag_max_length]
+                            self.stdout.write("Truncating alpha_tag from line ({}) TG {}".format(line_number, row[2]))
+                        if len(row[4]) > description_max_length:
+                            row[4] = row[4][:description_max_length]
+                            self.stdout.write("Truncating description from line ({}) TG {}".format(line_number, row[2]))
+                    #print('LEN ' + str(len(row)))
+                    priority = 3
+                    obj, create = TalkGroup.objects.update_or_create(dec_id=row[0], system=system, defaults={'mode': row[3], 'alpha_tag': row[2], 'description': row[4], 'priority': priority})
+                    if not create and options['update']:
+                      obj.mode = row[2]
+                      obj.alpha_tag = row[3]
+                      obj.description = row[4]
+                      obj.priority = priority
+                      obj.save()
+                    obj.service_type = row[5][:20]
+                    obj.save()
+                except (IntegrityError, IndexError, ValueError):
+                    pass
+                    #print("Skipping {}".format(row[3]))
