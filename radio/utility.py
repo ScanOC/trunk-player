@@ -1,11 +1,19 @@
 import redis
+from django.conf import settings
+
 
 class RedisQueue(object):
     """Simple Queue with Redis Backend"""
-    def __init__(self, name, namespace='tp', **redis_kwargs):
-       """The default connection parameters are: host='localhost', port=6379, db=0"""
-       self.__db= redis.Redis(**redis_kwargs)
-       self.key = '%s:%s' %(namespace, name)
+
+    def __init__(self, name, namespace="tp", **redis_kwargs):
+        """The default connection parameters are: host='localhost', port=6379, db=0"""
+        self.__db = redis.Redis(
+            host=settings.REDIS_HOST,
+            port=settings.REDIS_PORT,
+            db=settings.REDIS_DB,
+            **redis_kwargs
+        )
+        self.key = "%s:%s" % (namespace, name)
 
     def qsize(self):
         """Return the approximate size of the queue."""
@@ -20,7 +28,7 @@ class RedisQueue(object):
         self.__db.rpush(self.key, item)
 
     def get(self, block=True, timeout=None):
-        """Remove and return an item from the queue. 
+        """Remove and return an item from the queue.
 
         If optional args block is true and timeout is None (the default), block
         if necessary until an item is available."""
