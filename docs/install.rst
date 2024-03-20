@@ -9,7 +9,7 @@ System Prerequisites
 ====================
 
 * Linux Machine it might work in windows but has not been tested
-* `Python`_ 3.5.x
+* `Python`_ 3.10+
 * `Virtualenv`_
 * `PIP`_  Should be installed with Python 3
 * `Redis`_ 3.x.x 
