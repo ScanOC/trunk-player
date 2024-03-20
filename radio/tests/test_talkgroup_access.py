@@ -36,7 +36,7 @@ class TalkgroupRestictTests(TestCase):
 
     def test_talkgroup_exists(self):
         tg = TalkGroup.objects.get(alpha_tag = 'Test TG 1')
-        self.assertEquals(str(tg), 'Test TG 1')
+        self.assertEqual(str(tg), 'Test TG 1')
 
     @override_settings(ACCESS_TG_RESTRICT=False)
     def test_talkgroup_access_open(self):
@@ -44,7 +44,7 @@ class TalkgroupRestictTests(TestCase):
         response = self.client.get('/api_v1/tg/test-tg-1/')
         self.assertEqual(response.status_code, 200)
         data = json.loads(str(response.content, encoding='utf8'))
-        self.assertEquals(data['count'], 1)
+        self.assertEqual(data['count'], 1)
 
     @override_settings(ACCESS_TG_RESTRICT=True)
     def test_talkgroup_access_user1(self):
@@ -54,7 +54,7 @@ class TalkgroupRestictTests(TestCase):
         response = TalkGroupFilterViewSet.as_view()(request, filter_val='test-tg-1').render()
         #print(response.content)
         data = json.loads(str(response.content, encoding='utf8'))
-        self.assertEquals(data['count'], 1)
+        self.assertEqual(data['count'], 1)
 
     @override_settings(ACCESS_TG_RESTRICT=True)
     def test_talkgroup_access_user2(self):
@@ -64,5 +64,5 @@ class TalkgroupRestictTests(TestCase):
         response = TalkGroupFilterViewSet.as_view()(request, filter_val='test-tg-1').render()
         #print(response.content)
         data = json.loads(str(response.content, encoding='utf8'))
-        self.assertEquals(data['count'], 0)
+        self.assertEqual(data['count'], 0)
 

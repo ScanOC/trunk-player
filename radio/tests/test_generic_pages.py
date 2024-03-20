@@ -18,4 +18,4 @@ class GenericHTMLTests(TestCase):
     def test_page_exists(self):
         client = Client()
         response = client.get(reverse('pages',  kwargs={'page_name': 'FirstPage'}))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
