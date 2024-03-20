@@ -6,7 +6,7 @@ from subprocess import check_output, CalledProcessError
 logger = logging.getLogger(__name__)
 
 
-VERSION = (0, 0, 7, 'beta', 1)
+VERSION = (0, 1, 4, 'beta', 1)
 
 __version__ = get_version(VERSION)
 
