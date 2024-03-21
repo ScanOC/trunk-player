@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.12
 RUN apt-get update && \
     apt-get -y install nginx redis-server ssl-cert tzdata && \
     rm -rf /var/lib/apt/lists/* 
