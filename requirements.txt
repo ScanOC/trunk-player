@@ -23,7 +23,7 @@ django-select2==8.1.2
 djangorestframework==3.15.0
 hiredis==2.3.2
 hyperlink==21.0.0
-idna==3.6
+idna==3.7
 incremental==22.10.0
 jsonfield==3.1.0
 msgpack==1.0.8
