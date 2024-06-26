@@ -20,7 +20,7 @@ django-appconf==1.0.6
 django-ipware==6.0.4
 django-redis==5.4.0
 django-select2==8.1.2
-djangorestframework==3.15.0
+djangorestframework==3.15.2
 hiredis==2.3.2
 hyperlink==21.0.0
 idna==3.7
