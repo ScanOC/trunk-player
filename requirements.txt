@@ -14,7 +14,7 @@ constantly==23.10.4
 cryptography==43.0.0
 daphne==4.1.2
 defusedxml==0.7.1
-Django==5.1
+Django==5.1.1
 django-allauth==64.0.0
 django-appconf==1.0.6
 django-ipware==7.0.1
