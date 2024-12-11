@@ -11,7 +11,7 @@ channels-redis==4.2.0
 chardet==5.2.0
 charset-normalizer==3.3.2
 constantly==23.10.4
-cryptography==43.0.0
+cryptography==44.0.0
 daphne==4.1.2
 defusedxml==0.7.1
 Django==5.1.4
