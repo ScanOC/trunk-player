@@ -14,7 +14,8 @@ from .models import (
 )
 from .serializers import (
     TransmissionSerializer, TalkGroupSerializer, ScanListSerializer,
-    MenuScanListSerializer, MenuTalkGroupListSerializer, MessageSerializer
+    MenuScanListSerializer, MenuTalkGroupListSerializer, MessageSerializer,
+    UserTalkgroupMenuSerializer
 )
 from .auth import (
     get_user_accessible_talkgroups, get_user_systems, has_system_permission,
@@ -337,12 +338,14 @@ class SecureMenuScanListViewSet(AuthenticatedViewSetMixin, viewsets.ReadOnlyMode
 
 
 class SecureMenuTalkGroupListViewSet(AuthenticatedViewSetMixin, viewsets.ReadOnlyModelViewSet):
-    serializer_class = MenuTalkGroupListSerializer
+    serializer_class = UserTalkgroupMenuSerializer
 
     def get_queryset(self):
         if not self.request.user.is_authenticated:
-            return MenuTalkGroupList.objects.none()
+            return UserTalkgroupMenu.objects.none()
 
-        # Only show menu items for talkgroups user has access to
-        accessible_tgs = get_user_accessible_talkgroups(self.request.user)
-        return MenuTalkGroupList.objects.filter(talkgroup__in=accessible_tgs)
+        # Return user's menu talkgroups that are flagged to show in menu, ordered by order field
+        return UserTalkgroupMenu.objects.filter(
+            user=self.request.user,
+            show_in_menu=True
+        ).select_related('talkgroup').order_by('order', 'talkgroup__alpha_tag')

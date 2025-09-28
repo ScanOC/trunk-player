@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import Transmission, TalkGroup, Unit, ScanList, MenuScanList, MenuTalkGroupList, MessagePopUp
+from .models import Transmission, TalkGroup, Unit, ScanList, MenuScanList, MenuTalkGroupList, MessagePopUp, UserTalkgroupMenu
 from rest_framework.fields import CurrentUserDefault, SerializerMethodField
 
 
@@ -49,3 +49,13 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = MessagePopUp
         fields = ('pk', 'mesg_type', 'mesg_html' )
+
+
+class UserTalkgroupMenuSerializer(serializers.ModelSerializer):
+    tg_name = serializers.CharField(source='talkgroup.alpha_tag', read_only=True)
+    tg_slug = serializers.CharField(source='talkgroup.slug', read_only=True)
+    name = serializers.IntegerField(source='talkgroup.id', read_only=True)
+
+    class Meta:
+        model = UserTalkgroupMenu
+        fields = ('pk', 'name', 'tg_name', 'tg_slug', 'show_in_menu', 'order')
