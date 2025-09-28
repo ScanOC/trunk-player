@@ -1,0 +1,157 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+
+{% block main-body %}
+<div class="container">
+    <div id="main-message" style="display: none" class="alert alert-danger" role="alert"></div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h2><i class="fa fa-list"></i> Manage Talkgroup Menu</h2>
+            <p class="text-muted">Choose which talkgroups appear in your personal menu and set their display order.</p>
+
+            {% if not talkgroups_by_system %}
+                <div class="alert alert-info">
+                    <h4><i class="fa fa-info-circle"></i> No Talkgroups Available</h4>
+                    <p>You don't have access to any talkgroups yet. Contact your system administrator for access.</p>
+                    <a href="{% url 'user_systems' %}" class="btn btn-primary">View Your Systems</a>
+                </div>
+            {% else %}
+                <form method="post" id="menu-form">
+                    {% csrf_token %}
+
+                    <div class="panel-group" id="systems-accordion" role="tablist">
+                        {% for system_name, talkgroups in talkgroups_by_system.items %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="heading-{{ forloop.counter }}">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#systems-accordion"
+                                       href="#collapse-{{ forloop.counter }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                                       aria-controls="collapse-{{ forloop.counter }}">
+                                        <i class="fa fa-radio"></i> {{ system_name }}
+                                        <span class="badge">{{ talkgroups|length }}</span>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse-{{ forloop.counter }}" class="panel-collapse collapse {% if forloop.first %}in{% endif %}"
+                                 role="tabpanel" aria-labelledby="heading-{{ forloop.counter }}">
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Show in Menu</th>
+                                                    <th>Order</th>
+                                                    <th>ID</th>
+                                                    <th>Alpha Tag</th>
+                                                    <th>Description</th>
+                                                    <th>Agency</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for tg_data in talkgroups %}
+                                                <tr>
+                                                    <td>
+                                                        <input type="hidden" name="talkgroup_ids[]" value="{{ tg_data.talkgroup.id }}">
+                                                        <input type="checkbox" name="show_in_menu[]"
+                                                               {% if tg_data.menu_settings.show_in_menu %}checked{% endif %}
+                                                               class="menu-checkbox">
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" name="order[]"
+                                                               value="{{ tg_data.menu_settings.order|default:0 }}"
+                                                               min="0" max="999" class="form-control input-sm" style="width: 80px;">
+                                                    </td>
+                                                    <td>{{ tg_data.talkgroup.dec_id }}</td>
+                                                    <td><strong>{{ tg_data.talkgroup.alpha_tag }}</strong></td>
+                                                    <td>{{ tg_data.talkgroup.description|default:"" }}</td>
+                                                    <td>{{ tg_data.talkgroup.agency.name|default:"" }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-xs-12">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fa fa-save"></i> Save Menu Preferences
+                            </button>
+                            <a href="{% url 'talkgroup_list_with_menu' %}" class="btn btn-default">
+                                <i class="fa fa-eye"></i> Preview Menu
+                            </a>
+                            <a href="/talkgroups/" class="btn btn-default">
+                                <i class="fa fa-arrow-left"></i> Back to Talkgroups
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Bulk Actions -->
+                <div class="row" style="margin-top: 30px;">
+                    <div class="col-xs-12">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h4><i class="fa fa-magic"></i> Bulk Actions</h4>
+                            </div>
+                            <div class="panel-body">
+                                <button type="button" class="btn btn-info btn-sm" onclick="selectAll()">
+                                    <i class="fa fa-check-square-o"></i> Select All
+                                </button>
+                                <button type="button" class="btn btn-warning btn-sm" onclick="clearAll()">
+                                    <i class="fa fa-square-o"></i> Clear All
+                                </button>
+                                <button type="button" class="btn btn-success btn-sm" onclick="autoOrder()">
+                                    <i class="fa fa-sort-numeric-asc"></i> Auto Order
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+    <div class="row">
+        <div class="col-xs-12">
+            <footer>
+                <p>&copy; {% get_setting 'COPYRIGHT_NOTICE' %} {% get_setting 'SITE_TITLE' %}</p>
+            </footer>
+        </div>
+    </div>
+</div>
+
+<script>
+function selectAll() {
+    $('.menu-checkbox').prop('checked', true);
+}
+
+function clearAll() {
+    $('.menu-checkbox').prop('checked', false);
+}
+
+function autoOrder() {
+    var order = 1;
+    $('.menu-checkbox:checked').each(function() {
+        $(this).closest('tr').find('input[name="order[]"]').val(order);
+        order++;
+    });
+}
+
+$(document).ready(function() {
+    $('#menu-form').on('submit', function() {
+        $(this).find('button[type="submit"]').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Saving...');
+    });
+});
+</script>
+{% endblock %}

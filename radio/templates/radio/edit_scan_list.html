@@ -1,0 +1,62 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+
+{% block main-body %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h2><i class="fa fa-edit"></i> Edit Scan List: {{ scan_list.name }}</h2>
+
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" name="name" class="form-control" value="{{ scan_list.name }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" class="form-control" rows="3">{{ scan_list.description|default:'' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="is_default" {% if scan_list.is_default %}checked{% endif %}>
+                        Set as Default Scan List
+                    </label>
+                </div>
+
+                <h3>Talkgroups</h3>
+                {% for system_name, talkgroups in talkgroups_by_system.items %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">{{ system_name }}</div>
+                        <div class="panel-body">
+                            {% for tg_data in talkgroups %}
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="talkgroups" value="{{ tg_data.talkgroup.id }}"
+                                               {% if tg_data.selected %}checked{% endif %}>
+                                        {{ tg_data.talkgroup.alpha_tag }} - {{ tg_data.talkgroup.description|default:"" }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{% url 'manage_scan_lists' %}" class="btn btn-default">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

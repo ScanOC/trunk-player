@@ -1,0 +1,34 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+
+{% block main-body %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h2><i class="fa fa-trash"></i> Delete Scan List</h2>
+
+            <div class="alert alert-danger">
+                <h4>Are you sure you want to delete this scan list?</h4>
+                <p><strong>Name:</strong> {{ scan_list.name }}</p>
+                <p><strong>Description:</strong> {{ scan_list.description|default:"None" }}</p>
+                <p><strong>Talkgroups:</strong> {{ scan_list.talkgroups.count }}</p>
+                <p class="text-danger"><strong>This action cannot be undone.</strong></p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="fa fa-trash"></i> Yes, Delete This Scan List
+                </button>
+                <a href="{% url 'manage_scan_lists' %}" class="btn btn-default">
+                    <i class="fa fa-arrow-left"></i> Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

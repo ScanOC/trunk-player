@@ -21,6 +21,7 @@ from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 from rest_framework import routers
 from radio import views
+from radio import user_views
 from radio.viewsets import (
     SecureTransmissionViewSet, SecureTalkGroupViewSet, SecureScanListViewSet,
     SecureMenuScanListViewSet, SecureMenuTalkGroupListViewSet,
@@ -98,10 +99,14 @@ urlpatterns += [
     url(r'^select2/', include('django_select2.urls')),
     url(r'^userscanlist/$', views.userScanList, name='user_scanlist'),
     # New user preference management URLs
-    url(r'^manage/menu/$', login_required(TemplateView.as_view(template_name='radio/manage_talkgroup_menu.html')), name='manage_talkgroup_menu'),
-    url(r'^manage/scanlists/$', login_required(TemplateView.as_view(template_name='radio/manage_scan_lists.html')), name='manage_scan_lists'),
-    url(r'^manage/systems/$', login_required(TemplateView.as_view(template_name='radio/user_systems.html')), name='user_systems'),
-    url(r'^talkgroups/manage/$', login_required(TemplateView.as_view(template_name='radio/talkgroup_list_with_menu.html')), name='talkgroup_list_with_menu'),
+    url(r'^manage/menu/$', user_views.manage_talkgroup_menu, name='manage_talkgroup_menu'),
+    url(r'^manage/menu/toggle/$', user_views.toggle_talkgroup_menu, name='toggle_talkgroup_menu'),
+    url(r'^manage/scanlists/$', user_views.manage_scan_lists, name='manage_scan_lists'),
+    url(r'^manage/scanlists/create/$', user_views.create_scan_list, name='create_scan_list'),
+    url(r'^manage/scanlists/(?P<scan_list_id>\d+)/edit/$', user_views.edit_scan_list, name='edit_scan_list'),
+    url(r'^manage/scanlists/(?P<scan_list_id>\d+)/delete/$', user_views.delete_scan_list, name='delete_scan_list'),
+    url(r'^manage/systems/$', user_views.user_systems_view, name='user_systems'),
+    url(r'^talkgroups/manage/$', user_views.talkgroup_list_with_menu_flags, name='talkgroup_list_with_menu'),
     url(r'^agency/$', views.agencyList, name='agency_list'),
     url(r'^api_v2/import_transmission/$', views.import_transmission, name='import_transmission'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,141 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+
+{% block main-body %}
+<div class="container">
+    <div id="main-message" style="display: none" class="alert alert-danger" role="alert"></div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h2><i class="fa fa-search"></i> Manage Scan Lists</h2>
+            <p class="text-muted">Create and manage your custom scan lists from talkgroups you have access to.</p>
+
+            <div class="row" style="margin-bottom: 20px;">
+                <div class="col-xs-12">
+                    <a href="{% url 'create_scan_list' %}" class="btn btn-success">
+                        <i class="fa fa-plus"></i> Create New Scan List
+                    </a>
+                    <a href="/talkgroups/" class="btn btn-default">
+                        <i class="fa fa-arrow-left"></i> Back to Talkgroups
+                    </a>
+                </div>
+            </div>
+
+            {% if not scan_lists %}
+                <div class="alert alert-info">
+                    <h4><i class="fa fa-info-circle"></i> No Scan Lists Yet</h4>
+                    <p>You haven't created any custom scan lists yet. Scan lists allow you to group talkgroups for easier monitoring.</p>
+                    <a href="{% url 'create_scan_list' %}" class="btn btn-success">
+                        <i class="fa fa-plus"></i> Create Your First Scan List
+                    </a>
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Talkgroups</th>
+                                <th>Status</th>
+                                <th>Default</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for scan_list in scan_lists %}
+                            <tr {% if not scan_list.is_active %}class="text-muted"{% endif %}>
+                                <td>
+                                    <strong>{{ scan_list.name }}</strong>
+                                    {% if scan_list.is_default %}
+                                        <span class="label label-primary">Default</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ scan_list.description|default:"" }}</td>
+                                <td>
+                                    <span class="badge">{{ scan_list.talkgroups.count }}</span>
+                                </td>
+                                <td>
+                                    {% if scan_list.is_active %}
+                                        <span class="label label-success">Active</span>
+                                    {% else %}
+                                        <span class="label label-default">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if scan_list.is_default %}
+                                        <i class="fa fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="fa fa-star-o text-muted"></i>
+                                    {% endif %}
+                                </td>
+                                <td>{{ scan_list.created_at|date:"M d, Y" }}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'edit_scan_list' scan_list.id %}" class="btn btn-sm btn-primary">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </a>
+                                        <a href="/api_v1/scan/{{ scan_list.name|slugify }}/" class="btn btn-sm btn-info" target="_blank">
+                                            <i class="fa fa-play"></i> Listen
+                                        </a>
+                                        <a href="{% url 'delete_scan_list' scan_list.id %}" class="btn btn-sm btn-danger"
+                                           onclick="return confirm('Are you sure you want to delete this scan list?')">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row" style="margin-top: 20px;">
+                    <div class="col-md-6">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h4><i class="fa fa-info-circle"></i> About Scan Lists</h4>
+                            </div>
+                            <div class="panel-body">
+                                <ul>
+                                    <li><strong>Active:</strong> Available for listening in the scan interface</li>
+                                    <li><strong>Default:</strong> Automatically selected when you visit the scan page</li>
+                                    <li><strong>Talkgroups:</strong> Only talkgroups you have access to can be added</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h4><i class="fa fa-lightbulb-o"></i> Tips</h4>
+                            </div>
+                            <div class="panel-body">
+                                <ul>
+                                    <li>Create specific scan lists for different scenarios (e.g., "Emergency", "Daily Patrol")</li>
+                                    <li>Set one scan list as default for quick access</li>
+                                    <li>Use descriptive names to easily identify your scan lists</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+    <div class="row">
+        <div class="col-xs-12">
+            <footer>
+                <p>&copy; {% get_setting 'COPYRIGHT_NOTICE' %} {% get_setting 'SITE_TITLE' %}</p>
+            </footer>
+        </div>
+    </div>
+</div>
+{% endblock %}

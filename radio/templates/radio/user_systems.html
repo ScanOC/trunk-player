@@ -1,0 +1,118 @@
+{% extends "radio/site_base.html" %}
+{% load radio_extras %}
+
+{% block main-nav %}
+{% include "radio/site_live_nav.html" %}
+{% endblock %}
+
+{% block main-body %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h2><i class="fa fa-radio"></i> Your Radio Systems</h2>
+            <p class="text-muted">View the radio systems you have access to and your role in each system.</p>
+
+            {% if not user_systems %}
+                <div class="alert alert-warning">
+                    <h4><i class="fa fa-warning"></i> No System Access</h4>
+                    <p>You don't have access to any radio systems yet. Contact your system administrator to get access.</p>
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>System</th>
+                                <th>Your Role</th>
+                                <th>Accessible Talkgroups</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for system_data in user_systems %}
+                            <tr>
+                                <td>
+                                    <h4>{{ system_data.system.name }}</h4>
+                                    {% if system_data.system.system_id %}
+                                        <small class="text-muted">ID: {{ system_data.system.system_id }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if system_data.is_admin %}
+                                        <span class="label label-danger">
+                                            <i class="fa fa-key"></i> Administrator
+                                        </span>
+                                    {% else %}
+                                        <span class="label label-info">
+                                            <i class="fa fa-user"></i> User
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge badge-primary">{{ system_data.talkgroup_count }}</span>
+                                    {% if system_data.is_admin %}
+                                        <small class="text-success">(All talkgroups)</small>
+                                    {% else %}
+                                        <small class="text-muted">(Limited access)</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if system_data.is_admin %}
+                                        <a href="/admin/radio/systemrole/?system__exact={{ system_data.system.id }}"
+                                           class="btn btn-sm btn-primary">
+                                            <i class="fa fa-users"></i> Manage Users
+                                        </a>
+                                    {% endif %}
+                                    <a href="/talkgroups/?system={{ system_data.system.id }}"
+                                       class="btn btn-sm btn-info">
+                                        <i class="fa fa-list"></i> View Talkgroups
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row" style="margin-top: 20px;">
+                    <div class="col-md-6">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h4><i class="fa fa-info-circle"></i> Role Descriptions</h4>
+                            </div>
+                            <div class="panel-body">
+                                <p><strong><i class="fa fa-key"></i> Administrator:</strong> Full access to all talkgroups and user management for the system.</p>
+                                <p><strong><i class="fa fa-user"></i> User:</strong> Limited access to specific talkgroups as granted by system administrators.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h4><i class="fa fa-cog"></i> Quick Actions</h4>
+                            </div>
+                            <div class="panel-body">
+                                <a href="{% url 'manage_talkgroup_menu' %}" class="btn btn-primary btn-block">
+                                    <i class="fa fa-list"></i> Manage Menu Preferences
+                                </a>
+                                <a href="{% url 'manage_scan_lists' %}" class="btn btn-success btn-block">
+                                    <i class="fa fa-search"></i> Manage Scan Lists
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+    <div class="row">
+        <div class="col-xs-12">
+            <footer>
+                <p>&copy; {% get_setting 'COPYRIGHT_NOTICE' %} {% get_setting 'SITE_TITLE' %}</p>
+            </footer>
+        </div>
+    </div>
+</div>
+{% endblock %}
