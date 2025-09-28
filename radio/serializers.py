@@ -63,13 +63,17 @@ class UserTalkgroupMenuSerializer(serializers.ModelSerializer):
 
 class UserScanListMenuSerializer(serializers.ModelSerializer):
     scan_name = serializers.CharField(source='name', read_only=True)
-    scan_description = serializers.CharField(source='description', read_only=True)
+    scan_description = serializers.SerializerMethodField()
     scan_slug = serializers.SerializerMethodField()
     name = serializers.IntegerField(source='id', read_only=True)
 
     class Meta:
         model = UserScanList
         fields = ('pk', 'name', 'scan_name', 'scan_description', 'scan_slug')
+
+    def get_scan_description(self, obj):
+        # Use name as description if description is empty
+        return obj.description.strip() if obj.description and obj.description.strip() else obj.name
 
     def get_scan_slug(self, obj):
         # Generate slug from name for backwards compatibility
