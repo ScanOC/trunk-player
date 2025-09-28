@@ -156,7 +156,7 @@ function update_menu() {
             new_html += '<li><a href="/scan/default/">Default</a></li>';
         }
         a  = '<li class="divider"></li>';
-        a += '<li><a href="/userscan/">Custom Scan List</a></li>';
+        a += '<li><a href="/manage/scanlists/">Custom Scan List</a></li>';
         new_html_live += a;
         new_html += a;
         $('#menu-scanlist-live').html(new_html_live);
