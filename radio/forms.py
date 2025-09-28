@@ -9,7 +9,7 @@ from django_select2.forms import (
     Select2Widget
 )
 
-from .models import Unit, StripePlanMatrix, Profile, TalkGroup, ScanList
+from .models import Unit, StripePlanMatrix, Profile, TalkGroup, ScanList, UserScanList, TalkGroupWithSystem
 
 
 class UserScanForm(forms.Form):
@@ -90,3 +90,27 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
+
+
+class UserScanListForm(forms.ModelForm):
+    class Meta:
+        model = UserScanList
+        fields = ['name', 'description', 'is_default', 'talkgroups']
+        widgets = {
+            'talkgroups': Select2MultipleWidget,
+            'description': forms.Textarea(attrs={'rows': 3}),
+        }
+
+    def __init__(self, user=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user:
+            # Limit talkgroups to those the user has access to
+            from .auth import get_user_accessible_talkgroups
+            accessible_tgs = get_user_accessible_talkgroups(user)
+            self.fields['talkgroups'].queryset = accessible_tgs
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        if not name:
+            raise forms.ValidationError("Name is required.")
+        return name
