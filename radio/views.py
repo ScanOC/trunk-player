@@ -393,18 +393,38 @@ class UnitFilterViewSet(generics.ListAPIView):
 
 
 class TalkGroupList(ListView):
-    model = TalkGroup
+    model = TalkGroupWithSystem
     context_object_name = 'talkgroups'
     template_name = 'radio/talkgroup_list.html'
 
-    #queryset = TalkGroup.objects.filter(public=True)
+    def dispatch(self, request, *args, **kwargs):
+        # Ensure user is authenticated unless anonymous access is allowed
+        if not getattr(settings, 'ALLOW_ANONYMOUS', False):
+            if not request.user.is_authenticated:
+                from django.contrib.auth.views import redirect_to_login
+                return redirect_to_login(request.get_full_path())
+        return super().dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
-        if settings.ACCESS_TG_RESTRICT:
-            tg = allowed_tg_list(self.request.user)
+        # Use new fine-grained authorization system
+        if self.request.user.is_authenticated:
+            # Get talkgroups user has access to through new system
+            tg = get_user_accessible_talkgroups(self.request.user)
         else:
-            tg = TalkGroup.objects.filter(public=True)
+            # Anonymous users get no access (unless ALLOW_ANONYMOUS and public talkgroups exist)
+            if getattr(settings, 'ALLOW_ANONYMOUS', False):
+                # For anonymous users, show public talkgroups if they exist
+                # This maintains backward compatibility
+                tg = TalkGroupWithSystem.objects.filter(public=True) if hasattr(TalkGroupWithSystem, 'public') else TalkGroupWithSystem.objects.none()
+            else:
+                tg = TalkGroupWithSystem.objects.none()
+
+        # Apply ordering if requested
         if self.request.GET.get('recent', None):
             tg = tg.order_by('-recent_usage', '-last_transmission')
+        else:
+            tg = tg.order_by('system__name', 'alpha_tag')
+
         return tg
 
 

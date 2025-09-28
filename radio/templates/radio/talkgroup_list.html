@@ -8,17 +8,85 @@
         <div id="main-message" style="display: none" class=" alert alert-danger" role="alert">
         </div>
 	<div class="row">
+        <div class="col-xs-12">
+            <h2>Your Accessible Talkgroups</h2>
+            {% if not user.is_authenticated %}
+                <div class="alert alert-warning">
+                    <strong>Authentication Required:</strong> Please <a href="{% url 'login' %}?next={{ request.path | urlencode }}">login</a> to view talkgroups.
+                </div>
+            {% elif not talkgroups %}
+                <div class="alert alert-info">
+                    <strong>No Talkgroups Available:</strong> You don't have access to any talkgroups yet.
+                    {% if user.is_staff %}
+                        Contact your system administrator or <a href="/admin/radio/systemrole/">manage system roles</a>.
+                    {% else %}
+                        Contact your system administrator for access.
+                    {% endif %}
+                </div>
+            {% else %}
+                <p>You have access to {{ talkgroups|length }} talkgroup{{ talkgroups|length|pluralize }}{% if user.is_authenticated %} across your authorized systems{% endif %}.</p>
 
-<table>
-<thead>
-<tr><th>ID</th><th>System</th><th>Alpha</th><th>Short</th><th>Description</th><th>Notes</th></tr>
-</thead>
-<tbody>
-{% for tg in talkgroups %}
-   <tr><td>{% if user.is_staff %}<a href="/admin/radio/talkgroup/{{ tg.pk }}/change/">{{ tg.dec_id }}</a>{% else %}{{ tg.dec_id }}{% endif %}</td><td>{{ tg.system }}</td><td><a href="/tg/{{ tg.slug }}/">{{ tg.alpha_tag }}</a></td><td>{{ tg.common_name }}</td><td>{{ tg.description }}</td><td>{% if tg.comments %}{{ tg.comments }}{% else %}&nbsp;{% endif %}</td></tr>
-{% endfor %}
-</tbody>
-</table>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>System</th>
+                                <th>Alpha Tag</th>
+                                <th>Common Name</th>
+                                <th>Description</th>
+                                <th>Agency</th>
+                                <th>Notes</th>
+                                {% if user.is_authenticated %}
+                                <th>Menu</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for tg in talkgroups %}
+                           <tr>
+                               <td>
+                                   {% if user.is_staff %}
+                                       <a href="/admin/radio/talkgroupwithsystem/{{ tg.pk }}/change/">{{ tg.dec_id }}</a>
+                                   {% else %}
+                                       {{ tg.dec_id }}
+                                   {% endif %}
+                               </td>
+                               <td><span class="label label-primary">{{ tg.system.name }}</span></td>
+                               <td><a href="/tg/{{ tg.slug }}/" class="btn btn-sm btn-link">{{ tg.alpha_tag }}</a></td>
+                               <td>{{ tg.common_name|default:"" }}</td>
+                               <td>{{ tg.description|default:"" }}</td>
+                               <td>{{ tg.agency.name|default:"" }}</td>
+                               <td>{% if tg.comments %}{{ tg.comments }}{% else %}&nbsp;{% endif %}</td>
+                               {% if user.is_authenticated %}
+                               <td>
+                                   <button class="btn btn-xs btn-default toggle-menu" data-talkgroup="{{ tg.pk }}">
+                                       <i class="fa fa-list"></i> Toggle
+                                   </button>
+                               </td>
+                               {% endif %}
+                           </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if user.is_authenticated %}
+                <div class="row" style="margin-top: 20px;">
+                    <div class="col-md-6">
+                        <a href="{% url 'manage_talkgroup_menu' %}" class="btn btn-primary">
+                            <i class="fa fa-cog"></i> Manage Menu Preferences
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'manage_scan_lists' %}" class="btn btn-success">
+                            <i class="fa fa-plus"></i> Create Scan Lists
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
 	</div>
 	<hr>
 	<div class="row">
