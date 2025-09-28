@@ -27,6 +27,11 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import mail_admins
+from .auth import (
+    require_authentication, require_system_role, require_system_permission,
+    require_talkgroup_access, get_user_accessible_talkgroups, get_user_systems,
+    has_system_permission, SystemPermission
+)
 
 
 
@@ -357,7 +362,7 @@ class TalkGroupFilterViewSet(generics.ListAPIView):
 
     def get_queryset(self):
         tg_var = self.kwargs['filter_val']
-        search_tgs = re.split('[\+]', tg_var)
+        search_tgs = re.split('[\\+]', tg_var)
         q = Q()
         for stg in search_tgs:
             q |= Q(common_name__iexact=stg)
@@ -375,7 +380,7 @@ class UnitFilterViewSet(generics.ListAPIView):
 
     def get_queryset(self):
         unit_var = self.kwargs['filter_val']
-        search_unit = re.split('[\+]', unit_var)
+        search_unit = re.split('[\\+]', unit_var)
         q = Q()
         for s_unit in search_unit:
             q |= Q(slug__iexact=s_unit)
@@ -503,11 +508,23 @@ class MenuTalkGroupListViewSet(viewsets.ModelViewSet):
     queryset = MenuTalkGroupList.objects.all()
 
 
-class UnitUpdateView(PermissionRequiredMixin, UpdateView):
+class UnitUpdateView(UpdateView):
     model = Unit
     form_class = UnitEditForm
     success_url = '/unitupdategood/'
-    permission_required = ('radio.change_unit')
+
+    def dispatch(self, request, *args, **kwargs):
+        # Ensure user is authenticated
+        if not request.user.is_authenticated:
+            from django.contrib.auth.views import redirect_to_login
+            return redirect_to_login(request.get_full_path())
+
+        # Get the unit and check permissions
+        unit = self.get_object()
+        if not has_system_permission(request.user, unit.system, SystemPermission.EDIT_UNITS):
+            raise PermissionDenied("Permission to edit units in this system not granted")
+
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         try:

@@ -469,6 +469,122 @@ class StripePlanMatrix(models.Model):
        return self.name
 
 
+# New Fine-Grained Authorization Models
+
+class SystemRole(models.Model):
+    """Defines roles a user can have within a radio system"""
+    ADMIN = 'admin'
+    USER = 'user'
+
+    ROLE_CHOICES = [
+        (ADMIN, 'System Administrator'),
+        (USER, 'Regular User'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='system_roles')
+    system = models.ForeignKey(System, on_delete=models.CASCADE, related_name='user_roles')
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=USER)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='created_system_roles')
+
+    class Meta:
+        unique_together = ('user', 'system')
+        ordering = ['system__name', 'user__username']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.system.name} ({self.get_role_display()})"
+
+    @property
+    def is_admin(self):
+        return self.role == self.ADMIN
+
+
+class SystemPermission(models.Model):
+    """Defines specific permissions within a system"""
+    EDIT_TALKGROUPS = 'edit_talkgroups'
+    EDIT_UNITS = 'edit_units'
+    MANAGE_USERS = 'manage_users'
+    VIEW_ALL_TRANSMISSIONS = 'view_all_transmissions'
+    DOWNLOAD_AUDIO = 'download_audio'
+
+    PERMISSION_CHOICES = [
+        (EDIT_TALKGROUPS, 'Edit Talkgroup Names'),
+        (EDIT_UNITS, 'Edit Unit Names'),
+        (MANAGE_USERS, 'Manage System Users'),
+        (VIEW_ALL_TRANSMISSIONS, 'View All Transmissions'),
+        (DOWNLOAD_AUDIO, 'Download Audio Files'),
+    ]
+
+    system_role = models.ForeignKey(SystemRole, on_delete=models.CASCADE, related_name='permissions')
+    permission = models.CharField(max_length=30, choices=PERMISSION_CHOICES)
+    granted_at = models.DateTimeField(auto_now_add=True)
+    granted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='granted_permissions')
+
+    class Meta:
+        unique_together = ('system_role', 'permission')
+        ordering = ['system_role', 'permission']
+
+    def __str__(self):
+        return f"{self.system_role} - {self.get_permission_display()}"
+
+
+class UserTalkgroupAccess(models.Model):
+    """Manages user access to specific talkgroups within a system"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='talkgroup_permissions')
+    talkgroup = models.ForeignKey('TalkGroupWithSystem', on_delete=models.CASCADE, related_name='user_permissions')
+    system_role = models.ForeignKey(SystemRole, on_delete=models.CASCADE, related_name='talkgroup_access')
+    granted_at = models.DateTimeField(auto_now_add=True)
+    granted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='granted_talkgroup_access')
+
+    class Meta:
+        unique_together = ('user', 'talkgroup')
+        ordering = ['user__username', 'talkgroup__alpha_tag']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.talkgroup.alpha_tag} ({self.talkgroup.system.name})"
+
+
+class UserTalkgroupMenu(models.Model):
+    """Tracks which talkgroups a user wants to show in their menu"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='menu_talkgroups')
+    talkgroup = models.ForeignKey('TalkGroupWithSystem', on_delete=models.CASCADE, related_name='menu_users')
+    show_in_menu = models.BooleanField(default=True)
+    order = models.IntegerField(default=0, help_text='Display order in menu')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'talkgroup')
+        ordering = ['user__username', 'order', 'talkgroup__alpha_tag']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.talkgroup.alpha_tag} ({'visible' if self.show_in_menu else 'hidden'})"
+
+
+class UserScanList(models.Model):
+    """User-created scan lists for custom monitoring"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='custom_scan_lists')
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    talkgroups = models.ManyToManyField('TalkGroupWithSystem', blank=True, related_name='user_scan_lists')
+    is_active = models.BooleanField(default=True)
+    is_default = models.BooleanField(default=False, help_text='Default scan list for this user')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'name')
+        ordering = ['user__username', 'name']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.name}"
+
+    def save(self, *args, **kwargs):
+        # Ensure only one default scan list per user
+        if self.is_default:
+            UserScanList.objects.filter(user=self.user, is_default=True).exclude(pk=self.pk).update(is_default=False)
+        super().save(*args, **kwargs)
+
+
     def stripe_amount(self):
        return int(self.stripe_plan.amount * 100)
 

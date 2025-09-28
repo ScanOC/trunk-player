@@ -21,14 +21,21 @@ from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 from rest_framework import routers
 from radio import views
+from radio.viewsets import (
+    SecureTransmissionViewSet, SecureTalkGroupViewSet, SecureScanListViewSet,
+    SecureMenuScanListViewSet, SecureMenuTalkGroupListViewSet,
+    SecureUnitFilterViewSet, SecureTalkGroupFilterViewSet, SecureScanViewSet,
+    SecureMessagePopUpViewSet
+)
 from django.contrib.auth.decorators import login_required
 
+# Use secure viewsets for API
 router = routers.DefaultRouter()
-router.register(r'transmission', views.TransmissionViewSet)
-router.register(r'talkgroups', views.TalkGroupViewSet, basename='talkgroups')
-router.register(r'scanlist', views.ScanListViewSet)
-router.register(r'menuscanlist', views.MenuScanListViewSet)
-router.register(r'menutalkgrouplist', views.MenuTalkGroupListViewSet)
+router.register(r'transmission', SecureTransmissionViewSet, basename='transmission')
+router.register(r'talkgroups', SecureTalkGroupViewSet, basename='talkgroups')
+router.register(r'scanlist', SecureScanListViewSet, basename='scanlist')
+router.register(r'menuscanlist', SecureMenuScanListViewSet, basename='menuscanlist')
+router.register(r'menutalkgrouplist', SecureMenuTalkGroupListViewSet, basename='menutalkgrouplist')
 
 
 urlpatterns = [
@@ -36,11 +43,11 @@ urlpatterns = [
     url('^$', views.Generic, {'page_name': 'index'}, name='index'),
     url('^', include('django.contrib.auth.urls')),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^api_v1/unit/(?P<filter_val>[+\w-]+)/$', views.UnitFilterViewSet.as_view()),
-    url(r'^api_v1/tg/(?P<filter_val>[+\w-]+)/$', views.TalkGroupFilterViewSet.as_view()),
-    url(r'^api_v1/scan/(?P<filter_val>[+\w-]+)/$', views.ScanViewSet.as_view()),
-    url(r'^api_v1/inc/(?P<filter_val>[+\w-]+)/$', views.IncViewSet.as_view()),
-    url(r'^api_v1/message/$', views.MessagePopUpViewSet.as_view()),
+    url(r'^api_v1/unit/(?P<filter_val>[+\w-]+)/$', SecureUnitFilterViewSet.as_view()),
+    url(r'^api_v1/tg/(?P<filter_val>[+\w-]+)/$', SecureTalkGroupFilterViewSet.as_view()),
+    url(r'^api_v1/scan/(?P<filter_val>[+\w-]+)/$', SecureScanViewSet.as_view()),
+    url(r'^api_v1/inc/(?P<filter_val>[+\w-]+)/$', views.IncViewSet.as_view()),  # Keep original for now
+    url(r'^api_v1/message/$', SecureMessagePopUpViewSet.as_view()),
     url(r'^api_v1/', include(router.urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^scan/(?P<name>.*)/details/$', views.ScanDetailsList, name='scan_details'),
@@ -90,6 +97,11 @@ urlpatterns += [
     url(r'^profile/$', views.userProfile, name='user_profile'),
     url(r'^select2/', include('django_select2.urls')),
     url(r'^userscanlist/$', views.userScanList, name='user_scanlist'),
+    # New user preference management URLs
+    url(r'^manage/menu/$', login_required(TemplateView.as_view(template_name='radio/manage_talkgroup_menu.html')), name='manage_talkgroup_menu'),
+    url(r'^manage/scanlists/$', login_required(TemplateView.as_view(template_name='radio/manage_scan_lists.html')), name='manage_scan_lists'),
+    url(r'^manage/systems/$', login_required(TemplateView.as_view(template_name='radio/user_systems.html')), name='user_systems'),
+    url(r'^talkgroups/manage/$', login_required(TemplateView.as_view(template_name='radio/talkgroup_list_with_menu.html')), name='talkgroup_list_with_menu'),
     url(r'^agency/$', views.agencyList, name='agency_list'),
     url(r'^api_v2/import_transmission/$', views.import_transmission, name='import_transmission'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
