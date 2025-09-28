@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import Transmission, TalkGroup, Unit, ScanList, MenuScanList, MenuTalkGroupList, MessagePopUp, UserTalkgroupMenu
+from .models import Transmission, TalkGroup, Unit, ScanList, MenuScanList, MenuTalkGroupList, MessagePopUp, UserTalkgroupMenu, UserScanList
 from rest_framework.fields import CurrentUserDefault, SerializerMethodField
 
 
@@ -59,3 +59,19 @@ class UserTalkgroupMenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserTalkgroupMenu
         fields = ('pk', 'name', 'tg_name', 'tg_slug', 'show_in_menu', 'order')
+
+
+class UserScanListMenuSerializer(serializers.ModelSerializer):
+    scan_name = serializers.CharField(source='name', read_only=True)
+    scan_description = serializers.CharField(source='description', read_only=True)
+    scan_slug = serializers.SerializerMethodField()
+    name = serializers.IntegerField(source='id', read_only=True)
+
+    class Meta:
+        model = UserScanList
+        fields = ('pk', 'name', 'scan_name', 'scan_description', 'scan_slug')
+
+    def get_scan_slug(self, obj):
+        # Generate slug from name for backwards compatibility
+        from django.utils.text import slugify
+        return slugify(obj.name)

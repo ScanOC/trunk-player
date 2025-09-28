@@ -15,7 +15,7 @@ from .models import (
 from .serializers import (
     TransmissionSerializer, TalkGroupSerializer, ScanListSerializer,
     MenuScanListSerializer, MenuTalkGroupListSerializer, MessageSerializer,
-    UserTalkgroupMenuSerializer
+    UserTalkgroupMenuSerializer, UserScanListMenuSerializer
 )
 from .auth import (
     get_user_accessible_talkgroups, get_user_systems, has_system_permission,
@@ -333,8 +333,17 @@ class SecureMessagePopUpViewSet(AuthenticatedViewSetMixin, generics.ListAPIView)
 
 # Keep menu viewsets as-is but add authentication
 class SecureMenuScanListViewSet(AuthenticatedViewSetMixin, viewsets.ReadOnlyModelViewSet):
-    serializer_class = MenuScanListSerializer
-    queryset = MenuScanList.objects.all()
+    serializer_class = UserScanListMenuSerializer
+
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return UserScanList.objects.none()
+
+        # Return user's scan lists that are active, ordered by name
+        return UserScanList.objects.filter(
+            user=self.request.user,
+            is_active=True
+        ).order_by('name')
 
 
 class SecureMenuTalkGroupListViewSet(AuthenticatedViewSetMixin, viewsets.ReadOnlyModelViewSet):
