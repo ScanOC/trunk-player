@@ -76,6 +76,5 @@ class UserScanListMenuSerializer(serializers.ModelSerializer):
         return obj.description.strip() if obj.description and obj.description.strip() else obj.name
 
     def get_scan_slug(self, obj):
-        # Generate slug from name for backwards compatibility
-        from django.utils.text import slugify
-        return slugify(obj.name)
+        # Return the actual slug field
+        return obj.slug

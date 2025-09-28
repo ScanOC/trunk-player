@@ -116,7 +116,7 @@ class TalkGroup(models.Model):
     alpha_tag = models.CharField(max_length=30)
     common_name = models.CharField(max_length=10, blank=True, null=True)
     description = models.CharField(max_length=100, blank=True, null=True)
-    slug = models.SlugField(null=True)
+    slug = models.SlugField(null=True, unique=True)
     public = models.BooleanField(default=True)
     comments = models.CharField(max_length=100, blank=True, null=True)
     system = models.ForeignKey(System, default=0, on_delete=models.CASCADE)
@@ -136,7 +136,9 @@ class TalkGroup(models.Model):
         return self.alpha_tag
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.alpha_tag)
+        # Create unique slug with system prefix
+        base_slug = slugify(self.alpha_tag)
+        self.slug = f"sys{self.system.id}-{base_slug}"
         if not self.last_transmission:
             self.last_transmission = timezone.now()
         super(TalkGroup, self).save(*args, **kwargs)
@@ -564,6 +566,7 @@ class UserScanList(models.Model):
     """User-created scan lists for custom monitoring"""
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='custom_scan_lists')
     name = models.CharField(max_length=100)
+    slug = models.SlugField(null=True, unique=True)
     description = models.TextField(blank=True, null=True)
     talkgroups = models.ManyToManyField('TalkGroupWithSystem', blank=True, related_name='user_scan_lists')
     is_active = models.BooleanField(default=True)
@@ -579,6 +582,10 @@ class UserScanList(models.Model):
         return f"{self.user.username} - {self.name}"
 
     def save(self, *args, **kwargs):
+        # Generate unique slug with user prefix
+        base_slug = slugify(self.name)
+        self.slug = f"user{self.user.id}-{base_slug}"
+
         # Ensure only one default scan list per user
         if self.is_default:
             UserScanList.objects.filter(user=self.user, is_default=True).exclude(pk=self.pk).update(is_default=False)
