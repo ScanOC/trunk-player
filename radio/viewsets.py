@@ -301,7 +301,7 @@ class SecureScanViewSet(AuthenticatedViewSetMixin, generics.ListAPIView):
                     try:
                         user_sl = UserScanList.objects.get(
                             user=self.request.user,
-                            name__iexact=scanlist,
+                            slug__iexact=scanlist,
                             is_active=True
                         )
                         talkgroups = user_sl.talkgroups.all()

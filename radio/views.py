@@ -566,15 +566,45 @@ class UnitUpdateView(UpdateView):
 def ScanDetailsList(request, name):
     template = 'radio/scandetaillist.html'
     scanlist = None
-    try:
-        scanlist = ScanList.objects.get(name=name)
-    except ScanList.DoesNotExist:
-        if name == 'default':
-            query_data = TalkGroup.objects.all()
+    query_data = None
+
+    if name == 'default':
+        # Handle default case - show user's default scan list or all accessible talkgroups
+        if request.user.is_authenticated:
+            try:
+                default_scanlist = UserScanList.objects.get(
+                    user=request.user,
+                    is_default=True,
+                    is_active=True
+                )
+                scanlist = default_scanlist
+                query_data = default_scanlist.talkgroups.all()
+            except UserScanList.DoesNotExist:
+                # Fall back to all accessible talkgroups
+                from .auth import get_user_accessible_talkgroups
+                query_data = get_user_accessible_talkgroups(request.user)
         else:
-            raise Http404
-    if scanlist:
-        query_data = scanlist.talkgroups.all()
+            query_data = TalkGroup.objects.filter(public=True)
+    else:
+        # Try to find by slug - first public scan lists, then user scan lists
+        try:
+            scanlist = ScanList.objects.get(slug__iexact=name, public=True)
+            query_data = scanlist.talkgroups.all()
+        except ScanList.DoesNotExist:
+            if request.user.is_authenticated:
+                try:
+                    user_scanlist = UserScanList.objects.get(
+                        user=request.user,
+                        slug__iexact=name,
+                        is_active=True
+                    )
+                    scanlist = user_scanlist
+                    query_data = user_scanlist.talkgroups.all()
+                except UserScanList.DoesNotExist:
+                    raise Http404
+            else:
+                raise Http404
+
     return render(request, template, {'object_list': query_data, 'scanlist': scanlist, 'request': request})
 
 

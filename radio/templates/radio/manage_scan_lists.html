@@ -80,7 +80,7 @@
                                         <a href="{% url 'edit_scan_list' scan_list.id %}" class="btn btn-sm btn-primary">
                                             <i class="fa fa-edit"></i> Edit
                                         </a>
-                                        <a href="/api_v1/scan/{{ scan_list.name|slugify }}/" class="btn btn-sm btn-info" target="_blank">
+                                        <a href="/api_v1/scan/{{ scan_list.slug }}/" class="btn btn-sm btn-info" target="_blank">
                                             <i class="fa fa-play"></i> Listen
                                         </a>
                                         <a href="{% url 'delete_scan_list' scan_list.id %}" class="btn btn-sm btn-danger"
