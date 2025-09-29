@@ -13,6 +13,9 @@ Contents:
 
    install
    configure
+   user-guide
+   authorization
+   api
    config_local
    config_muti_folder_audio
    config_webpages
@@ -24,6 +27,7 @@ Upgrades
 .. toctree::
    upgrade/upgrade-0.1.2.rst
    upgrade/upgrade-0.1.3.rst
+   upgrade/upgrade-0.1.5.rst
 
 
 Indices and tables

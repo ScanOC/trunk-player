@@ -101,7 +101,11 @@ Used to allow the django HTML template engine visibility into the settings in th
 ALLOW_ANONYMOUS
 ===============
 
-Not used for anything
+**Default:** ``False`` (as of v0.1.5)
+
+Controls whether anonymous (unauthenticated) users can access any data. When set to ``False``, all API endpoints and data access requires user authentication. When ``True``, public talkgroups and transmissions may be accessible to anonymous users.
+
+**Security Note:** Setting this to ``False`` is recommended for production environments with sensitive radio traffic.
 
 
 RADIO_DEFAULT_UNIT_AGENCY
@@ -250,3 +254,147 @@ USE_RAW_ID_FIELDS
 =================
 
 [D] For very large systems, the admin page may load better with raw id fields
+
+
+Authorization System Settings (v0.1.5+)
+========================================
+
+The following settings control the fine-grained authorization system introduced in version 0.1.5.
+
+ACCESS_TG_RESTRICT
+==================
+
+**Default:** ``True`` (as of v0.1.5)
+
+When enabled, enforces fine-grained talkgroup access control. Users will only see talkgroups they have been explicitly granted access to through the SystemRole and UserTalkgroupAccess models.
+
+When disabled, falls back to the legacy TalkGroupAccess system for backward compatibility.
+
+**Recommended:** ``True`` for new installations using the fine-grained authorization system.
+
+REQUIRE_SYSTEM_ROLE
+===================
+
+**Default:** ``True`` (as of v0.1.5)
+
+When enabled, users must have at least one SystemRole assignment to access any talkgroup data. This ensures all access is explicitly controlled through the authorization system.
+
+**Security Note:** Keep enabled to prevent unauthorized data access.
+
+DEFAULT_SYSTEM_ADMIN_PERMISSIONS
+=================================
+
+**Default:** ``['edit_talkgroups', 'edit_units', 'manage_users', 'view_all_transmissions']``
+
+List of permissions automatically granted to System Administrators. These permissions are automatically applied when a user is assigned the "System Administrator" role for any system.
+
+Available permissions:
+
+- ``edit_talkgroups``: Edit talkgroup names and properties
+- ``edit_units``: Edit unit names and descriptions
+- ``manage_users``: Manage system user access and roles
+- ``view_all_transmissions``: Access all transmissions in system
+- ``download_audio``: Download audio files
+
+Example:
+
+.. code-block:: python
+
+    DEFAULT_SYSTEM_ADMIN_PERMISSIONS = [
+        'edit_talkgroups',
+        'edit_units',
+        'manage_users',
+        'view_all_transmissions',
+        'download_audio'
+    ]
+
+ENFORCE_UNIQUE_SLUGS
+====================
+
+**Default:** ``True`` (as of v0.1.5)
+
+Enforces unique slug generation with system/user prefixes. When enabled:
+
+- TalkGroup slugs include system prefix: ``sys{system_id}-{alpha_tag}``
+- UserScanList slugs include user prefix: ``user{user_id}-{name}``
+
+This prevents slug conflicts across systems and users.
+
+**Important:** Required for proper URL routing in multi-system environments.
+
+MENU_TALKGROUP_LIMIT
+====================
+
+**Default:** ``50``
+
+Maximum number of talkgroups a user can add to their personal menu. This prevents performance issues with very large personal menus.
+
+Set to ``0`` for unlimited (not recommended for large systems).
+
+SCAN_LIST_TALKGROUP_LIMIT
+=========================
+
+**Default:** ``100``
+
+Maximum number of talkgroups allowed in a single user scan list. This prevents performance issues when processing large scan lists.
+
+Set to ``0`` for unlimited (not recommended).
+
+USER_SCAN_LIST_LIMIT
+====================
+
+**Default:** ``20``
+
+Maximum number of scan lists a single user can create. This prevents database bloat from users creating excessive numbers of scan lists.
+
+Set to ``0`` for unlimited.
+
+AUTO_ASSIGN_NEW_TALKGROUPS
+===========================
+
+**Default:** ``False``
+
+When enabled, newly created talkgroups are automatically assigned to all System Administrators in the same system. Regular users still require explicit assignment.
+
+**Note:** This only affects System Administrators - regular users never receive automatic access.
+
+LOG_PERMISSION_CHECKS
+=====================
+
+**Default:** ``False``
+
+When enabled, logs all permission checks for debugging authorization issues. This can generate significant log volume and should only be enabled for troubleshooting.
+
+**Warning:** Only enable in development or when debugging permission issues.
+
+Example Configuration
+=====================
+
+Example settings for a production environment with fine-grained authorization:
+
+.. code-block:: python
+
+    # Security settings
+    ALLOW_ANONYMOUS = False
+    ACCESS_TG_RESTRICT = True
+    REQUIRE_SYSTEM_ROLE = True
+    ENFORCE_UNIQUE_SLUGS = True
+
+    # Limits to prevent abuse
+    MENU_TALKGROUP_LIMIT = 25
+    SCAN_LIST_TALKGROUP_LIMIT = 50
+    USER_SCAN_LIST_LIMIT = 10
+
+    # Convenience features
+    AUTO_ASSIGN_NEW_TALKGROUPS = True
+
+    # Admin permissions
+    DEFAULT_SYSTEM_ADMIN_PERMISSIONS = [
+        'edit_talkgroups',
+        'edit_units',
+        'manage_users',
+        'view_all_transmissions'
+    ]
+
+    # Debugging (disable in production)
+    LOG_PERMISSION_CHECKS = False
