@@ -42,7 +42,7 @@ requests==2.32.3
 requests-oauthlib==2.0.0
 service-identity==24.1.0
 six==1.16.0
-sqlparse==0.5.1
+sqlparse==0.5.4
 stripe==10.7.0
 tinys3==0.1.12
 Twisted==24.7.0
