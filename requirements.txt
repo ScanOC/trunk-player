@@ -38,7 +38,7 @@ pyOpenSSL==24.2.1
 python3-openid==3.2.0
 pytz==2024.1
 redis==5.0.8
-requests==2.32.3
+requests==2.32.4
 requests-oauthlib==2.0.0
 service-identity==24.1.0
 six==1.16.0
