@@ -45,7 +45,7 @@ six==1.16.0
 sqlparse==0.5.1
 stripe==10.7.0
 tinys3==0.1.12
-Twisted==24.7.0
+Twisted==26.4.0rc2
 txaio==23.1.1
 typing-extensions==4.12.2
 urllib3==2.6.3
